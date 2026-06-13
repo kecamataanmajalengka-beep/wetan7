@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SDN Majalengka Wetan 7 - Smart Dashboard</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- AOS Animation -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+
+    <style>
+        /* --- CONFIGURATION --- */
+        :root {
+            --bg-dark: #030712; /* Almost Black */
+            --glass-bg: rgba(17, 24, 39, 0.6);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --primary: #6366f1; /* Indigo */
+            --primary-glow: rgba(99, 102, 241, 0.4);
+            --accent: #ec4899; /* Pink Neon */
+            --accent-glow: rgba(236, 72, 153, 0.4);
+            --text-main: #f3f4f6;
+            --text-muted: #9ca3af;
+            --success: #10b981;
+            
+            --sidebar-width: 280px;
+            --radius: 20px;
+        }
+
+        /* --- RESET --- */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Outfit', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            overflow: hidden; /* Prevent body scroll, handle inside main */
+            height: 100vh;
+            display: flex;
+        }
+
+        /* --- DYNAMIC BACKGROUND --- */
+        .bg-ambient {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -1;
+            overflow: hidden;
+            background: radial-gradient(circle at 50% 50%, #111827 0%, #000000 100%);
+        }
+        .orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(100px);
+            opacity: 0.6;
+            animation: orbFloat 20s infinite alternate;
+        }
+        .orb-1 { width: 400px; height: 400px; background: var(--primary); top: -100px; left: -100px; }
+        .orb-2 { width: 300px; height: 300px; background: var(--accent); bottom: -50px; right: -50px; animation-delay: -5s; }
+        .orb-3 { width: 200px; height: 200px; background: var(--success); top: 40%; left: 60%; opacity: 0.3; animation-duration: 15s; }
+
+        @keyframes orbFloat {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(50px, 50px); }
+        }
+
+        /* --- SIDEBAR --- */
+        .sidebar {
+            width: var(--sidebar-width);
+            height: 100%;
+            background: rgba(10, 10, 15, 0.8);
+            backdrop-filter: blur(20px);
+            border-right: 1px solid var(--glass-border);
+            padding: 2rem 1.5rem;
+            display: flex;
+            flex-direction: column;
+            transition: 0.3s;
+            z-index: 100;
+        }
+
+        .logo-box {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 3rem;
+        }
+        .logo-img {
+            width: 50px; height: 50px;
+            border-radius: 12px;
+            object-fit: cover;
+            border: 1px solid var(--glass-border);
+        }
+        .school-name h1 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.1rem;
+            line-height: 1.2;
+            background: linear-gradient(to right, #fff, #9ca3af);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .school-name p { font-size: 0.75rem; color: var(--text-muted); }
+
+        .nav-menu { display: flex; flex-direction: column; gap: 0.8rem; flex: 1; }
+        
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 14px 16px;
+            border-radius: 12px;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            position: relative;
+            overflow: hidden;
+        }
+        .nav-item i { width: 20px; text-align: center; transition: 0.3s; }
+        
+        .nav-item:hover {
+            background: rgba(255,255,255,0.03);
+            color: white;
+            transform: translateX(5px);
+        }
+        
+        .nav-item.active {
+            background: linear-gradient(90deg, rgba(99, 102, 241, 0.15) 0%, transparent 100%);
+            border-left: 3px solid var(--primary);
+            color: var(--primary);
+        }
+        .nav-item.active i { color: var(--primary); transform: scale(1.1); }
+
+        /* --- MAIN CONTENT --- */
+        .main-wrapper {
+            flex: 1;
+            height: 100vh;
+            overflow-y: auto;
+            padding: 2rem;
+            position: relative;
+        }
+
+        /* --- TOP BAR --- */
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--glass-border);
+        }
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .avatar {
+            width: 40px; height: 40px;
+            border-radius: 50%;
+            background: #333;
+        }
+
+        /* --- DASHBOARD HOME (INITIAL VIEW) --- */
+        .dashboard-view {
+            display: grid;
+            gap: 2rem;
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        /* Ticker Styles */
+        .ticker-container {
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid var(--accent);
+            border-radius: 50px;
+            padding: 12px 0;
+            overflow: hidden;
+            position: relative;
+            margin-bottom: 1rem;
+            box-shadow: 0 0 15px var(--accent-glow);
+        }
+        .ticker-content {
+            display: inline-block;
+            white-space: nowrap;
+            padding-left: 100%;
+            animation: ticker 15s linear infinite;
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: var(--accent);
+            text-transform: uppercase;
+        }
+        @keyframes ticker {
+            0% { transform: translate3d(0, 0, 0); }
+            100% { transform: translate3d(-100%, 0, 0); }
+        }
+
+        /* Hero Motivation */
+        .hero-card {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius);
+            padding: 3rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+        }
+        .hero-card::before {
+            content: '';
+            position: absolute;
+            top: -50%; left: -50%; width: 200%; height: 200%;
+            background: radial-gradient(circle, rgba(99,102,241,0.15) 0%, transparent 70%);
+            animation: rotate 10s linear infinite;
+        }
+        @keyframes rotate { from {transform: rotate(0deg);} to {transform: rotate(360deg);} }
+
+        .motivation-text {
+            font-size: 1.5rem;
+            font-weight: 300;
+            color: white;
+            position: relative;
+            z-index: 2;
+        }
+        .highlight {
+            color: var(--primary);
+            font-weight: 700;
+            text-shadow: 0 0 10px var(--primary-glow);
+        }
+        .typing-cursor::after {
+            content: '|';
+            animation: blink 1s infinite;
+        }
+        @keyframes blink { 0%, 100% {opacity:1;} 50% {opacity:0;} }
+
+        /* Dashboard Grid Stats */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 1.5rem;
+        }
+        .stat-card {
+            background: linear-gradient(145deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.01) 100%);
+            border: 1px solid var(--glass-border);
+            padding: 1.5rem;
+            border-radius: var(--radius);
+            transition: 0.3s;
+        }
+        .stat-card:hover {
+            transform: translateY(-5px);
+            background: rgba(255,255,255,0.08);
+            border-color: rgba(255,255,255,0.2);
+        }
+        .stat-icon {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            color: var(--text-main);
+            opacity: 0.8;
+        }
+        .stat-val { font-size: 2rem; font-weight: 700; margin-bottom: 5px; }
+        .stat-label { color: var(--text-muted); font-size: 0.9rem; }
+
+        /* --- CONTENT SECTIONS (Hidden by default) --- */
+        .content-section {
+            display: none; /* Hidden initially */
+            animation: slideUp 0.5s ease-out;
+            padding-bottom: 3rem;
+        }
+        .content-section.active-section { display: block; }
+
+        .section-header { margin-bottom: 2rem; }
+        .section-header h2 { font-size: 2rem; font-weight: 700; font-family: 'Space Grotesk', sans-serif; }
+        .section-header p { color: var(--text-muted); }
+
+        /* Bento Grid for Services */
+        .bento { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; }
+        .bento-item {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius);
+            padding: 2rem;
+            position: relative;
+            overflow: hidden;
+            transition: 0.3s;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            min-height: 200px;
+        }
+        .bento-item:hover { border-color: var(--primary); box-shadow: 0 0 20px rgba(99, 102, 241, 0.1); }
+        .bento-item.large { grid-column: span 2; background: linear-gradient(135deg, rgba(99,102,241,0.1), rgba(17,24,39,0.6)); }
+        .bento-icon { font-size: 2.5rem; color: var(--primary); margin-bottom: 1rem; }
+        
+        /* Modern Table */
+        .glass-table { width: 100%; border-collapse: collapse; background: var(--glass-bg); border-radius: var(--radius); overflow: hidden; }
+        .glass-table th, .glass-table td { padding: 1.2rem; text-align: left; border-bottom: 1px solid var(--glass-border); }
+        .glass-table th { background: rgba(0,0,0,0.3); font-weight: 600; color: var(--primary); }
+        .glass-table tr:hover { background: rgba(255,255,255,0.02); }
+
+        /* Animations */
+        @keyframes fadeIn { from { opacity: 0; transform: scale(0.98); } to { opacity: 1; transform: scale(1); } }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* --- MOBILE --- */
+        .mobile-toggle { display: none; font-size: 1.5rem; color: white; cursor: pointer; }
+        
+        @media (max-width: 900px) {
+            .sidebar {
+                position: fixed;
+                left: -100%;
+                width: 80%;
+                max-width: 300px;
+                transition: 0.4s;
+                background: #0f172a;
+            }
+            .sidebar.active { left: 0; box-shadow: 10px 0 30px rgba(0,0,0,0.5); }
+            .mobile-toggle { display: block; margin-right: 1rem; }
+            .bento { grid-template-columns: 1fr; }
+            .bento-item.large { grid-column: span 1; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Background Animation -->
+    <div class="bg-ambient">
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+        <div class="orb orb-3"></div>
+    </div>
+
+    <!-- Sidebar Navigation -->
+    <nav class="sidebar" id="sidebar">
+        <div class="logo-box">
+            <img src="https://www.image2url.com/r2/default/images/1781320056173-93f15afd-9c9a-4995-9d42-6748abd3076c.jpeg" alt="Logo" class="logo-img">
+            <div class="school-name">
+                <h1>SDN MAJALENGKA<br>WETAN 7</h1>
+                <p>Kabupaten Majalengka</p>
+            </div>
+        </div>
+
+        <div class="nav-menu">
+            <div class="nav-item active" onclick="switchView('dashboard', this)">
+                <i class="fas fa-th-large"></i> Dashboard
+            </div>
+            <div class="nav-item" onclick="switchView('layanan', this)">
+                <i class="fas fa-layer-group"></i> Jenis Layanan
+            </div>
+            <div class="nav-item" onclick="switchView('standar', this)">
+                <i class="fas fa-stopwatch"></i> Standar Waktu
+            </div>
+            <div class="nav-item" onclick="switchView('hukum', this)">
+                <i class="fas fa-balance-scale"></i> Dasar Hukum
+            </div>
+            <div class="nav-item" onclick="switchView('maklumat', this)">
+                <i class="fas fa-id-card"></i> Maklumat
+            </div>
+        </div>
+
+        <div style="margin-top: auto; padding-top: 2rem; border-top: 1px solid var(--glass-border);">
+            <p style="font-size: 0.8rem; color: var(--text-muted);">Versi Aplikasi 2.0<br>&copy; 2024 SDN Mlw 7</p>
+        </div>
+    </nav>
+
+    <!-- Main Content Area -->
+    <main class="main-wrapper">
+        <!-- Mobile Header -->
+        <div class="top-bar">
+            <div style="display:flex; align-items:center;">
+                <div class="mobile-toggle" onclick="toggleSidebar()">
+                    <i class="fas fa-bars"></i>
+                </div>
+                <h3 id="page-title" style="font-weight: 600;">Dashboard Overview</h3>
+            </div>
+            <div class="user-profile">
+                <div style="text-align: right; display:none; @media(min-width:768px){display:block;}">
+                    <p style="font-size:0.9rem; font-weight:600;">Tamu Sekolah</p>
+                    <p style="font-size:0.75rem; color:var(--success);">Online</p>
+                </div>
+                <div class="avatar" style="background: linear-gradient(45deg, var(--primary), var(--accent));"></div>
+            </div>
+        </div>
+
+        <!-- VIEW 1: DASHBOARD (Default Visible) -->
+        <div id="dashboard" class="dashboard-view">
+            
+            <!-- Teks Berjalan -->
+            <div class="ticker-container">
+                <div class="ticker-content">
+                    ★ MAJALENGKA LANGKUNG SAE ★ PELAYANAN PUBLIK BERBASIS DIGITAL ★ SDN MAJALENGKA WETAN 7 MENUJU SEKOLAH ADIWIYATA ★ MAJALENGKA LANGKUNG SAE ★
+                </div>
+            </div>
+
+            <!-- Motivation Card -->
+            <div class="hero-card" data-aos="zoom-in">
+                <i class="fas fa-rocket" style="font-size: 3rem; color: var(--accent); margin-bottom: 1rem; opacity: 0.8;"></i>
+                <p class="motivation-text">
+                    Transformasi Digital dimulai dari <span class="highlight" id="typewriter"></span><span class="typing-cursor"></span>
+                </p>
+                <p style="margin-top: 1rem; color: var(--text-muted); font-size: 0.9rem;">
+                    Bersama SDN Majalengka Wetan 7, kita bangun masa depan cerah berbasis teknologi dan karakter.
+                </p>
+            </div>
+
+            <!-- Quick Stats / Access -->
+            <h3 style="margin: 1rem 0;">Akses Cepat</h3>
+            <div class="stats-grid">
+                <div class="stat-card" onclick="switchView('layanan', document.querySelectorAll('.nav-item')[1])" style="cursor: pointer;">
+                    <i class="fas fa-user-graduate stat-icon" style="color: var(--primary);"></i>
+                    <div class="stat-val">PPDB</div>
+                    <div class="stat-label">Penerimaan Siswa Baru</div>
+                </div>
+                <div class="stat-card" onclick="switchView('layanan', document.querySelectorAll('.nav-item')[1])" style="cursor: pointer;">
+                    <i class="fas fa-laptop-code stat-icon" style="color: var(--accent);"></i>
+                    <div class="stat-val">SABUDIGI</div>
+                    <div class="stat-label">Program Unggulan</div>
+                </div>
+                <div class="stat-card" onclick="switchView('standar', document.querySelectorAll('.nav-item')[2])" style="cursor: pointer;">
+                    <i class="fas fa-clock stat-icon" style="color: var(--success);"></i>
+                    <div class="stat-val">Cepat</div>
+                    <div class="stat-label">Standar Pelayanan</div>
+                </div>
+                <div class="stat-card" onclick="switchView('hukum', document.querySelectorAll('.nav-item')[3])" style="cursor: pointer;">
+                    <i class="fas fa-book stat-icon" style="color: #fbbf24;"></i>
+                    <div class="stat-val">Legal</div>
+                    <div class="stat-label">Dasar Hukum</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- VIEW 2: JENIS PELAYANAN (Hidden) -->
+        <div id="layanan" class="content-section">
+            <div class="section-header">
+                <h2>Jenis Pelayanan</h2>
+                <p>Layanan prima untuk warga sekolah.</p>
+            </div>
+            <div class="bento">
+                <div class="bento-item large">
+                    <i class="fas fa-user-plus bento-icon"></i>
+                    <h3>PPDB Online</h3>
+                    <p style="color: var(--text-muted); margin-top: 0.5rem;">Penerimaan Peserta Didik Baru yang transparan, bebas diskriminasi, dan dapat dipertanggungjawabkan.</p>
+                    <div style="margin-top: 1rem;">
+                        <span style="background: rgba(99,102,241,0.2); color: var(--primary); padding: 4px 10px; border-radius: 4px; font-size: 0.8rem;">Sesuai Jadwal</span>
+                    </div>
+                </div>
+                <div class="bento-item">
+                    <i class="fas fa-leaf bento-icon" style="color: var(--success);"></i>
+                    <h3>Program SABUDIGI</h3>
+                    <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 0.5rem;">Sahabat Bumi & Digital Gen. Inovatif.</p>
+                </div>
+                <div class="bento-item">
+                    <i class="fas fa-file-signature bento-icon" style="color: #fbbf24;"></i>
+                    <h3>Administrasi</h3>
+                    <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 0.5rem;">Surat Aktif, Pindah, Legalisir.</p>
+                    <div style="margin-top: auto;"><span style="color: var(--success); font-size: 0.8rem;">⚡ Max 1 Hari</span></div>
+                </div>
+                <div class="bento-item">
+                    <i class="fas fa-chalkboard-teacher bento-icon"></i>
+                    <h3>Akademik</h3>
+                    <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 0.5rem;">Pembelajaran & Rapor.</p>
+                </div>
+                <div class="bento-item">
+                    <i class="fas fa-headset bento-icon" style="color: var(--accent);"></i>
+                    <h3>Pengaduan</h3>
+                    <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 0.5rem;">Layanan Informasi & Aduan.</p>
+                    <div style="margin-top: auto;"><span style="color: var(--accent); font-size: 0.8rem;">⚡ 2x24 Jam</span></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- VIEW 3: STANDAR WAKTU (Hidden) -->
+        <div id="standar" class="content-section">
+            <div class="section-header">
+                <h2>Standar Waktu Pelayanan</h2>
+                <p>Komitmen kami terhadap efisiensi waktu.</p>
+            </div>
+            <table class="glass-table">
+                <thead>
+                    <tr>
+                        <th>Layanan</th>
+                        <th>Waktu Penyelesaian</th>
+                        <th>Kategori</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Surat Keterangan Siswa Aktif</td>
+                        <td>Maks. 1 Hari Kerja</td>
+                        <td><span style="color: var(--success);">Cepat</span></td>
+                    </tr>
+                    <tr>
+                        <td>Legalisir Dokumen</td>
+                        <td>Maks. 1 Hari Kerja</td>
+                        <td><span style="color: var(--success);">Cepat</span></td>
+                    </tr>
+                    <tr>
+                        <td>Surat Pindah Sekolah</td>
+                        <td>Maks. 2 Hari Kerja</td>
+                        <td><span style="color: #fbbf24;">Standar</span></td>
+                    </tr>
+                    <tr>
+                        <td>Informasi Sekolah</td>
+                        <td>Saat itu juga</td>
+                        <td><span style="color: var(--primary);">Instan</span></td>
+                    </tr>
+                    <tr>
+                        <td>Pengaduan Masyarakat</td>
+                        <td>Maks. 2 x 24 Jam</td>
+                        <td><span style="color: var(--accent);">Responsif</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- VIEW 4: DASAR HUKUM (Hidden) -->
+        <div id="hukum" class="content-section">
+            <div class="section-header">
+                <h2>Dasar Hukum</h2>
+                <p>Landasan operasional pelayanan kami.</p>
+            </div>
+            <div style="display: grid; gap: 1rem;">
+                <div class="bento-item" style="min-height: auto;">
+                    <h4 style="color: var(--primary);">UU No. 20 Tahun 2003</h4>
+                    <p style="font-size: 0.9rem; color: var(--text-muted);">Sistem Pendidikan Nasional</p>
+                </div>
+                <div class="bento-item" style="min-height: auto;">
+                    <h4 style="color: var(--primary);">PP No. 57 Tahun 2021</h4>
+                    <p style="font-size: 0.9rem; color: var(--text-muted);">Standar Nasional Pendidikan</p>
+                </div>
+                <div class="bento-item" style="min-height: auto;">
+                    <h4 style="color: var(--primary);">Permendikbudristek No. 32 Tahun 2022</h4>
+                    <p style="font-size: 0.9rem; color: var(--text-muted);">Standar Teknis Pelayanan Minimal Pendidikan</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- VIEW 5: MAKLUMAT (Hidden) -->
+        <div id="maklumat" class="content-section">
+            <div class="section-header">
+                <h2>Maklumat Pelayanan</h2>
+            </div>
+            <div class="bento-item large" style="text-align: center; padding: 3rem;">
+                <i class="fas fa-quote-left" style="font-size: 2rem; color: var(--accent); margin-bottom: 1rem;"></i>
+                <p style="font-size: 1.2rem; line-height: 1.8; font-style: italic;">
+                    "Kami Warga SDN Majalengka Wetan 7 siap memberikan pelayanan pendidikan yang profesional, cepat, transparan, ramah, dan bertanggung jawab."
+                </p>
+                <div style="margin-top: 2rem; border-top: 1px solid var(--glass-border); padding-top: 1rem;">
+                    <p style="font-weight: 700; color: var(--primary);">Iyus Susnardi, S.Pd., M.Pd.</p>
+                    <p style="font-size: 0.9rem; color: var(--text-muted);">Kepala Sekolah</p>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Scripts -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        // Init Animation
+        AOS.init({ once: true, duration: 800 });
+
+        // --- Navigation Logic ---
+        function switchView(viewId, navElement) {
+            // Update Navigation Active State
+            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+            if(navElement) navElement.classList.add('active');
+
+            // Hide all sections
+            const sections = ['dashboard', 'layanan', 'standar', 'hukum', 'maklumat'];
+            sections.forEach(id => {
+                const el = document.getElementById(id);
+                el.style.display = 'none';
+                el.classList.remove('active-section');
+            });
+
+            // Show selected section
+            const target = document.getElementById(viewId);
+            target.style.display = (viewId === 'dashboard') ? 'grid' : 'block';
+            
+            // Trigger reflow for animation
+            void target.offsetWidth; 
+            target.classList.add('active-section');
+
+            // Update Title
+            const titles = {
+                'dashboard': 'Dashboard Overview',
+                'layanan': 'Jenis Pelayanan',
+                'standar': 'Standar Waktu',
+                'hukum': 'Dasar Hukum',
+                'maklumat': 'Maklumat Pelayanan'
+            };
+            document.getElementById('page-title').innerText = titles[viewId];
+
+            // Close mobile sidebar if open
+            if(window.innerWidth <= 900) {
+                document.getElementById('sidebar').classList.remove('active');
+            }
+        }
+
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('active');
+        }
+
+        // --- Typewriter Effect ---
+        const words = ["Satu Data", "Transparansi", "Inovasi", "Kemudahan Akses", "Masa Depan"];
+        let i = 0;
+        let timer;
+
+        function typeWriter() {
+            const element = document.getElementById('typewriter');
+            const word = words[i];
+            let k = 0;
+            
+            // Type
+            const typeInterval = setInterval(() => {
+                element.innerHTML = word.substring(0, k + 1);
+                k++;
+                if (k > word.length) {
+                    clearInterval(typeInterval);
+                    // Wait then delete
+                    setTimeout(() => {
+                        deleteInterval();
+                    }, 2000);
+                }
+            }, 150);
+
+            function deleteInterval() {
+                const delInterval = setInterval(() => {
+                    element.innerHTML = word.substring(0, k - 1);
+                    k--;
+                    if (k < 0) {
+                        clearInterval(delInterval);
+                        i = (i + 1) % words.length;
+                        typeWriter();
+                    }
+                }, 100);
+            }
+        }
+
+        // Start Typewriter
+        typeWriter();
+
+    </script>
+</body>
+</html>
