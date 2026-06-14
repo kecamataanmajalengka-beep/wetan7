@@ -56,7 +56,7 @@
         .marquee-wrap::before,.marquee-wrap::after{content:'';position:absolute;top:0;width:80px;height:100%;z-index:2;pointer-events:none}
         .marquee-wrap::before{left:0;background:linear-gradient(to right,#0f172a,transparent)}
         .marquee-wrap::after{right:0;background:linear-gradient(to left,#0f172a,transparent)}
-        .marquee-track{display:inline-block;animation:marqueeScroll 28s linear infinite}
+        .marquee-track{display:inline-block;animation:marqueeScroll 28s linear infinite} /* Duration nanti diubah via JS */
         .marquee-track:hover{animation-play-state:paused}
         .marquee-rev .marquee-track{animation:marqueeScrollR 35s linear infinite}
         .gt{background:linear-gradient(135deg,#60a5fa,#3b82f6,#facc15,#eab308,#3b82f6);background-size:300% 300%;animation:gradientMove 4s ease infinite;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
@@ -140,9 +140,9 @@
 </head>
 <body>
 
-<!-- ✅ MUSIK FILE ANDA -->
+<!-- ✅ MUSIK FILE ANDA (Default / Dinamis) -->
 <audio id="bgMusic" loop preload="auto">
-    <source src="https://pdftolink.io/file/r2_dXNlcnMvaW5kcmFzZXRpYXdhbjIwX2d1cnUuc2QuYmVsYWphci5pZC80YWNlYjMxZC04YTZmLTRhMjUtYjYyMi02YzYzN2JhYzhhZTEubXAz" type="audio/mpeg">
+    <source id="bgMusicSource" src="" type="audio/mpeg">
 </audio>
 
 <!-- Toast Notification -->
@@ -243,11 +243,10 @@
             <h2 class="text-xl font-bold text-yellow-400">Admin Panel</h2>
             <p class="text-xs text-gray-500">Update Semua Fitur</p>
         </div>
-        <div onclick="switchAdminTab('home')" class="admin-tab-link active" id="link-home">🏠 Beranda & Marquee</div>
+        <div onclick="switchAdminTab('home')" class="admin-tab-link active" id="link-home">🏠 Beranda & Media</div>
         <div onclick="switchAdminTab('profil')" class="admin-tab-link" id="link-profil">🏫 Profil Sekolah</div>
         <div onclick="switchAdminTab('news')" class="admin-tab-link" id="link-news">📰 Berita & Kegiatan</div>
         <div onclick="switchAdminTab('guru')" class="admin-tab-link" id="link-guru">👨‍🏫 Data Guru</div>
-        <div onclick="switchAdminTab('video')" class="admin-tab-link" id="link-video">🎬 Video & Galeri</div>
         <div onclick="switchAdminTab('portal')" class="admin-tab-link" id="link-portal">🔗 Portal Aplikasi</div>
         <div onclick="switchAdminTab('contacts')" class="admin-tab-link" id="link-contacts">📞 Kontak & Sosmed</div>
         <div class="mt-8 pt-4 border-t border-gray-700">
@@ -257,9 +256,11 @@
     <div class="admin-content">
         <!-- Tab HOME -->
         <div id="tab-home" class="admin-tab-content">
-            <h2 class="text-2xl font-bold mb-6">Update Beranda</h2>
+            <h2 class="text-2xl font-bold mb-6">Update Beranda & Media</h2>
+            
+            <!-- Hero Section -->
             <div class="bg-slate-800/50 p-6 rounded-xl border border-slate-700 mb-8">
-                <h3 class="font-bold text-yellow-400 mb-4">Hero Section (Paling Atas)</h3>
+                <h3 class="font-bold text-blue-400 mb-4">Hero Section (Paling Atas)</h3>
                 <label class="text-xs text-gray-400">Judul Besar (Garis 1)</label>
                 <input id="hero-title1" class="admin-input">
                 <label class="text-xs text-gray-400">Judul Besar (Garis 2)</label>
@@ -269,11 +270,24 @@
                 <label class="text-xs text-gray-400">URL Logo Besar (Tengah)</label>
                 <input id="hero-logo" class="admin-input">
             </div>
+
+            <!-- Marquee Section -->
             <div class="bg-slate-800/50 p-6 rounded-xl border border-slate-700 mb-8">
                 <h3 class="font-bold text-yellow-400 mb-4">Marquee (Teks Berjalan)</h3>
                 <p class="text-xs text-gray-500 mb-2">Pisahkan dengan koma (,) untuk tiap blok teks.</p>
-                <textarea id="marquee-text" class="admin-input" rows="4"></textarea>
-                <button onclick="saveHomeSettings()" class="admin-btn">Simpan Perubahan</button>
+                <textarea id="marquee-text" class="admin-input" rows="3"></textarea>
+                <label class="text-xs text-gray-400">Kecepatan / Durasi (detik)</label>
+                <input id="marquee-duration" type="number" class="admin-input" value="28" placeholder="Contoh: 30">
+                <button onclick="saveHomeSettings()" class="admin-btn">Simpan Tampilan & Marquee</button>
+            </div>
+
+            <!-- Music Section -->
+            <div class="bg-slate-800/50 p-6 rounded-xl border border-slate-700 mb-8">
+                <h3 class="font-bold text-pink-400 mb-4">Musik Latar</h3>
+                <p class="text-xs text-gray-500 mb-2">Upload MP3 ke Google Drive, lalu paste link "Download" atau link langsung file .mp3.</p>
+                <label class="text-xs text-gray-400">URL Lagu (.mp3)</label>
+                <input id="bg-music-url" class="admin-input" placeholder="https://drive.google.com/...">
+                <button onclick="saveMusicSettings()" class="admin-btn">Simpan Lagu</button>
             </div>
         </div>
 
@@ -327,30 +341,33 @@
             <div id="admin-guru-list" class="grid grid-cols-2 gap-4"></div>
         </div>
 
-        <!-- Tab VIDEO -->
-        <div id="tab-video" class="admin-tab-content hidden">
-            <h2 class="text-2xl font-bold mb-6">Kelola Video</h2>
-            <div class="bg-slate-800/50 p-6 rounded-xl border border-slate-700 mb-8">
-                <h3 class="font-bold text-yellow-400 mb-4">Tambah Video</h3>
-                <input id="video-title" class="admin-input" placeholder="Judul Video">
-                <input id="video-url" class="admin-input" placeholder="URL Embed YouTube / MP4">
-                <button onclick="saveVideo()" class="admin-btn">Simpan Video</button>
-            </div>
-            <div id="admin-video-list" class="space-y-3"></div>
-        </div>
-
-        <!-- Tab PORTAL & SOSMED -->
+        <!-- Tab PORTAL (Dynamic) -->
         <div id="tab-portal" class="admin-tab-content hidden">
-            <h2 class="text-2xl font-bold mb-6">Link Aplikasi</h2>
-            <div class="bg-slate-800/50 p-6 rounded-xl border border-slate-700">
-                <label class="text-xs text-gray-400">Link E-Rapor</label>
-                <input id="link-erapor" class="admin-input">
-                <label class="text-xs text-gray-400">Link Dapodik</label>
-                <input id="link-dapodik" class="admin-input">
-                <label class="text-xs text-gray-400">Link Webmail</label>
-                <input id="link-webmail" class="admin-input">
-                <button onclick="saveLinkSettings()" class="admin-btn">Simpan Link Aplikasi</button>
+            <h2 class="text-2xl font-bold mb-6">Kelola Portal Aplikasi</h2>
+            <div class="bg-slate-800/50 p-6 rounded-xl border border-slate-700 mb-8">
+                <h3 class="font-bold text-yellow-400 mb-4">Tambah Aplikasi</h3>
+                <label class="text-xs text-gray-400">Nama Aplikasi</label>
+                <input id="app-name" class="admin-input" placeholder="Contoh: E-Rapor">
+                <label class="text-xs text-gray-400">Link / URL Aplikasi</label>
+                <input id="app-link" class="admin-input" placeholder="https://...">
+                <label class="text-xs text-gray-400">Pilih Ikon (Lucide)</label>
+                <select id="app-icon" class="admin-input">
+                    <option value="chromebook">Chromebook (Umum)</option>
+                    <option value="user-check">User Check (E-Rapor)</option>
+                    <option value="calendar">Calendar (Dapodik)</option>
+                    <option value="mail">Mail (Webmail)</option>
+                    <option value="book">Book (Perpus)</option>
+                    <option value="smartphone">Smartphone (Info Sekolah)</option>
+                    <option value="shield">Shield (Keamanan)</option>
+                    <option value="monitor">Monitor (Lab Komputer)</option>
+                    <option value="youtube">YouTube (Channel Sekolah)</option>
+                    <option value="image">Image (Custom URL)</option>
+                </select>
+                <label class="text-xs text-gray-400">URL Gambar Ikon (Jika pilih 'image' di atas)</label>
+                <input id="app-img-url" class="admin-input" placeholder="https://...">
+                <button onclick="saveApp()" class="admin-btn">Tambah Aplikasi</button>
             </div>
+            <div id="admin-app-list" class="grid grid-cols-2 gap-4"></div>
         </div>
         
         <!-- Tab CONTACTS -->
@@ -518,11 +535,9 @@
 <div id="page-portal" class="page">
     <div class="pt-32 pb-24"><div class="max-w-7xl mx-auto px-6">
         <div class="text-center mb-16 page-enter"><h2 class="text-4xl md:text-6xl font-black tracking-tighter uppercase stagger-2">Portal <span class="gt">Aplikasi</span></h2></div>
+        <!-- Portal Container Dinamis -->
         <div id="portal-container" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 page-enter stagger-2">
-            <!-- Portal Items Dinamis -->
-            <div class="portal-card rounded-2xl bg-blue-900/15 p-6 text-center hover:bg-blue-900/30 cursor-pointer border border-blue-500/10 transition-all"><div class="w-16 h-16 bg-white rounded-2xl mx-auto mb-4 flex items-center justify-center shadow-lg"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Google_%22G%22_logo.svg/150px-Google_%22G%22_logo.svg.png" class="w-10 h-10 object-contain"></div><h4 class="font-bold text-sm mb-1">Google Classroom</h4><p class="text-[10px] text-zinc-400">E-Learning</p></div>
-            <div id="portal-erapor" class="portal-card rounded-2xl bg-blue-900/15 p-6 text-center hover:bg-blue-900/30 cursor-pointer border border-blue-500/10 transition-all"><div class="w-16 h-16 bg-blue-600 rounded-2xl mx-auto mb-4 flex items-center justify-center shadow-lg shadow-blue-500/30"><i data-lucide="user-check" class="w-8 h-8 text-white"></i></div><h4 class="font-bold text-sm mb-1">E-Rapor</h4><p class="text-[10px] text-zinc-400">Nilai Siswa</p></div>
-            <div id="portal-dapodik" class="portal-card rounded-2xl bg-blue-900/15 p-6 text-center hover:bg-blue-900/30 cursor-pointer border border-blue-500/10 transition-all"><div class="w-16 h-16 bg-green-600 rounded-2xl mx-auto mb-4 flex items-center justify-center shadow-lg shadow-green-500/30"><i data-lucide="calendar" class="w-8 h-8 text-white"></i></div><h4 class="font-bold text-sm mb-1">Dapodikdasmen</h4><p class="text-[10px] text-zinc-400">Data Pokok</p></div>
+            <!-- Aplikasi akan di-load di sini -->
         </div>
     </div></div>
 </div>
@@ -669,9 +684,27 @@
             title2: document.getElementById('hero-title2').value,
             desc: document.getElementById('hero-desc').value,
             logo: document.getElementById('hero-logo').value,
-            marquee: document.getElementById('marquee-text').value
+            marquee: document.getElementById('marquee-text').value,
+            marqueeDuration: document.getElementById('marquee-duration').value
         };
-        db.ref('settings/home').set(data).then(()=>showToast("Berhasil", "Tampilan Beranda diupdate"));
+        db.ref('settings/home').set(data).then(()=>showToast("Berhasil", "Tampilan Beranda & Marquee diupdate"));
+    }
+
+    // Music Settings
+    function saveMusicSettings() {
+        const url = document.getElementById('bg-music-url').value;
+        if(!url) return alert("URL lagu wajib diisi");
+        
+        // Kita update musik di node yang sama dengan Home settings atau terpisah
+        // Update partial data (deep merge)
+        db.ref('settings/home').update({
+            musicUrl: url
+        }).then(()=>showToast("Berhasil", "Lagu berhasil diganti. Refresh jika perlu."));
+        
+        // Load ulang audio element
+        const audio = document.getElementById('bgMusic');
+        audio.src = url;
+        audio.load();
     }
 
     // Profil Settings
@@ -687,14 +720,27 @@
         db.ref('settings/profil').set(data).then(()=>showToast("Berhasil", "Profil diupdate"));
     }
 
-    // Link Settings
-    function saveLinkSettings() {
+    // Save App
+    function saveApp() {
+        const name = document.getElementById('app-name').value;
+        const link = document.getElementById('app-link').value;
+        const icon = document.getElementById('app-icon').value;
+        const imgUrl = document.getElementById('app-img-url').value;
+
+        if(!name || !link) return alert("Nama dan Link wajib diisi");
+
         const data = {
-            erapor: document.getElementById('link-erapor').value,
-            dapodik: document.getElementById('link-dapodik').value,
-            webmail: document.getElementById('link-webmail').value
+            name: name,
+            link: link,
+            icon: icon, // nama lucide icon
+            imgUrl: imgUrl // url custom image
         };
-        db.ref('settings/links').set(data).then(()=>showToast("Berhasil", "Link Aplikasi diupdate"));
+        db.ref('portalApps').push(data).then(()=>showToast("Sukses", "Aplikasi ditambahkan"));
+        
+        // Reset Form
+        document.getElementById('app-name').value = "";
+        document.getElementById('app-link').value = "";
+        document.getElementById('app-img-url').value = "";
     }
     
     // Contact Settings
@@ -705,8 +751,8 @@
             fb: document.getElementById('link-fb').value,
             ig: document.getElementById('link-ig').value,
             yt: document.getElementById('link-yt').value,
-            email: document.getElementById('footer-email').innerText, // Retain existing email if not in form
-            address: document.getElementById('footer-address').innerText // Retain address
+            email: document.getElementById('footer-email').innerText,
+            address: document.getElementById('footer-address').innerText 
         };
         db.ref('settings/contacts').set(data).then(()=>showToast("Berhasil", "Kontak & Sosmed diupdate"));
     }
@@ -741,15 +787,6 @@
         });
     }
 
-    // Video
-    function saveVideo() {
-        const title = document.getElementById('video-title').value;
-        const url = document.getElementById('video-url').value;
-        if(!title) return alert("Judul wajib diisi");
-        const data = { title, url };
-        db.ref('videos').push(data).then(()=>showToast("Sukses", "Video ditambahkan"));
-    }
-
     function deleteItem(path, id) {
         if(confirm("Hapus data ini?")) db.ref(path+'/'+id).remove();
     }
@@ -760,30 +797,58 @@
     
     // Default Values
     const defaultLogo = "https://www.image2url.com/r2/default/images/1781412123690-177b96ef-efc4-4f7b-888b-1689e2ec1c52.jpeg";
+    const defaultMusic = "https://pdftolink.io/file/r2_dXNlcnMvaW5kcmFzZXRpYXdhbjIwX2d1cnUuc2QuYmVsYWphci5pZC80YWNlYjMxZC04YTZmLTRhMjUtYjYyMi02YzYzN2JhYzhhZTEubXAz";
     
     const defaults = {
-        home: { title1: "Majalengka", title2: "Langkung Sae", desc: "Membentuk Generasi Berkarakter...", logo: defaultLogo, marquee: "MAJALENGKA LANGKUNG SAE" },
+        home: { 
+            title1: "Majalengka", title2: "Langkung Sae", 
+            desc: "Membentuk Generasi Berkarakter...", logo: defaultLogo, 
+            marquee: "MAJALENGKA LANGKUNG SAE, SDN MAJALENGKA WETAN VII — TA 2026/2027",
+            marqueeDuration: 28,
+            musicUrl: defaultMusic
+        },
         profil: { visi: "Visi Sekolah...", misi: "Misi 1; Misi 2;", kepsekNama: "Iyus Susnardi", kepsekNIP: "NIP...", kepsekFoto: defaultLogo, kepsekSambutan: "Sambutan..." },
-        links: { erapor: "#", dapodik: "#", webmail: "#" },
         contacts: { wa: "62812345678", waMsg: "Halo Admin SDN MWT VII...", fb: "#", ig: "#", yt: "#", address: "Alamat Sekolah", email: "info@mwt7.sch.id" }
     };
 
-    // Listener Home
+    // Listener Home (Includes Music & Marquee Duration)
     db.ref('settings/home').on('value', snap => {
         const data = snap.val() || defaults.home;
+        
+        // Display Text
         document.getElementById('hero-title1-display').innerText = data.title1;
         document.getElementById('hero-title2-display').innerText = data.title2;
         document.getElementById('hero-desc-display').innerText = data.desc;
         document.getElementById('hero-logo-display').src = data.logo;
         
+        // Marquee Logic
         const marqueeTexts = data.marquee ? data.marquee.split(',') : defaults.home.marquee.split(',');
         document.getElementById('marquee-content').innerHTML = marqueeTexts.map(t => `<span>${t}</span>`).join(' ') + marqueeTexts.map(t => `<span>${t}</span>`).join(' ');
+        
+        // Update Marquee Speed (Duration)
+        const duration = data.marqueeDuration || 28;
+        const tracks = document.querySelectorAll('.marquee-track');
+        tracks.forEach(t => t.style.animationDuration = duration + 's');
 
+        // Music Logic
+        const bgMusic = document.getElementById('bgMusic');
+        const bgMusicSource = document.getElementById('bgMusicSource');
+        // Only change src if different to prevent reload glitch
+        if(bgMusicSource.src !== data.musicUrl) {
+            bgMusicSource.src = data.musicUrl;
+            bgMusic.load();
+        }
+
+        // Admin Inputs
         document.getElementById('hero-title1').value = data.title1;
         document.getElementById('hero-title2').value = data.title2;
         document.getElementById('hero-desc').value = data.desc;
         document.getElementById('hero-logo').value = data.logo;
         document.getElementById('marquee-text').value = data.marquee;
+        document.getElementById('marquee-duration').value = data.marqueeDuration;
+        document.getElementById('bg-music-url').value = data.musicUrl;
+
+        // Nav Logos
         document.getElementById('nav-logo').src = data.logo;
         document.getElementById('mob-logo').src = data.logo;
         document.getElementById('footer-logo').src = data.logo;
@@ -807,39 +872,67 @@
         document.getElementById('kepsek-sambutan').value = data.kepsekSambutan;
     });
 
-    // Listener Links (Portal Apps)
-    db.ref('settings/links').on('value', snap => {
-        const data = snap.val() || defaults.links;
+    // Listener Portal Apps (DYNAMIC)
+    db.ref('portalApps').on('value', snap => {
+        const container = document.getElementById('portal-container');
+        const adminList = document.getElementById('admin-app-list');
+        container.innerHTML = "";
+        adminList.innerHTML = "";
         
-        // Update Cards Links
-        document.getElementById('portal-erapor').onclick = () => window.open(data.erapor, '_blank');
-        document.getElementById('portal-dapodik').onclick = () => window.open(data.dapodik, '_blank');
-        // Add more app links logic if needed for webmail etc.
+        // Default Apps jika belum ada di database
+        if(!snap.val()) {
+            container.innerHTML = `
+            <div class="portal-card rounded-2xl bg-blue-900/15 p-6 text-center hover:bg-blue-900/30 cursor-pointer border border-blue-500/10 transition-all"><div class="w-16 h-16 bg-white rounded-2xl mx-auto mb-4 flex items-center justify-center shadow-lg"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Google_%22G%22_logo.svg/150px-Google_%22G%22_logo.svg.png" class="w-10 h-10 object-contain"></div><h4 class="font-bold text-sm mb-1">Google Classroom</h4><p class="text-[10px] text-zinc-400">E-Learning</p></div>
+            `;
+            return;
+        }
 
-        // Update Inputs
-        document.getElementById('link-erapor').value = data.erapor;
-        document.getElementById('link-dapodik').value = data.dapodik;
-        document.getElementById('link-webmail').value = data.webmail;
+        snap.forEach(c => {
+            const d = c.val();
+            
+            // Icon Logic
+            let iconHtml = '';
+            if(d.icon === 'image' && d.imgUrl) {
+                iconHtml = `<img src="${d.imgUrl}" class="w-10 h-10 object-contain">`;
+            } else {
+                iconHtml = `<i data-lucide="${d.icon}" class="w-10 h-10"></i>`;
+            }
+            
+            // Public Card
+            container.innerHTML += `
+            <div class="portal-card rounded-2xl bg-blue-900/15 p-6 text-center hover:bg-blue-900/30 cursor-pointer border border-blue-500/10 transition-all" onclick="window.open('${d.link}', '_blank')">
+                <div class="w-16 h-16 bg-white rounded-2xl mx-auto mb-4 flex items-center justify-center shadow-lg ${d.icon==='image'?'':'text-blue-500'}">
+                    ${iconHtml}
+                </div>
+                <h4 class="font-bold text-sm mb-1">${d.name}</h4>
+                <p class="text-[10px] text-zinc-400">Akses Aplikasi</p>
+            </div>`;
+            
+            // Admin List
+            adminList.innerHTML += `
+            <div class="flex justify-between items-center bg-slate-800 p-3 rounded border border-slate-700">
+                <span class="text-sm font-bold">${d.name}</span>
+                <button onclick="deleteItem('portalApps','${c.key}')" class="admin-btn-danger">Hapus</button>
+            </div>`;
+        });
+        
+        // Re-render icons for new elements
+        lucide.createIcons();
     });
 
     // Listener Contacts & Sosmed
     db.ref('settings/contacts').on('value', snap => {
         const data = snap.val() || defaults.contacts;
-        
-        // Update Footer
         document.getElementById('footer-address').innerText = data.address;
         document.getElementById('footer-email').innerText = data.email;
-        
-        // Update Sosmed Links
         document.getElementById('link-fb-disp').href = data.fb;
         document.getElementById('link-ig-disp').href = data.ig;
         document.getElementById('link-yt-disp').href = data.yt;
+        
+        // WA Button
+        document.getElementById('wa-float-btn').href = `https://wa.me/${data.wa}?text=${encodeURIComponent(data.waMsg)}`;
 
-        // Update WhatsApp Button
-        const waUrl = `https://wa.me/${data.wa}?text=${encodeURIComponent(data.waMsg)}`;
-        document.getElementById('wa-float-btn').href = waUrl;
-
-        // Update Inputs
+        // Inputs
         document.getElementById('contact-wa').value = data.wa;
         document.getElementById('contact-wa-msg').value = data.waMsg;
         document.getElementById('link-fb').value = data.fb;
@@ -856,11 +949,7 @@
         if(!snap.val()) { container.innerHTML = containerPage.innerHTML = `<div class="text-blue-300/30 col-span-3 text-center">Belum ada berita.</div>`; return; }
         snap.forEach(c => {
             const d = c.val();
-            const card = `
-            <div class="card rounded-2xl bg-blue-900/15 overflow-hidden group cursor-pointer">
-                <div class="aspect-video overflow-hidden"><img src="${d.image}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"></div>
-                <div class="p-5"><div class="flex items-center gap-2 mb-2"><span class="px-2 py-0.5 rounded bg-yellow-400/10 text-yellow-400 text-[9px] font-black tracking-wider uppercase">Berita</span><span class="text-blue-400/30 text-[10px]">${d.date}</span></div><h4 class="font-bold text-sm mb-2 group-hover:text-yellow-400 transition-colors">${d.title}</h4><p class="text-blue-200/30 text-xs leading-relaxed">${d.desc}</p></div>
-            </div>`;
+            const card = `<div class="card rounded-2xl bg-blue-900/15 overflow-hidden group cursor-pointer"><div class="aspect-video overflow-hidden"><img src="${d.image}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"></div><div class="p-5"><div class="flex items-center gap-2 mb-2"><span class="px-2 py-0.5 rounded bg-yellow-400/10 text-yellow-400 text-[9px] font-black tracking-wider uppercase">Berita</span><span class="text-blue-400/30 text-[10px]">${d.date}</span></div><h4 class="font-bold text-sm mb-2 group-hover:text-yellow-400 transition-colors">${d.title}</h4><p class="text-blue-200/30 text-xs leading-relaxed">${d.desc}</p></div></div>`;
             container.innerHTML += card; containerPage.innerHTML += card;
             adminList.innerHTML += `<div class="flex justify-between items-center bg-slate-800 p-3 rounded border border-slate-700 mb-2"><span class="text-sm font-bold truncate mr-4">${d.title}</span><button onclick="deleteItem('news','${c.key}')" class="admin-btn-danger">Hapus</button></div>`;
         });
@@ -874,28 +963,8 @@
         if(!snap.val()) { container.innerHTML = `<div class="text-blue-300/30 col-span-4 text-center">Belum ada data guru.</div>`; return; }
         snap.forEach(c => {
             const d = c.val();
-            container.innerHTML += `
-            <div class="card rounded-2xl overflow-hidden group">
-                <div class="aspect-[3/4] overflow-hidden"><img src="${d.image}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"></div>
-                <div class="p-4 bg-slate-900/80"><div class="font-bold text-sm">${d.name}</div><div class="text-blue-300/30 text-xs">${d.role}</div></div>
-            </div>`;
-            adminList.innerHTML += `
-            <div class="flex justify-between items-center bg-slate-800 p-3 rounded border border-slate-700">
-                <div class="flex items-center gap-3">
-                    <img src="${d.image}" class="w-10 h-10 rounded object-cover">
-                    <span class="text-sm">${d.name}</span>
-                </div>
-                <button onclick="deleteItem('teachers','${c.key}')" class="admin-btn-danger">Hapus</button>
-            </div>`;
-        });
-    });
-
-    // Listener Video
-    db.ref('videos').on('value', snap => {
-        const adminList = document.getElementById('admin-video-list');
-        adminList.innerHTML = "";
-        snap.forEach(c => {
-            adminList.innerHTML += `<div class="flex justify-between items-center bg-slate-800 p-3 rounded border border-slate-700 mb-2"><span class="text-sm font-bold truncate mr-4">${c.val().title}</span><button onclick="deleteItem('videos','${c.key}')" class="admin-btn-danger">Hapus</button></div>`;
+            container.innerHTML += `<div class="card rounded-2xl overflow-hidden group"><div class="aspect-[3/4] overflow-hidden"><img src="${d.image}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"></div><div class="p-4 bg-slate-900/80"><div class="font-bold text-sm">${d.name}</div><div class="text-blue-300/30 text-xs">${d.role}</div></div></div>`;
+            adminList.innerHTML += `<div class="flex justify-between items-center bg-slate-800 p-3 rounded border border-slate-700"><div class="flex items-center gap-3"><img src="${d.image}" class="w-10 h-10 rounded object-cover"><span class="text-sm">${d.name}</span></div><button onclick="deleteItem('teachers','${c.key}')" class="admin-btn-danger">Hapus</button></div>`;
         });
     });
 
