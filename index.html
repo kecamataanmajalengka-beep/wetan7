@@ -1,649 +1,605 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="id" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SDN Majalengka Wetan 7 - Smart Dashboard</title>
-    
-    <!-- Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    
-    <!-- Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <!-- AOS Animation -->
-    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
-
+    <title>SDN Majalengka Wetan VII — Majalengka Langkung Sae</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config={theme:{extend:{colors:{primary:{50:'#eff6ff',100:'#dbeafe',200:'#bfdbfe',300:'#93c5fd',400:'#60a5fa',500:'#3b82f6',600:'#2563eb',700:'#1d4ed8',800:'#1e40af',900:'#1e3a8a'},accent:{400:'#facc15',500:'#eab308',600:'#ca8a04'}}}}
+    </script>
     <style>
-        /* --- CONFIGURATION --- */
-        :root {
-            --bg-dark: #030712; /* Almost Black */
-            --glass-bg: rgba(17, 24, 39, 0.6);
-            --glass-border: rgba(255, 255, 255, 0.08);
-            --primary: #6366f1; /* Indigo */
-            --primary-glow: rgba(99, 102, 241, 0.4);
-            --accent: #ec4899; /* Pink Neon */
-            --accent-glow: rgba(236, 72, 153, 0.4);
-            --text-main: #f3f4f6;
-            --text-muted: #9ca3af;
-            --success: #10b981;
-            
-            --sidebar-width: 280px;
-            --radius: 20px;
-        }
-
-        /* --- RESET --- */
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        
-        body {
-            font-family: 'Outfit', sans-serif;
-            background-color: var(--bg-dark);
-            color: var(--text-main);
-            overflow: hidden; /* Prevent body scroll, handle inside main */
-            height: 100vh;
-            display: flex;
-        }
-
-        /* --- DYNAMIC BACKGROUND --- */
-        .bg-ambient {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            z-index: -1;
-            overflow: hidden;
-            background: radial-gradient(circle at 50% 50%, #111827 0%, #000000 100%);
-        }
-        .orb {
-            position: absolute;
-            border-radius: 50%;
-            filter: blur(100px);
-            opacity: 0.6;
-            animation: orbFloat 20s infinite alternate;
-        }
-        .orb-1 { width: 400px; height: 400px; background: var(--primary); top: -100px; left: -100px; }
-        .orb-2 { width: 300px; height: 300px; background: var(--accent); bottom: -50px; right: -50px; animation-delay: -5s; }
-        .orb-3 { width: 200px; height: 200px; background: var(--success); top: 40%; left: 60%; opacity: 0.3; animation-duration: 15s; }
-
-        @keyframes orbFloat {
-            0% { transform: translate(0, 0); }
-            100% { transform: translate(50px, 50px); }
-        }
-
-        /* --- SIDEBAR --- */
-        .sidebar {
-            width: var(--sidebar-width);
-            height: 100%;
-            background: rgba(10, 10, 15, 0.8);
-            backdrop-filter: blur(20px);
-            border-right: 1px solid var(--glass-border);
-            padding: 2rem 1.5rem;
-            display: flex;
-            flex-direction: column;
-            transition: 0.3s;
-            z-index: 100;
-        }
-
-        .logo-box {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            margin-bottom: 3rem;
-        }
-        .logo-img {
-            width: 50px; height: 50px;
-            border-radius: 12px;
-            object-fit: cover;
-            border: 1px solid var(--glass-border);
-        }
-        .school-name h1 {
-            font-family: 'Space Grotesk', sans-serif;
-            font-size: 1.1rem;
-            line-height: 1.2;
-            background: linear-gradient(to right, #fff, #9ca3af);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        .school-name p { font-size: 0.75rem; color: var(--text-muted); }
-
-        .nav-menu { display: flex; flex-direction: column; gap: 0.8rem; flex: 1; }
-        
-        .nav-item {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            padding: 14px 16px;
-            border-radius: 12px;
-            color: var(--text-muted);
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-weight: 500;
-            position: relative;
-            overflow: hidden;
-        }
-        .nav-item i { width: 20px; text-align: center; transition: 0.3s; }
-        
-        .nav-item:hover {
-            background: rgba(255,255,255,0.03);
-            color: white;
-            transform: translateX(5px);
-        }
-        
-        .nav-item.active {
-            background: linear-gradient(90deg, rgba(99, 102, 241, 0.15) 0%, transparent 100%);
-            border-left: 3px solid var(--primary);
-            color: var(--primary);
-        }
-        .nav-item.active i { color: var(--primary); transform: scale(1.1); }
-
-        /* --- MAIN CONTENT --- */
-        .main-wrapper {
-            flex: 1;
-            height: 100vh;
-            overflow-y: auto;
-            padding: 2rem;
-            position: relative;
-        }
-
-        /* --- TOP BAR --- */
-        .top-bar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 2rem;
-            padding-bottom: 1rem;
-            border-bottom: 1px solid var(--glass-border);
-        }
-        .user-profile {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-        .avatar {
-            width: 40px; height: 40px;
-            border-radius: 50%;
-            background: #333;
-        }
-
-        /* --- DASHBOARD HOME (INITIAL VIEW) --- */
-        .dashboard-view {
-            display: grid;
-            gap: 2rem;
-            animation: fadeIn 0.8s ease-out;
-        }
-
-        /* Ticker Styles */
-        .ticker-container {
-            background: rgba(0, 0, 0, 0.4);
-            border: 1px solid var(--accent);
-            border-radius: 50px;
-            padding: 12px 0;
-            overflow: hidden;
-            position: relative;
-            margin-bottom: 1rem;
-            box-shadow: 0 0 15px var(--accent-glow);
-        }
-        .ticker-content {
-            display: inline-block;
-            white-space: nowrap;
-            padding-left: 100%;
-            animation: ticker 15s linear infinite;
-            font-family: 'Space Grotesk', sans-serif;
-            font-weight: 700;
-            font-size: 1.1rem;
-            color: var(--accent);
-            text-transform: uppercase;
-        }
-        @keyframes ticker {
-            0% { transform: translate3d(0, 0, 0); }
-            100% { transform: translate3d(-100%, 0, 0); }
-        }
-
-        /* Hero Motivation */
-        .hero-card {
-            background: var(--glass-bg);
-            border: 1px solid var(--glass-border);
-            border-radius: var(--radius);
-            padding: 3rem;
-            text-align: center;
-            position: relative;
-            overflow: hidden;
-            backdrop-filter: blur(10px);
-        }
-        .hero-card::before {
-            content: '';
-            position: absolute;
-            top: -50%; left: -50%; width: 200%; height: 200%;
-            background: radial-gradient(circle, rgba(99,102,241,0.15) 0%, transparent 70%);
-            animation: rotate 10s linear infinite;
-        }
-        @keyframes rotate { from {transform: rotate(0deg);} to {transform: rotate(360deg);} }
-
-        .motivation-text {
-            font-size: 1.5rem;
-            font-weight: 300;
-            color: white;
-            position: relative;
-            z-index: 2;
-        }
-        .highlight {
-            color: var(--primary);
-            font-weight: 700;
-            text-shadow: 0 0 10px var(--primary-glow);
-        }
-        .typing-cursor::after {
-            content: '|';
-            animation: blink 1s infinite;
-        }
-        @keyframes blink { 0%, 100% {opacity:1;} 50% {opacity:0;} }
-
-        /* Dashboard Grid Stats */
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-            gap: 1.5rem;
-        }
-        .stat-card {
-            background: linear-gradient(145deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.01) 100%);
-            border: 1px solid var(--glass-border);
-            padding: 1.5rem;
-            border-radius: var(--radius);
-            transition: 0.3s;
-        }
-        .stat-card:hover {
-            transform: translateY(-5px);
-            background: rgba(255,255,255,0.08);
-            border-color: rgba(255,255,255,0.2);
-        }
-        .stat-icon {
-            font-size: 2rem;
-            margin-bottom: 1rem;
-            color: var(--text-main);
-            opacity: 0.8;
-        }
-        .stat-val { font-size: 2rem; font-weight: 700; margin-bottom: 5px; }
-        .stat-label { color: var(--text-muted); font-size: 0.9rem; }
-
-        /* --- CONTENT SECTIONS (Hidden by default) --- */
-        .content-section {
-            display: none; /* Hidden initially */
-            animation: slideUp 0.5s ease-out;
-            padding-bottom: 3rem;
-        }
-        .content-section.active-section { display: block; }
-
-        .section-header { margin-bottom: 2rem; }
-        .section-header h2 { font-size: 2rem; font-weight: 700; font-family: 'Space Grotesk', sans-serif; }
-        .section-header p { color: var(--text-muted); }
-
-        /* Bento Grid for Services */
-        .bento { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; }
-        .bento-item {
-            background: var(--glass-bg);
-            border: 1px solid var(--glass-border);
-            border-radius: var(--radius);
-            padding: 2rem;
-            position: relative;
-            overflow: hidden;
-            transition: 0.3s;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            min-height: 200px;
-        }
-        .bento-item:hover { border-color: var(--primary); box-shadow: 0 0 20px rgba(99, 102, 241, 0.1); }
-        .bento-item.large { grid-column: span 2; background: linear-gradient(135deg, rgba(99,102,241,0.1), rgba(17,24,39,0.6)); }
-        .bento-icon { font-size: 2.5rem; color: var(--primary); margin-bottom: 1rem; }
-        
-        /* Modern Table */
-        .glass-table { width: 100%; border-collapse: collapse; background: var(--glass-bg); border-radius: var(--radius); overflow: hidden; }
-        .glass-table th, .glass-table td { padding: 1.2rem; text-align: left; border-bottom: 1px solid var(--glass-border); }
-        .glass-table th { background: rgba(0,0,0,0.3); font-weight: 600; color: var(--primary); }
-        .glass-table tr:hover { background: rgba(255,255,255,0.02); }
-
-        /* Animations */
-        @keyframes fadeIn { from { opacity: 0; transform: scale(0.98); } to { opacity: 1; transform: scale(1); } }
-        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-
-        /* --- MOBILE --- */
-        .mobile-toggle { display: none; font-size: 1.5rem; color: white; cursor: pointer; }
-        
-        @media (max-width: 900px) {
-            .sidebar {
-                position: fixed;
-                left: -100%;
-                width: 80%;
-                max-width: 300px;
-                transition: 0.4s;
-                background: #0f172a;
-            }
-            .sidebar.active { left: 0; box-shadow: 10px 0 30px rgba(0,0,0,0.5); }
-            .mobile-toggle { display: block; margin-right: 1rem; }
-            .bento { grid-template-columns: 1fr; }
-            .bento-item.large { grid-column: span 1; }
-        }
+        *{margin:0;padding:0;box-sizing:border-box}
+        body{font-family:'Inter',sans-serif;background:#0f172a;color:#fff;overflow-x:hidden}
+        ::selection{background:#facc15;color:#0f172a}
+        ::-webkit-scrollbar{width:6px}
+        ::-webkit-scrollbar-track{background:#1e293b}
+        ::-webkit-scrollbar-thumb{background:#3b82f6;border-radius:3px}
+        ::-webkit-scrollbar-thumb:hover{background:#facc15}
+        @keyframes fadeInUp{from{opacity:0;transform:translateY(80px) scale(0.97)}to{opacity:1;transform:translateY(0) scale(1)}}
+        @keyframes fadeInDown{from{opacity:0;transform:translateY(-60px)}to{opacity:1;transform:translateY(0)}}
+        @keyframes slideStack{0%{opacity:0;transform:translateY(40px) rotateX(10deg)}100%{opacity:1;transform:translateY(0) rotateX(0)}}
+        @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-25px)}}
+        @keyframes floatX{0%,100%{transform:translateX(0) translateY(0)}25%{transform:translateX(15px) translateY(-10px)}50%{transform:translateX(0) translateY(-20px)}75%{transform:translateX(-15px) translateY(-10px)}}
+        @keyframes pulse-glow{0%,100%{box-shadow:0 0 20px rgba(37,99,235,0.2),0 0 60px rgba(37,99,235,0.05)}50%{box-shadow:0 0 40px rgba(37,99,235,0.4),0 0 120px rgba(37,99,235,0.1)}}
+        @keyframes pulse-glow-yellow{0%,100%{box-shadow:0 0 20px rgba(250,204,21,0.2)}50%{box-shadow:0 0 40px rgba(250,204,21,0.4)}}
+        @keyframes gradientMove{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
+        @keyframes rotate{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+        @keyframes rotateR{from{transform:rotate(0deg)}to{transform:rotate(-360deg)}}
+        @keyframes wiggle{0%,100%{transform:rotate(-3deg)}50%{transform:rotate(3deg)}}
+        @keyframes borderGlow{0%,100%{border-color:rgba(37,99,235,0.15)}50%{border-color:rgba(37,99,235,0.5)}}
+        @keyframes lineGrow{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+        @keyframes starTwinkle{0%,100%{opacity:0.2;transform:scale(0.8)}50%{opacity:1;transform:scale(1.2)}}
+        @keyframes marqueeScroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+        @keyframes marqueeScrollR{0%{transform:translateX(-50%)}100%{transform:translateX(0)}}
+        @keyframes musicNote{0%{opacity:1;transform:translateY(0) rotate(0deg) scale(1)}100%{opacity:0;transform:translateY(-70px) rotate(25deg) scale(0.5)}}
+        @keyframes eqBar{0%,100%{height:4px}50%{height:18px}}
+        @keyframes ripple{0%{transform:scale(0);opacity:0.5}100%{transform:scale(2.5);opacity:0}}
+        .page{display:none;min-height:100vh;position:relative}
+        .page.active{display:block}
+        .page-enter{animation:fadeInUp 0.9s cubic-bezier(0.16,1,0.3,1) forwards}
+        .page-enter .stagger-1{animation:slideStack 0.7s 0.15s cubic-bezier(0.16,1,0.3,1) both}
+        .page-enter .stagger-2{animation:slideStack 0.7s 0.3s cubic-bezier(0.16,1,0.3,1) both}
+        .page-enter .stagger-3{animation:slideStack 0.7s 0.45s cubic-bezier(0.16,1,0.3,1) both}
+        .page-enter .stagger-4{animation:slideStack 0.7s 0.6s cubic-bezier(0.16,1,0.3,1) both}
+        .page-enter .stagger-5{animation:slideStack 0.7s 0.75s cubic-bezier(0.16,1,0.3,1) both}
+        .page-enter .stagger-6{animation:slideStack 0.7s 0.9s cubic-bezier(0.16,1,0.3,1) both}
+        .marquee-wrap{overflow:hidden;white-space:nowrap;position:relative}
+        .marquee-wrap::before,.marquee-wrap::after{content:'';position:absolute;top:0;width:80px;height:100%;z-index:2;pointer-events:none}
+        .marquee-wrap::before{left:0;background:linear-gradient(to right,#0f172a,transparent)}
+        .marquee-wrap::after{right:0;background:linear-gradient(to left,#0f172a,transparent)}
+        .marquee-track{display:inline-block;animation:marqueeScroll 28s linear infinite}
+        .marquee-track:hover{animation-play-state:paused}
+        .marquee-rev .marquee-track{animation:marqueeScrollR 35s linear infinite}
+        .gt{background:linear-gradient(135deg,#60a5fa,#3b82f6,#facc15,#eab308,#3b82f6);background-size:300% 300%;animation:gradientMove 4s ease infinite;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+        .gt-blue{background:linear-gradient(135deg,#93c5fd,#3b82f6,#2563eb);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+        .card{transition:all 0.5s cubic-bezier(0.16,1,0.3,1);border:1px solid rgba(255,255,255,0.06);position:relative;overflow:hidden}
+        .card::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(59,130,246,0.03),transparent 50%);opacity:0;transition:opacity 0.5s}
+        .card:hover::before{opacity:1}
+        .card:hover{transform:translateY(-8px) scale(1.01);border-color:rgba(59,130,246,0.3);box-shadow:0 30px 60px -15px rgba(0,0,0,0.5),0 0 40px rgba(59,130,246,0.06)}
+        .portal-card{position:relative;overflow:hidden}
+        .portal-card::after{content:'';position:absolute;top:0;left:-100%;width:100%;height:100%;background:linear-gradient(90deg,transparent,rgba(59,130,246,0.04),transparent);transition:left 0.7s}
+        .portal-card:hover::after{left:100%}
+        .glass{background:rgba(15,23,42,0.85);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px)}
+        .nav-btn{position:relative;overflow:hidden;transition:all 0.3s}
+        .nav-btn::before{content:'';position:absolute;bottom:0;left:50%;width:0;height:2px;background:#facc15;transition:all 0.3s;transform:translateX(-50%);border-radius:1px}
+        .nav-btn:hover::before,.nav-btn.active::before{width:80%}
+        .nav-btn:hover,.nav-btn.active{color:#facc15}
+        .nav-btn.active{background:rgba(250,204,21,0.08)}
+        .hero-bg{background:radial-gradient(ellipse at 20% 40%,rgba(59,130,246,0.1) 0%,transparent 50%),radial-gradient(ellipse at 80% 20%,rgba(250,204,21,0.06) 0%,transparent 50%),radial-gradient(ellipse at 50% 90%,rgba(34,197,94,0.04) 0%,transparent 50%),#0f172a}
+        .m-slide{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;opacity:0;transform:scale(0.9) translateY(20px);transition:all 1.2s cubic-bezier(0.16,1,0.3,1)}
+        .m-slide.on{opacity:1;transform:scale(1) translateY(0)}
+        .deco-ring{position:absolute;border-radius:50%;border:1px solid rgba(59,130,246,0.08);pointer-events:none}
+        .deco-dots{background-image:radial-gradient(rgba(59,130,246,0.08) 1px,transparent 1px);background-size:24px 24px}
+        .star{position:absolute;width:3px;height:3px;background:#facc15;border-radius:50%;animation:starTwinkle var(--dur,3s) ease-in-out infinite;animation-delay:var(--del,0s)}
+        .page-loader{position:fixed;inset:0;z-index:100;background:#0f172a;display:flex;align-items:center;justify-content:center;pointer-events:none;opacity:0;transition:opacity 0.3s}
+        .page-loader.show{opacity:1;pointer-events:all}
+        .loader-ring{width:50px;height:50px;border:3px solid rgba(59,130,246,0.15);border-top-color:#3b82f6;border-radius:50%;animation:rotate 0.8s linear infinite}
+        .counter-wrap{position:relative}
+        .counter-wrap::after{content:'';position:absolute;inset:-1px;border-radius:16px;border:1px solid rgba(59,130,246,0.15);animation:borderGlow 3s infinite;pointer-events:none}
+        .mob-menu{transform:translateX(100%);transition:transform 0.5s cubic-bezier(0.16,1,0.3,1)}
+        .mob-menu.open{transform:translateX(0)}
+        .mob-menu-item{opacity:0;transform:translateX(40px);transition:all 0.4s}
+        .mob-menu.open .mob-menu-item{opacity:1;transform:translateX(0)}
+        .mob-menu.open .mob-menu-item:nth-child(1){transition-delay:0.1s}
+        .mob-menu.open .mob-menu-item:nth-child(2){transition-delay:0.15s}
+        .mob-menu.open .mob-menu-item:nth-child(3){transition-delay:0.2s}
+        .mob-menu.open .mob-menu-item:nth-child(4){transition-delay:0.25s}
+        .mob-menu.open .mob-menu-item:nth-child(5){transition-delay:0.3s}
+        .mob-menu.open .mob-menu-item:nth-child(6){transition-delay:0.35s}
+        .mob-menu.open .mob-menu-item:nth-child(7){transition-delay:0.4s}
+        .modal-bg{opacity:0;visibility:hidden;transition:all 0.4s}
+        .modal-bg.show{opacity:1;visibility:visible}
+        .modal-box{transform:scale(0.85) translateY(30px);transition:all 0.5s cubic-bezier(0.16,1,0.3,1)}
+        .modal-bg.show .modal-box{transform:scale(1) translateY(0)}
+        .toast{position:fixed;bottom:24px;right:24px;z-index:200;transform:translateY(150%) scale(0.8);opacity:0;transition:all 0.5s cubic-bezier(0.16,1,0.3,1)}
+        .toast.show{transform:translateY(0) scale(1);opacity:1}
+        .music-player{position:fixed;bottom:24px;right:24px;z-index:50}
+        .music-btn{width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,#3b82f6,#2563eb);display:flex;align-items:center;justify-content:center;cursor:pointer;border:none;color:white;box-shadow:0 0 20px rgba(59,130,246,0.4);transition:all 0.3s;position:relative;overflow:visible}
+        .music-btn:hover{transform:scale(1.1);box-shadow:0 0 35px rgba(59,130,246,0.6)}
+        .music-btn.playing{animation:pulse-glow 2s infinite}
+        .eq-bars{display:flex;align-items:flex-end;gap:2px;height:18px}
+        .eq-bar{width:3px;background:white;border-radius:1px;transition:height 0.2s}
+        .eq-bar.active{animation:eqBar 0.5s ease-in-out infinite}
+        .eq-bar:nth-child(2).active{animation-delay:0.12s}
+        .eq-bar:nth-child(3).active{animation-delay:0.24s}
+        .eq-bar:nth-child(4).active{animation-delay:0.08s}
+        .note{position:absolute;font-size:16px;pointer-events:none;animation:musicNote 1.8s ease-out forwards;z-index:10}
+        .music-label{position:absolute;bottom:60px;right:0;white-space:nowrap;background:rgba(15,23,42,0.95);backdrop-filter:blur(12px);border:1px solid rgba(59,130,246,0.3);padding:6px 12px;border-radius:8px;font-size:10px;color:#93c5fd;opacity:0;transform:translateY(8px);transition:all 0.3s;pointer-events:none}
+        .music-btn:hover .music-label{opacity:1;transform:translateY(0)}
+        .logo-img{width:44px;height:44px;border-radius:10px;object-fit:contain;background:white;padding:2px}
+        .logo-img-lg{width:130px;height:130px;border-radius:20px;object-fit:contain;background:white;padding:5px;box-shadow:0 0 40px rgba(255,255,255,0.12),0 0 80px rgba(59,130,246,0.15)}
+        .music-status{position:absolute;top:-8px;right:-8px;width:16px;height:16px;border-radius:50%;border:2px solid #0f172a;display:flex;align-items:center;justify-content:center;font-size:8px;transition:all 0.3s}
+        .music-status.off{background:#ef4444}
+        .music-status.on{background:#22c55e;animation:pulse-glow 1.5s infinite}
+        @media(max-width:768px){.hero-title{font-size:3rem!important}.logo-img{width:36px;height:36px}.logo-img-lg{width:100px;height:100px}}
     </style>
 </head>
 <body>
 
-    <!-- Background Animation -->
-    <div class="bg-ambient">
-        <div class="orb orb-1"></div>
-        <div class="orb orb-2"></div>
-        <div class="orb orb-3"></div>
+<!-- ✅ MUSIK FILE ANDA -->
+<audio id="bgMusic" loop preload="auto">
+    <source src="https://pdftolink.io/file/r2_dXNlcnMvaW5kcmFzZXRpYXdhbjIwX2d1cnUuc2QuYmVsYWphci5pZC80YWNlYjMxZC04YTZmLTRhMjUtYjYyMi02YzYzN2JhYzhhZTEubXAz" type="audio/mpeg">
+</audio>
+
+<div id="page-loader" class="page-loader"><div class="loader-ring"></div></div>
+
+<!-- Top Marquee -->
+<div class="bg-gradient-to-r from-blue-500/10 via-yellow-500/15 to-blue-500/10 border-b border-blue-500/20 py-2 relative z-50">
+    <div class="marquee-wrap"><div class="marquee-track">
+        <span class="inline-flex items-center gap-8 text-sm font-medium">
+            <span>⭐ MAJALENGKA LANGKUNG SAE ⭐</span>
+            <span>🎓 "Pendidikan adalah senjata paling ampuh untuk mengubah dunia" — Nelson Mandela</span>
+            <span>📖 "Anak-anak harus diajarkan cara berpikir, bukan apa yang harus dipikirkan" — Margaret Mead</span>
+            <span>🌟 SDN MAJALENGKA WETAN VII — TA 2026/2027 🌟</span>
+            <span>💡 "Mengajar bukanlah menuangkan pengetahuan, tapi menyalakan api" — W.B. Yeats</span>
+            <span>🏆 MAJALENGKA LANGKUNG SAE 🏆</span>
+        </span>
+        <span class="inline-flex items-center gap-8 text-sm font-medium ml-8">
+            <span>⭐ MAJALENGKA LANGKUNG SAE ⭐</span>
+            <span>🎓 "Pendidikan adalah senjata paling ampuh untuk mengubah dunia" — Nelson Mandela</span>
+            <span>📖 "Anak-anak harus diajarkan cara berpikir, bukan apa yang harus dipikirkan" — Margaret Mead</span>
+            <span>🌟 SDN MAJALENGKA WETAN VII — TA 2026/2027 🌟</span>
+            <span>💡 "Mengajar bukanlah menuangkan pengetahuan, tapi menyalakan api" — W.B. Yeats</span>
+            <span>🏆 MAJALENGKA LANGKUNG SAE 🏆</span>
+        </span>
+    </div></div>
+</div>
+
+<!-- Navigation -->
+<nav id="navbar" class="fixed left-0 right-0 z-40 transition-all duration-500" style="top:28px">
+    <div class="max-w-7xl mx-auto px-4 md:px-6">
+        <div class="glass rounded-2xl border border-blue-500/15 px-4 md:px-6 py-2.5 flex items-center justify-between gap-2">
+            <button onclick="navigateTo('home')" class="flex items-center gap-2.5 group flex-shrink-0">
+                <img src="https://www.image2url.com/r2/default/images/1781412123690-177b96ef-efc4-4f7b-888b-1689e2ec1c52.jpeg" alt="Logo SDN MWT VII" class="logo-img group-hover:scale-110 transition-transform duration-300 shadow-lg shadow-blue-500/20">
+                <div class="hidden md:block">
+                    <div class="text-xs font-bold tracking-tight leading-none text-white">SDN MWT VII</div>
+                    <div class="text-[9px] text-blue-300/60 tracking-widest uppercase">Majalengka</div>
+                </div>
+            </button>
+            <div class="hidden lg:flex items-center gap-1">
+                <button onclick="navigateTo('home')" class="nav-btn active px-3 py-2 rounded-lg text-[11px] font-bold tracking-wider uppercase text-zinc-300" data-nav="home">Beranda</button>
+                <button onclick="navigateTo('profil')" class="nav-btn px-3 py-2 rounded-lg text-[11px] font-bold tracking-wider uppercase text-zinc-300" data-nav="profil">Profil</button>
+                <button onclick="navigateTo('pelayanan')" class="nav-btn px-3 py-2 rounded-lg text-[11px] font-bold tracking-wider uppercase text-zinc-300" data-nav="pelayanan">Pelayanan</button>
+                <button onclick="navigateTo('sabudigi')" class="nav-btn px-3 py-2 rounded-lg text-[11px] font-bold tracking-wider uppercase text-zinc-300" data-nav="sabudigi">SABUDIGI</button>
+                <button onclick="navigateTo('informasi')" class="nav-btn px-3 py-2 rounded-lg text-[11px] font-bold tracking-wider uppercase text-zinc-300" data-nav="informasi">Informasi</button>
+                <button onclick="navigateTo('portal')" class="nav-btn px-3 py-2 rounded-lg text-[11px] font-bold tracking-wider uppercase text-zinc-300" data-nav="portal">Portal</button>
+            </div>
+            <div class="flex items-center gap-2">
+                <button onclick="openModal()" class="hidden sm:flex items-center gap-1.5 px-4 py-2 rounded-lg bg-yellow-400 text-slate-900 text-[10px] font-black tracking-wider uppercase hover:bg-yellow-300 hover:scale-105 transition-all duration-300" style="box-shadow:0 0 25px rgba(250,204,21,0.3)">
+                    <i data-lucide="log-in" class="w-3 h-3"></i> Login
+                </button>
+                <button onclick="toggleMob()" class="lg:hidden p-2 rounded-lg hover:bg-white/10 transition-colors"><i data-lucide="menu" class="w-5 h-5"></i></button>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<!-- Mobile Menu -->
+<div id="mob-menu" class="mob-menu fixed inset-0 z-50 bg-slate-900/95 backdrop-blur-2xl">
+    <div class="p-6 h-full flex flex-col">
+        <div class="flex justify-between items-center mb-12">
+            <div class="flex items-center gap-3">
+                <img src="https://www.image2url.com/r2/default/images/1781412123690-177b96ef-efc4-4f7b-888b-1689e2ec1c52.jpeg" alt="Logo" class="w-10 h-10 rounded-lg bg-white p-0.5">
+                <span class="font-bold">SDN MWT VII</span>
+            </div>
+            <button onclick="toggleMob()" class="p-2 rounded-lg hover:bg-white/10"><i data-lucide="x" class="w-6 h-6"></i></button>
+        </div>
+        <div class="flex-1 space-y-1">
+            <button onclick="navigateTo('home');toggleMob()" class="mob-menu-item w-full text-left px-5 py-4 text-xl font-bold hover:text-yellow-400 hover:bg-white/5 rounded-xl transition-all">🏠 Beranda</button>
+            <button onclick="navigateTo('profil');toggleMob()" class="mob-menu-item w-full text-left px-5 py-4 text-xl font-bold hover:text-yellow-400 hover:bg-white/5 rounded-xl transition-all">🏫 Profil Sekolah</button>
+            <button onclick="navigateTo('pelayanan');toggleMob()" class="mob-menu-item w-full text-left px-5 py-4 text-xl font-bold hover:text-yellow-400 hover:bg-white/5 rounded-xl transition-all">📋 Standar Pelayanan</button>
+            <button onclick="navigateTo('sabudigi');toggleMob()" class="mob-menu-item w-full text-left px-5 py-4 text-xl font-bold hover:text-yellow-400 hover:bg-white/5 rounded-xl transition-all">🌱 SABUDIGI</button>
+            <button onclick="navigateTo('informasi');toggleMob()" class="mob-menu-item w-full text-left px-5 py-4 text-xl font-bold hover:text-yellow-400 hover:bg-white/5 rounded-xl transition-all">📰 Informasi Publik</button>
+            <button onclick="navigateTo('portal');toggleMob()" class="mob-menu-item w-full text-left px-5 py-4 text-xl font-bold hover:text-yellow-400 hover:bg-white/5 rounded-xl transition-all">🌐 Portal Aplikasi</button>
+        </div>
+        <button onclick="openModal();toggleMob()" class="mob-menu-item w-full py-4 rounded-xl bg-yellow-400 text-slate-900 font-black text-center text-sm tracking-wider uppercase">🔐 Pusat Aplikasi / Login</button>
+    </div>
+</div>
+
+<!-- ═══════ PAGE: HOME ═══════ -->
+<div id="page-home" class="page active">
+    <section class="hero-bg relative min-h-screen flex items-center justify-center overflow-hidden">
+        <div class="deco-ring w-[800px] h-[800px] -top-60 -right-60" style="animation:rotate 30s linear infinite"></div>
+        <div class="deco-ring w-[500px] h-[500px] -bottom-40 -left-40" style="animation:rotateR 22s linear infinite;border-color:rgba(250,204,21,0.06)"></div>
+        <div class="deco-ring w-[300px] h-[300px] top-1/4 right-1/4" style="animation:rotate 18s linear infinite;border-color:rgba(34,197,94,0.05)"></div>
+        <div class="deco-dots absolute inset-0 opacity-20"></div>
+        <div class="star top-[10%] left-[5%]" style="--dur:2.5s;--del:0s"></div>
+        <div class="star top-[15%] right-[10%]" style="--dur:3.5s;--del:0.5s"></div>
+        <div class="star top-[40%] left-[8%]" style="--dur:4s;--del:1s"></div>
+        <div class="star top-[60%] right-[5%]" style="--dur:3s;--del:1.5s"></div>
+        <div class="star top-[80%] left-[15%]" style="--dur:2.8s;--del:0.8s"></div>
+        <div class="star top-[25%] left-[45%]" style="--dur:3.2s;--del:2s"></div>
+        <div class="star top-[70%] right-[30%]" style="--dur:4.5s;--del:0.3s"></div>
+        <div class="star top-[50%] left-[70%]" style="--dur:2.2s;--del:1.2s"></div>
+        <div class="star top-[90%] right-[50%]" style="--dur:3.8s;--del:0.7s"></div>
+        <div class="absolute top-[20%] left-[10%] w-16 h-16 border border-blue-500/10 rounded-xl" style="animation:floatX 8s ease-in-out infinite"></div>
+        <div class="absolute bottom-[25%] right-[12%] w-10 h-10 bg-yellow-400/5 rounded-full" style="animation:float 6s ease-in-out infinite;animation-delay:2s"></div>
+
+        <div class="relative z-10 max-w-5xl mx-auto px-6 text-center pt-36 pb-24">
+            <div style="animation:fadeInDown 0.8s ease-out" class="mb-8">
+                <img src="https://www.image2url.com/r2/default/images/1781412123690-177b96ef-efc4-4f7b-888b-1689e2ec1c52.jpeg" alt="Logo SDN Majalengka Wetan VII" class="logo-img-lg mx-auto">
+            </div>
+            <div style="animation:fadeInDown 0.8s ease-out 0.15s both" class="inline-flex items-center gap-2 px-5 py-2 rounded-full border border-blue-500/30 bg-blue-500/8 mb-6">
+                <span class="w-2 h-2 rounded-full bg-yellow-400 animate-pulse"></span>
+                <span class="text-[10px] font-black tracking-[0.2em] uppercase text-blue-300">SD Negeri Majalengka Wetan VII — TA 2026/2027</span>
+            </div>
+            <h1 class="hero-title text-6xl sm:text-7xl md:text-8xl lg:text-9xl font-black tracking-tighter leading-[0.9] mb-8" style="animation:fadeInUp 1s ease-out 0.2s both">
+                <span class="block text-white">Majalengka</span>
+                <span class="gt block">Langkung Sae</span>
+            </h1>
+            <p style="animation:fadeInUp 1s ease-out 0.5s both" class="text-lg md:text-xl text-blue-200/60 max-w-2xl mx-auto mb-3 leading-relaxed">Membentuk Generasi Berkarakter, Cinta Lingkungan & Melek Digital</p>
+            <p style="animation:fadeInUp 1s ease-out 0.6s both" class="text-sm text-blue-300/40 italic mb-12">"Terwujudnya peserta didik cerdas, berakhlak mulia, cinta lingkungan, dan siap menghadapi era digital"</p>
+            <div style="animation:fadeInUp 1s ease-out 0.8s both" class="flex flex-col sm:flex-row items-center justify-center gap-4 mb-20">
+                <button onclick="navigateTo('profil')" class="group flex items-center gap-3 px-8 py-4 rounded-xl bg-yellow-400 text-slate-900 font-black text-sm tracking-wider uppercase hover:bg-yellow-300 hover:scale-105 transition-all duration-300" style="box-shadow:0 0 40px rgba(250,204,21,0.3)">Jelajahi Sekolah <i data-lucide="arrow-right" class="w-4 h-4 group-hover:translate-x-1 transition-transform"></i></button>
+                <button onclick="navigateTo('informasi')" class="group flex items-center gap-3 px-8 py-4 rounded-xl border border-blue-400/30 text-blue-200 font-bold text-sm tracking-wider uppercase hover:border-yellow-400/50 hover:text-yellow-400 transition-all duration-300"><i data-lucide="graduation-cap" class="w-4 h-4"></i> PPDB 2026</button>
+            </div>
+            <div style="animation:fadeInUp 1s ease-out 1s both" class="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 max-w-3xl mx-auto">
+                <div class="counter-wrap rounded-2xl bg-blue-900/20 border border-blue-500/15 p-4 md:p-5"><div class="text-3xl md:text-4xl font-black gt-blue" data-count="320">0</div><div class="text-[10px] text-blue-300/50 mt-1 tracking-widest uppercase font-semibold">Siswa Aktif</div></div>
+                <div class="counter-wrap rounded-2xl bg-blue-900/20 border border-blue-500/15 p-4 md:p-5"><div class="text-3xl md:text-4xl font-black gt-blue" data-count="18">0</div><div class="text-[10px] text-blue-300/50 mt-1 tracking-widest uppercase font-semibold">Pendidik</div></div>
+                <div class="counter-wrap rounded-2xl bg-blue-900/20 border border-blue-500/15 p-4 md:p-5"><div class="text-3xl md:text-4xl font-black gt-blue" data-count="12">0</div><div class="text-[10px] text-blue-300/50 mt-1 tracking-widest uppercase font-semibold">Ruang Kelas</div></div>
+                <div class="counter-wrap rounded-2xl bg-blue-900/20 border border-blue-500/15 p-4 md:p-5"><div class="text-3xl md:text-4xl font-black gt-blue" data-count="15">0</div><div class="text-[10px] text-blue-300/50 mt-1 tracking-widest uppercase font-semibold">Tahun Berdiri</div></div>
+            </div>
+        </div>
+        <div class="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2" style="animation:fadeInUp 1s ease-out 1.3s both">
+            <span class="text-[9px] tracking-[0.3em] uppercase text-blue-400/30">Scroll</span>
+            <div class="w-5 h-8 rounded-full border border-blue-400/20 flex items-start justify-center p-1"><div class="w-1 h-2 bg-yellow-400 rounded-full animate-bounce"></div></div>
+        </div>
+    </section>
+
+    <div class="py-5 bg-gradient-to-r from-blue-500/5 via-yellow-400/8 to-blue-500/5 border-y border-blue-500/10 overflow-hidden">
+        <div class="marquee-wrap"><div class="marquee-track">
+            <span class="inline-flex items-center gap-8 text-5xl md:text-7xl font-black tracking-tighter text-white/[0.03]"><span>MAJALENGKA LANGKUNG SAE</span><span class="text-yellow-400/10">✦</span><span>SAHABAT BUMI</span><span class="text-blue-400/10">✦</span><span>DIGITAL GENERASI INOVATIF</span><span class="text-yellow-400/10">✦</span><span>SDN MWT VII</span><span class="text-blue-400/10">✦</span><span>TA 2026/2027</span><span class="text-yellow-400/10">✦</span></span>
+            <span class="inline-flex items-center gap-8 text-5xl md:text-7xl font-black tracking-tighter text-white/[0.03] ml-8"><span>MAJALENGKA LANGKUNG SAE</span><span class="text-yellow-400/10">✦</span><span>SAHABAT BUMI</span><span class="text-blue-400/10">✦</span><span>DIGITAL GENERASI INOVATIF</span><span class="text-yellow-400/10">✦</span><span>SDN MWT VII</span><span class="text-blue-400/10">✦</span><span>TA 2026/2027</span><span class="text-yellow-400/10">✦</span></span>
+        </div></div>
     </div>
 
-    <!-- Sidebar Navigation -->
-    <nav class="sidebar" id="sidebar">
-        <div class="logo-box">
-            <img src="https://www.image2url.com/r2/default/images/1781320056173-93f15afd-9c9a-4995-9d42-6748abd3076c.jpeg" alt="Logo" class="logo-img">
-            <div class="school-name">
-                <h1>SDN MAJALENGKA<br>WETAN 7</h1>
-                <p>Kabupaten Majalengka</p>
+    <!-- Motivasi Slider -->
+    <section class="py-20 relative">
+        <div class="absolute inset-0" style="background:radial-gradient(ellipse at center,rgba(59,130,246,0.03) 0%,transparent 60%)"></div>
+        <div class="max-w-4xl mx-auto px-6 relative z-10">
+            <div class="text-center mb-6"><span class="text-[10px] font-black tracking-[0.3em] uppercase text-blue-400/60">Inspirasi Pendidikan</span></div>
+            <div class="relative h-36 md:h-28 flex items-center justify-center">
+                <div class="m-slide on" data-s="0"><div class="text-center"><div class="text-3xl mb-3" style="animation:wiggle 3s ease-in-out infinite">📚</div><blockquote class="text-lg md:text-2xl lg:text-3xl font-light text-blue-100/70 italic leading-relaxed">"Pendidikan adalah senjata paling ampuh yang bisa kamu gunakan untuk mengubah dunia."</blockquote><cite class="block mt-3 text-sm text-yellow-400 font-semibold not-italic">— Nelson Mandela</cite></div></div>
+                <div class="m-slide" data-s="1"><div class="text-center"><div class="text-3xl mb-3" style="animation:wiggle 3s ease-in-out infinite;animation-delay:0.5s">🌱</div><blockquote class="text-lg md:text-2xl lg:text-3xl font-light text-blue-100/70 italic leading-relaxed">"Mengajar bukanlah menuangkan air ke dalam gelas, tapi menyalakan api dalam jiwa."</blockquote><cite class="block mt-3 text-sm text-yellow-400 font-semibold not-italic">— William Butler Yeats</cite></div></div>
+                <div class="m-slide" data-s="2"><div class="text-center"><div class="text-3xl mb-3" style="animation:wiggle 3s ease-in-out infinite;animation-delay:1s">💡</div><blockquote class="text-lg md:text-2xl lg:text-3xl font-light text-blue-100/70 italic leading-relaxed">"Anak-anak harus diajarkan cara berpikir, bukan apa yang harus dipikirkan."</blockquote><cite class="block mt-3 text-sm text-yellow-400 font-semibold not-italic">— Margaret Mead</cite></div></div>
+                <div class="m-slide" data-s="3"><div class="text-center"><div class="text-3xl mb-3" style="animation:wiggle 3s ease-in-out infinite;animation-delay:1.5s">🏛️</div><blockquote class="text-lg md:text-2xl lg:text-3xl font-light text-blue-100/70 italic leading-relaxed">"Tanamlah kebaikan pada anak, maka ia akan tumbuh menjadi pohon kebaikan yang rindang."</blockquote><cite class="block mt-3 text-sm text-yellow-400 font-semibold not-italic">— KH. Abdurrahman Wahid</cite></div></div>
+                <div class="m-slide" data-s="4"><div class="text-center"><div class="text-3xl mb-3" style="animation:wiggle 3s ease-in-out infinite;animation-delay:2s">🔬</div><blockquote class="text-lg md:text-2xl lg:text-3xl font-light text-blue-100/70 italic leading-relaxed">"Periode paling penting dalam kehidupan seseorang adalah dari kelahiran hingga usia enam tahun."</blockquote><cite class="block mt-3 text-sm text-yellow-400 font-semibold not-italic">— Maria Montessori</cite></div></div>
+                <div class="m-slide" data-s="5"><div class="text-center"><div class="text-3xl mb-3" style="animation:wiggle 3s ease-in-out infinite;animation-delay:2.5s">🌟</div><blockquote class="text-lg md:text-2xl lg:text-3xl font-light text-blue-100/70 italic leading-relaxed">"Pendidikan bukan persiapan untuk hidup, pendidikan adalah hidup itu sendiri."</blockquote><cite class="block mt-3 text-sm text-yellow-400 font-semibold not-italic">— John Dewey</cite></div></div>
             </div>
+            <div class="flex justify-center gap-1.5 mt-4" id="dots"></div>
         </div>
+    </section>
 
-        <div class="nav-menu">
-            <div class="nav-item active" onclick="switchView('dashboard', this)">
-                <i class="fas fa-th-large"></i> Dashboard
-            </div>
-            <div class="nav-item" onclick="switchView('layanan', this)">
-                <i class="fas fa-layer-group"></i> Jenis Layanan
-            </div>
-            <div class="nav-item" onclick="switchView('standar', this)">
-                <i class="fas fa-stopwatch"></i> Standar Waktu
-            </div>
-            <div class="nav-item" onclick="switchView('hukum', this)">
-                <i class="fas fa-balance-scale"></i> Dasar Hukum
-            </div>
-            <div class="nav-item" onclick="switchView('maklumat', this)">
-                <i class="fas fa-id-card"></i> Maklumat
-            </div>
-        </div>
-
-        <div style="margin-top: auto; padding-top: 2rem; border-top: 1px solid var(--glass-border);">
-            <p style="font-size: 0.8rem; color: var(--text-muted);">Versi Aplikasi 2.0<br>&copy; 2024 SDN Mlw 7</p>
-        </div>
-    </nav>
-
-    <!-- Main Content Area -->
-    <main class="main-wrapper">
-        <!-- Mobile Header -->
-        <div class="top-bar">
-            <div style="display:flex; align-items:center;">
-                <div class="mobile-toggle" onclick="toggleSidebar()">
-                    <i class="fas fa-bars"></i>
+    <!-- Sambutan Kepsek -->
+    <section class="py-24 relative">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="grid md:grid-cols-2 gap-12 lg:gap-16 items-center">
+                <div class="relative">
+                    <div class="relative rounded-2xl overflow-hidden aspect-[3/4] max-w-md mx-auto" style="animation:floatX 8s ease-in-out infinite">
+                        <img src="https://www.image2url.com/r2/default/images/1781411250937-d232b418-fcc9-4991-bf91-d0b21adb290d.jpeg" alt="Kepala Sekolah Iyus Susnardi, S.Pd., M.Pd" class="w-full h-full object-cover">
+                        <div class="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/20 to-transparent"></div>
+                        <div class="absolute bottom-0 left-0 right-0 p-6">
+                            <div class="text-yellow-400 text-[10px] font-black tracking-widest uppercase mb-1">Kepala Sekolah</div>
+                            <div class="text-2xl font-black tracking-tight">Iyus Susnardi, S.Pd., M.Pd</div>
+                            <div class="text-blue-300/50 text-xs mt-1">NIP. 19791225 200801 1 004</div>
+                        </div>
+                    </div>
+                    <div class="absolute -top-4 -right-4 w-28 h-28 border-2 border-blue-500/15 rounded-2xl" style="animation:float 5s ease-in-out infinite;animation-delay:1s"></div>
+                    <div class="absolute -bottom-4 -left-4 w-36 h-36 border-2 border-yellow-400/10 rounded-2xl" style="animation:float 6s ease-in-out infinite;animation-delay:2s"></div>
                 </div>
-                <h3 id="page-title" style="font-weight: 600;">Dashboard Overview</h3>
-            </div>
-            <div class="user-profile">
-                <div style="text-align: right; display:none; @media(min-width:768px){display:block;}">
-                    <p style="font-size:0.9rem; font-weight:600;">Tamu Sekolah</p>
-                    <p style="font-size:0.75rem; color:var(--success);">Online</p>
-                </div>
-                <div class="avatar" style="background: linear-gradient(45deg, var(--primary), var(--accent));"></div>
-            </div>
-        </div>
-
-        <!-- VIEW 1: DASHBOARD (Default Visible) -->
-        <div id="dashboard" class="dashboard-view">
-            
-            <!-- Teks Berjalan -->
-            <div class="ticker-container">
-                <div class="ticker-content">
-                    ★ MAJALENGKA LANGKUNG SAE ★ PELAYANAN PUBLIK BERBASIS DIGITAL ★ SDN MAJALENGKA WETAN 7 MENUJU SEKOLAH ADIWIYATA ★ MAJALENGKA LANGKUNG SAE ★
-                </div>
-            </div>
-
-            <!-- Motivation Card -->
-            <div class="hero-card" data-aos="zoom-in">
-                <i class="fas fa-rocket" style="font-size: 3rem; color: var(--accent); margin-bottom: 1rem; opacity: 0.8;"></i>
-                <p class="motivation-text">
-                    Transformasi Digital dimulai dari <span class="highlight" id="typewriter"></span><span class="typing-cursor"></span>
-                </p>
-                <p style="margin-top: 1rem; color: var(--text-muted); font-size: 0.9rem;">
-                    Bersama SDN Majalengka Wetan 7, kita bangun masa depan cerah berbasis teknologi dan karakter.
-                </p>
-            </div>
-
-            <!-- Quick Stats / Access -->
-            <h3 style="margin: 1rem 0;">Akses Cepat</h3>
-            <div class="stats-grid">
-                <div class="stat-card" onclick="switchView('layanan', document.querySelectorAll('.nav-item')[1])" style="cursor: pointer;">
-                    <i class="fas fa-user-graduate stat-icon" style="color: var(--primary);"></i>
-                    <div class="stat-val">PPDB</div>
-                    <div class="stat-label">Penerimaan Siswa Baru</div>
-                </div>
-                <div class="stat-card" onclick="switchView('layanan', document.querySelectorAll('.nav-item')[1])" style="cursor: pointer;">
-                    <i class="fas fa-laptop-code stat-icon" style="color: var(--accent);"></i>
-                    <div class="stat-val">SABUDIGI</div>
-                    <div class="stat-label">Program Unggulan</div>
-                </div>
-                <div class="stat-card" onclick="switchView('standar', document.querySelectorAll('.nav-item')[2])" style="cursor: pointer;">
-                    <i class="fas fa-clock stat-icon" style="color: var(--success);"></i>
-                    <div class="stat-val">Cepat</div>
-                    <div class="stat-label">Standar Pelayanan</div>
-                </div>
-                <div class="stat-card" onclick="switchView('hukum', document.querySelectorAll('.nav-item')[3])" style="cursor: pointer;">
-                    <i class="fas fa-book stat-icon" style="color: #fbbf24;"></i>
-                    <div class="stat-val">Legal</div>
-                    <div class="stat-label">Dasar Hukum</div>
+                <div>
+                    <span class="text-[10px] font-black tracking-[0.3em] uppercase text-yellow-400 mb-4 block">Sambutan Kepala Sekolah</span>
+                    <h2 class="text-3xl md:text-4xl font-semibold tracking-tight uppercase mb-6 leading-tight">Assalamu'alaikum<br><span class="gt">Warahmatullahi Wabarakatuh</span></h2>
+                    <div class="space-y-4 text-blue-100/50 text-sm leading-relaxed">
+                        <p>Puji syukur kehadirat Allah SWT. Shalawat serta salam kepada Nabi Muhammad SAW.</p>
+                        <p>Selamat datang di website resmi <strong class="text-white">SDN Majalengka Wetan VII</strong>. Dengan semangat <em class="text-yellow-400">"Majalengka Langkung Sae"</em>, kami berkomitmen meningkatkan kualitas pendidikan untuk tahun ajaran <strong class="text-white">2026/2027</strong>.</p>
+                        <p>Melalui program <strong class="text-white">SABUDIGI (Sahabat Bumi & Digital Generasi Inovatif)</strong>, kami memastikan setiap siswa cerdas akademis, peka lingkungan, dan adaptif terhadap teknologi.</p>
+                    </div>
+                    <div class="mt-6 flex items-center gap-3"><div class="w-12 h-0.5 bg-yellow-400"></div><span class="text-sm font-bold text-yellow-400 italic">Iyus Susnardi, S.Pd., M.Pd</span></div>
                 </div>
             </div>
         </div>
+    </section>
 
-        <!-- VIEW 2: JENIS PELAYANAN (Hidden) -->
-        <div id="layanan" class="content-section">
-            <div class="section-header">
-                <h2>Jenis Pelayanan</h2>
-                <p>Layanan prima untuk warga sekolah.</p>
+    <!-- Berita -->
+    <section class="py-24 relative" style="background:linear-gradient(180deg,transparent,rgba(59,130,246,0.02),transparent)">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="text-center mb-12">
+                <span class="text-[10px] font-black tracking-[0.3em] uppercase text-yellow-400 mb-4 block">Terkini</span>
+                <h2 class="text-3xl md:text-5xl font-semibold tracking-tight uppercase">Berita & <span class="gt">Pengumuman</span></h2>
             </div>
-            <div class="bento">
-                <div class="bento-item large">
-                    <i class="fas fa-user-plus bento-icon"></i>
-                    <h3>PPDB Online</h3>
-                    <p style="color: var(--text-muted); margin-top: 0.5rem;">Penerimaan Peserta Didik Baru yang transparan, bebas diskriminasi, dan dapat dipertanggungjawabkan.</p>
-                    <div style="margin-top: 1rem;">
-                        <span style="background: rgba(99,102,241,0.2); color: var(--primary); padding: 4px 10px; border-radius: 4px; font-size: 0.8rem;">Sesuai Jadwal</span>
+            <div class="grid md:grid-cols-3 gap-6">
+                <div class="card rounded-2xl bg-blue-900/15 overflow-hidden group cursor-pointer" onclick="navigateTo('informasi')"><div class="aspect-video overflow-hidden"><img src="https://picsum.photos/seed/n1-mwt7/600/340.jpg" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"></div><div class="p-5"><div class="flex items-center gap-2 mb-2"><span class="px-2 py-0.5 rounded bg-yellow-400/10 text-yellow-400 text-[9px] font-black tracking-wider uppercase">Berita</span><span class="text-blue-400/30 text-[10px]">12 Jan 2026</span></div><h4 class="font-bold text-sm mb-2 group-hover:text-yellow-400 transition-colors">Siswa Raih Juara 1 Lomba Cerdas Cermat Tingkat Kecamatan</h4><p class="text-blue-200/30 text-xs leading-relaxed">Tim siswa kelas 5 berhasil meraih prestasi membanggakan...</p></div></div>
+                <div class="card rounded-2xl bg-blue-900/15 overflow-hidden group cursor-pointer" onclick="navigateTo('sabudigi')"><div class="aspect-video overflow-hidden"><img src="https://picsum.photos/seed/n2-mwt7/600/340.jpg" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"></div><div class="p-5"><div class="flex items-center gap-2 mb-2"><span class="px-2 py-0.5 rounded bg-green-400/10 text-green-400 text-[9px] font-black tracking-wider uppercase">SABUDIGI</span><span class="text-blue-400/30 text-[10px]">8 Jan 2026</span></div><h4 class="font-bold text-sm mb-2 group-hover:text-yellow-400 transition-colors">Petani Cilik Panen Perdana, Hasilnya Dibagikan ke Warga</h4><p class="text-blue-200/30 text-xs leading-relaxed">Kebun sekolah berhasil memanen sayuran organik...</p></div></div>
+                <div class="card rounded-2xl bg-blue-900/15 overflow-hidden group cursor-pointer" onclick="navigateTo('informasi')"><div class="aspect-video overflow-hidden"><img src="https://picsum.photos/seed/n3-mwt7/600/340.jpg" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"></div><div class="p-5"><div class="flex items-center gap-2 mb-2"><span class="px-2 py-0.5 rounded bg-red-400/10 text-red-400 text-[9px] font-black tracking-wider uppercase">Pengumuman</span><span class="text-blue-400/30 text-[10px]">5 Jan 2026</span></div><h4 class="font-bold text-sm mb-2 group-hover:text-yellow-400 transition-colors">Jadwal UTS Genap TA 2026/2027</h4><p class="text-blue-200/30 text-xs leading-relaxed">Pelaksanaan UTS dimulai Maret 2027...</p></div></div>
+            </div>
+        </div>
+    </section>
+
+    <div class="py-6 border-y border-blue-500/5 overflow-hidden marquee-rev">
+        <div class="marquee-wrap"><div class="marquee-track">
+            <span class="inline-flex items-center gap-12 text-lg md:text-2xl font-light text-blue-300/20 italic"><span>"Setiap anak adalah seniman." — Picasso</span><span class="text-yellow-400/10">✦</span><span>"Pendidikan adalah hidup itu sendiri." — John Dewey</span><span class="text-yellow-400/10">✦</span><span>"Jika seratus tahun, didiklah manusia." — Pepatah Cina</span><span class="text-yellow-400/10">✦</span><span>"Investasi terbaik adalah pengetahuan." — Benjamin Franklin</span><span class="text-yellow-400/10">✦</span></span>
+            <span class="inline-flex items-center gap-12 text-lg md:text-2xl font-light text-blue-300/20 italic ml-12"><span>"Setiap anak adalah seniman." — Picasso</span><span class="text-yellow-400/10">✦</span><span>"Pendidikan adalah hidup itu sendiri." — John Dewey</span><span class="text-yellow-400/10">✦</span><span>"Jika seratus tahun, didiklah manusia." — Pepatah Cina</span><span class="text-yellow-400/10">✦</span><span>"Investasi terbaik adalah pengetahuan." — Benjamin Franklin</span><span class="text-yellow-400/10">✦</span></span>
+        </div></div>
+    </div>
+</div>
+
+<!-- ═══════ PAGE: PROFIL ═══════ -->
+<div id="page-profil" class="page">
+    <div class="pt-32 pb-24"><div class="max-w-7xl mx-auto px-6">
+        <div class="text-center mb-16 page-enter"><span class="text-[10px] font-black tracking-[0.3em] uppercase text-yellow-400 mb-4 block stagger-1">Profil Sekolah</span><h2 class="text-4xl md:text-6xl font-black tracking-tighter uppercase stagger-2">Mengenal Lebih <span class="gt">Dekat</span></h2><div class="w-20 h-0.5 bg-blue-500 mx-auto mt-6 stagger-3" style="animation:lineGrow 1s 0.5s both;transform-origin:left"></div></div>
+        <div class="card rounded-2xl bg-blue-900/15 p-8 md:p-12 mb-8 page-enter stagger-2"><div class="flex items-center gap-4 mb-6"><div class="w-14 h-14 rounded-2xl bg-blue-500/15 border border-blue-500/20 flex items-center justify-center" style="animation:pulse-glow 3s infinite"><i data-lucide="book-open" class="w-7 h-7 text-blue-400"></i></div><h3 class="text-2xl font-black tracking-tight uppercase">Sejarah Singkat</h3></div><p class="text-blue-100/50 text-sm leading-relaxed">SDN Majalengka Wetan VII didirikan sebagai bentuk kepedulian pemerintah terhadap penyebaran akses pendidikan dasar di Kecamatan Majalengka. Dengan semangat <em class="text-yellow-400">"Majalengka Langkung Sae"</em>, sekolah terus bertransformasi menjadi institusi yang inovatif melalui program SABUDIGI untuk tahun ajaran 2026/2027.</p></div>
+        <div class="grid md:grid-cols-2 gap-8 mb-8 page-enter">
+            <div class="card rounded-2xl bg-blue-900/15 p-8 stagger-3"><div class="flex items-center gap-4 mb-6"><div class="w-12 h-12 rounded-xl bg-blue-500/15 border border-blue-500/20 flex items-center justify-center"><i data-lucide="eye" class="w-6 h-6 text-blue-400"></i></div><h3 class="text-xl font-bold tracking-tight uppercase">Visi</h3></div><p class="text-blue-100/60 text-sm leading-relaxed font-medium italic border-l-2 border-yellow-400/50 pl-4">"Terwujudnya peserta didik yang cerdas, berakhlak mulia, cinta lingkungan, dan siap menghadapi era digital sebagai generasi unggul Majalengka."</p></div>
+            <div class="card rounded-2xl bg-blue-900/15 p-8 stagger-4"><div class="flex items-center gap-4 mb-6"><div class="w-12 h-12 rounded-xl bg-blue-500/15 border border-blue-500/20 flex items-center justify-center"><i data-lucide="target" class="w-6 h-6 text-blue-400"></i></div><h3 class="text-xl font-bold tracking-tight uppercase">Misi</h3></div><ol class="space-y-2.5 text-blue-100/50 text-sm leading-relaxed list-decimal list-inside"><li>Menyelenggarakan pembelajaran aktif, kreatif, menyenangkan.</li><li>Menanamkan nilai karakter dan akhlak mulia.</li><li>Mengembangkan kepedulian lingkungan melalui Sahabat Bumi.</li><li>Meningkatkan literasi digital melalui Digital Generasi Inovatif.</li><li>Membangun kemitraan dengan orang tua dan masyarakat.</li></ol></div>
+        </div>
+        <!-- Struktur -->
+        <div class="card rounded-2xl bg-blue-900/15 p-8 md:p-12 mb-8 page-enter">
+            <h3 class="text-2xl font-black tracking-tight uppercase mb-8 text-center stagger-2">Struktur <span class="gt">Organisasi</span></h3>
+            <div class="flex justify-center mb-4 stagger-3"><div class="rounded-2xl bg-blue-800/30 border border-yellow-400/20 p-5 text-center max-w-[220px] w-full" style="animation:pulse-glow-yellow 3s infinite"><img src="https://www.image2url.com/r2/default/images/1781411250937-d232b418-fcc9-4991-bf91-d0b21adb290d.jpeg" alt="Kepsek" class="w-14 h-14 rounded-full mx-auto object-cover border-2 border-yellow-400/40 mb-2"><div class="font-bold text-sm">Kepala Sekolah</div><div class="text-yellow-400 text-xs font-semibold mt-1">Iyus Susnardi, S.Pd., M.Pd</div></div></div>
+            <div class="flex justify-center mb-4 stagger-3"><div class="w-0.5 h-8 bg-gradient-to-b from-yellow-400/40 to-blue-500/20"></div></div>
+            <div class="grid grid-cols-3 gap-3 mb-4 stagger-4">
+                <div class="card rounded-xl bg-blue-800/20 p-4 text-center"><div class="w-10 h-10 mx-auto rounded-full bg-blue-500/20 flex items-center justify-center text-blue-400 font-bold text-xs mb-2">WK</div><div class="text-xs font-semibold">Waka Kurikulum</div><div class="text-blue-300/30 text-[10px] mt-1">Nita Suryani, S.Pd.</div></div>
+                <div class="card rounded-xl bg-blue-800/20 p-4 text-center"><div class="w-10 h-10 mx-auto rounded-full bg-green-500/20 flex items-center justify-center text-green-400 font-bold text-xs mb-2">WK</div><div class="text-xs font-semibold">Waka Kesiswaan</div><div class="text-blue-300/30 text-[10px] mt-1">Dedi Kuswandi, S.Pd.</div></div>
+                <div class="card rounded-xl bg-blue-800/20 p-4 text-center"><div class="w-10 h-10 mx-auto rounded-full bg-purple-500/20 flex items-center justify-center text-purple-400 font-bold text-xs mb-2">WK</div><div class="text-xs font-semibold">Waka Sarpras</div><div class="text-blue-300/30 text-[10px] mt-1">Enceng Supriatna</div></div>
+            </div>
+            <div class="flex justify-center mb-4 stagger-4"><div class="w-0.5 h-6 bg-gradient-to-b from-blue-500/10 to-transparent"></div></div>
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 stagger-5">
+                <div class="card rounded-xl bg-blue-800/10 p-3 text-center"><div class="w-8 h-8 mx-auto rounded-full bg-blue-800/50 flex items-center justify-center text-blue-300/50 text-[10px] font-bold mb-1">1-2</div><div class="text-[11px] font-semibold">Kelas 1 & 2</div><div class="text-blue-300/20 text-[10px]">4 Guru</div></div>
+                <div class="card rounded-xl bg-blue-800/10 p-3 text-center"><div class="w-8 h-8 mx-auto rounded-full bg-blue-800/50 flex items-center justify-center text-blue-300/50 text-[10px] font-bold mb-1">3-4</div><div class="text-[11px] font-semibold">Kelas 3 & 4</div><div class="text-blue-300/20 text-[10px]">4 Guru</div></div>
+                <div class="card rounded-xl bg-blue-800/10 p-3 text-center"><div class="w-8 h-8 mx-auto rounded-full bg-blue-800/50 flex items-center justify-center text-blue-300/50 text-[10px] font-bold mb-1">5-6</div><div class="text-[11px] font-semibold">Kelas 5 & 6</div><div class="text-blue-300/20 text-[10px]">4 Guru</div></div>
+                <div class="card rounded-xl bg-blue-800/10 p-3 text-center"><div class="w-8 h-8 mx-auto rounded-full bg-blue-800/50 flex items-center justify-center text-blue-300/50 text-[10px] font-bold mb-1">SP</div><div class="text-[11px] font-semibold">Penjas, Agama, B.Ing</div><div class="text-blue-300/20 text-[10px]">4 Guru</div></div>
+            </div>
+        </div>
+        <!-- Guru -->
+        <div class="mb-8 page-enter"><h3 class="text-2xl font-black tracking-tight uppercase mb-8 text-center stagger-2">Data Guru & <span class="gt">Staf</span></h3>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div class="card rounded-2xl overflow-hidden group stagger-2"><div class="aspect-[3/4] overflow-hidden"><img src="https://picsum.photos/seed/g1v7/400/530.jpg" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"></div><div class="p-4 bg-slate-900/80"><div class="font-bold text-sm">Nita Suryani, S.Pd.</div><div class="text-blue-300/30 text-xs">Waka Kurikulum</div></div></div>
+                <div class="card rounded-2xl overflow-hidden group stagger-3"><div class="aspect-[3/4] overflow-hidden"><img src="https://picsum.photos/seed/g2v7/400/530.jpg" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"></div><div class="p-4 bg-slate-900/80"><div class="font-bold text-sm">Dedi Kuswandi, S.Pd.</div><div class="text-blue-300/30 text-xs">Waka Kesiswaan</div></div></div>
+                <div class="card rounded-2xl overflow-hidden group stagger-4"><div class="aspect-[3/4] overflow-hidden"><img src="https://picsum.photos/seed/g3v7/400/530.jpg" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"></div><div class="p-4 bg-slate-900/80"><div class="font-bold text-sm">Siti Aisyah, S.Pd.</div><div class="text-blue-300/30 text-xs">Guru Kelas 1</div></div></div>
+                <div class="card rounded-2xl overflow-hidden group stagger-5"><div class="aspect-[3/4] overflow-hidden"><img src="https://picsum.photos/seed/g4v7/400/530.jpg" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"></div><div class="p-4 bg-slate-900/80"><div class="font-bold text-sm">Rahmat Hidayat, S.Pd.</div><div class="text-blue-300/30 text-xs">Guru Penjas</div></div></div>
+            </div><p class="text-center text-blue-300/20 text-xs mt-4 stagger-6">* Menampilkan 4 dari 18 tenaga pendidik & kependidikan</p>
+        </div>
+        <!-- Sarana -->
+        <div class="page-enter"><h3 class="text-2xl font-black tracking-tight uppercase mb-8 text-center stagger-2">Sarana & <span class="gt">Prasarana</span></h3>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div class="card rounded-xl bg-blue-900/15 p-6 text-center group stagger-2"><div class="w-12 h-12 mx-auto rounded-xl bg-blue-800/40 flex items-center justify-center mb-3 group-hover:bg-yellow-400/10 transition-colors"><i data-lucide="door-open" class="w-6 h-6 text-blue-300/50 group-hover:text-yellow-400 transition-colors"></i></div><div class="text-sm font-semibold">12 Ruang Kelas</div><div class="text-xs text-blue-300/30 mt-1">Ber-AC & Proyektor</div></div>
+                <div class="card rounded-xl bg-blue-900/15 p-6 text-center group stagger-3"><div class="w-12 h-12 mx-auto rounded-xl bg-blue-800/40 flex items-center justify-center mb-3 group-hover:bg-yellow-400/10 transition-colors"><i data-lucide="book-copy" class="w-6 h-6 text-blue-300/50 group-hover:text-yellow-400 transition-colors"></i></div><div class="text-sm font-semibold">Perpustakaan</div><div class="text-xs text-blue-300/30 mt-1">5.000+ Buku</div></div>
+                <div class="card rounded-xl bg-blue-900/15 p-6 text-center group stagger-4"><div class="w-12 h-12 mx-auto rounded-xl bg-blue-800/40 flex items-center justify-center mb-3 group-hover:bg-yellow-400/10 transition-colors"><i data-lucide="monitor" class="w-6 h-6 text-blue-300/50 group-hover:text-yellow-400 transition-colors"></i></div><div class="text-sm font-semibold">Lab Komputer</div><div class="text-xs text-blue-300/30 mt-1">20 Unit PC</div></div>
+                <div class="card rounded-xl bg-blue-900/15 p-6 text-center group stagger-5"><div class="w-12 h-12 mx-auto rounded-xl bg-blue-800/40 flex items-center justify-center mb-3 group-hover:bg-yellow-400/10 transition-colors"><i data-lucide="flower-2" class="w-6 h-6 text-blue-300/50 group-hover:text-yellow-400 transition-colors"></i></div><div class="text-sm font-semibold">Kebun Sekolah</div><div class="text-xs text-blue-300/30 mt-1">Area SABUDIGI</div></div>
+                <div class="card rounded-xl bg-blue-900/15 p-6 text-center group stagger-3"><div class="w-12 h-12 mx-auto rounded-xl bg-blue-800/40 flex items-center justify-center mb-3 group-hover:bg-yellow-400/10 transition-colors"><i data-lucide="wifi" class="w-6 h-6 text-blue-300/50 group-hover:text-yellow-400 transition-colors"></i></div><div class="text-sm font-semibold">WiFi Zone</div><div class="text-xs text-blue-300/30 mt-1">Full Coverage</div></div>
+                <div class="card rounded-xl bg-blue-900/15 p-6 text-center group stagger-4"><div class="w-12 h-12 mx-auto rounded-xl bg-blue-800/40 flex items-center justify-center mb-3 group-hover:bg-yellow-400/10 transition-colors"><i data-lucide="dumbbell" class="w-6 h-6 text-blue-300/50 group-hover:text-yellow-400 transition-colors"></i></div><div class="text-sm font-semibold">Lapangan</div><div class="text-xs text-blue-300/30 mt-1">Multifungsi</div></div>
+                <div class="card rounded-xl bg-blue-900/15 p-6 text-center group stagger-5"><div class="w-12 h-12 mx-auto rounded-xl bg-blue-800/40 flex items-center justify-center mb-3 group-hover:bg-yellow-400/10 transition-colors"><i data-lucide="utensils" class="w-6 h-6 text-blue-300/50 group-hover:text-yellow-400 transition-colors"></i></div><div class="text-sm font-semibold">UKS</div><div class="text-xs text-blue-300/30 mt-1">Lengkap</div></div>
+                <div class="card rounded-xl bg-blue-900/15 p-6 text-center group stagger-6"><div class="w-12 h-12 mx-auto rounded-xl bg-blue-800/40 flex items-center justify-center mb-3 group-hover:bg-yellow-400/10 transition-colors"><i data-lucide="mosque" class="w-6 h-6 text-blue-300/50 group-hover:text-yellow-400 transition-colors"></i></div><div class="text-sm font-semibold">Mushola</div><div class="text-xs text-blue-300/30 mt-1">Kapasitas 100</div></div>
+            </div>
+        </div>
+    </div></div>
+</div>
+
+<!-- ═══════ PAGE: PELAYANAN ═══════ -->
+<div id="page-pelayanan" class="page">
+    <div class="pt-32 pb-24"><div class="max-w-7xl mx-auto px-6">
+        <div class="text-center mb-16 page-enter"><span class="text-[10px] font-black tracking-[0.3em] uppercase text-yellow-400 mb-4 block stagger-1">Transparansi</span><h2 class="text-4xl md:text-6xl font-black tracking-tighter uppercase stagger-2">Standar <span class="gt">Pelayanan</span></h2><div class="w-20 h-0.5 bg-blue-500 mx-auto mt-6 stagger-3" style="animation:lineGrow 1s 0.5s both;transform-origin:left"></div></div>
+        <div class="card rounded-2xl bg-gradient-to-br from-blue-500/5 to-transparent p-8 md:p-12 mb-8 border-blue-500/15 page-enter stagger-2"><div class="flex items-center gap-4 mb-6"><div class="w-14 h-14 rounded-2xl bg-blue-500/15 flex items-center justify-center" style="animation:pulse-glow 3s infinite"><i data-lucide="scroll-text" class="w-7 h-7 text-blue-400"></i></div><h3 class="text-2xl font-black tracking-tight uppercase">Maklumat Pelayanan</h3></div><p class="text-blue-100/60 text-sm leading-relaxed italic border-l-2 border-yellow-400/50 pl-4">"Kami seluruh civitas akademika SDN Majalengka Wetan VII berkomitmen memberikan pelayanan prima yang transparan, akuntabel, dan profesional sesuai standar pelayanan minimal, dengan motto <span class="text-yellow-400 font-semibold">Majalengka Langkung Sae</span>."</p></div>
+        <div class="card rounded-2xl bg-blue-900/15 overflow-hidden mb-8 page-enter stagger-3">
+            <div class="p-6 border-b border-blue-500/10"><div class="flex items-center gap-3"><i data-lucide="clock" class="w-5 h-5 text-blue-400"></i><h3 class="text-lg font-bold tracking-tight uppercase">Tabel Standar Waktu Pelayanan</h3></div></div>
+            <div class="overflow-x-auto"><table class="w-full text-sm"><thead><tr class="bg-blue-800/20"><th class="text-left p-4 text-yellow-400 font-bold text-[10px] tracking-wider uppercase">No</th><th class="text-left p-4 text-yellow-400 font-bold text-[10px] tracking-wider uppercase">Jenis Pelayanan</th><th class="text-left p-4 text-yellow-400 font-bold text-[10px] tracking-wider uppercase">Persyaratan</th><th class="text-left p-4 text-yellow-400 font-bold text-[10px] tracking-wider uppercase">Waktu</th></tr></thead><tbody class="divide-y divide-blue-500/5">
+                <tr class="hover:bg-white/[0.02] transition-colors"><td class="p-4 text-blue-300/30">1</td><td class="p-4 text-blue-100/60">Surat Keterangan Siswa</td><td class="p-4 text-blue-300/30">Kartu Pelajar</td><td class="p-4"><span class="px-2.5 py-1 rounded-full bg-green-400/10 text-green-400 text-xs font-bold">1 hari</span></td></tr>
+                <tr class="hover:bg-white/[0.02] transition-colors"><td class="p-4 text-blue-300/30">2</td><td class="p-4 text-blue-100/60">Surat Pindah Sekolah</td><td class="p-4 text-blue-300/30">Surat Permohonan, Raport</td><td class="p-4"><span class="px-2.5 py-1 rounded-full bg-yellow-400/10 text-yellow-400 text-xs font-bold">3 hari</span></td></tr>
+                <tr class="hover:bg-white/[0.02] transition-colors"><td class="p-4 text-blue-300/30">3</td><td class="p-4 text-blue-100/60">Legalisir Ijazah</td><td class="p-4 text-blue-300/30">Ijazah Asli</td><td class="p-4"><span class="px-2.5 py-1 rounded-full bg-green-400/10 text-green-400 text-xs font-bold">1 hari</span></td></tr>
+                <tr class="hover:bg-white/[0.02] transition-colors"><td class="p-4 text-blue-300/30">4</td><td class="p-4 text-blue-100/60">Pendaftaran PPDB</td><td class="p-4 text-blue-300/30">Akta, KK, Surat Sehat</td><td class="p-4"><span class="px-2.5 py-1 rounded-full bg-blue-400/10 text-blue-400 text-xs font-bold">Sesuai Jadwal</span></td></tr>
+                <tr class="hover:bg-white/[0.02] transition-colors"><td class="p-4 text-blue-300/30">5</td><td class="p-4 text-blue-100/60">Pengaduan Masyarakat</td><td class="p-4 text-blue-300/30">Identitas, Kronologi</td><td class="p-4"><span class="px-2.5 py-1 rounded-full bg-red-400/10 text-red-400 text-xs font-bold">Maks. 2x24 Jam</span></td></tr>
+            </tbody></table></div>
+        </div>
+        <div class="grid md:grid-cols-2 gap-8 page-enter">
+            <div class="card rounded-2xl bg-blue-900/15 p-8 stagger-4"><h3 class="text-lg font-bold tracking-tight uppercase mb-6 flex items-center gap-2"><i data-lucide="message-circle-warning" class="w-5 h-5 text-yellow-400"></i> Formulir Pengaduan</h3>
+                <form onsubmit="submitPengaduan(event)" class="space-y-4">
+                    <input type="text" placeholder="Nama Pelapor" required class="w-full px-4 py-3 rounded-lg bg-blue-950/50 border border-blue-500/15 text-sm text-white placeholder-blue-300/30 focus:border-yellow-400/50 focus:outline-none transition-colors">
+                    <input type="text" placeholder="Nomor HP / WhatsApp" required class="w-full px-4 py-3 rounded-lg bg-blue-950/50 border border-blue-500/15 text-sm text-white placeholder-blue-300/30 focus:border-yellow-400/50 focus:outline-none transition-colors">
+                    <select required class="w-full px-4 py-3 rounded-lg bg-blue-950/50 border border-blue-500/15 text-sm text-blue-300/40 focus:border-yellow-400/50 focus:outline-none transition-colors"><option value="">Pilih Kategori</option><option>Pelayanan Administrasi</option><option>Perilaku Guru/Staf</option><option>Fasilitas Sekolah</option><option>Lainnya</option></select>
+                    <textarea placeholder="Uraikan pengaduan Anda..." rows="4" required class="w-full px-4 py-3 rounded-lg bg-blue-950/50 border border-blue-500/15 text-sm text-white placeholder-blue-300/30 focus:border-yellow-400/50 focus:outline-none transition-colors resize-none"></textarea>
+                    <button type="submit" class="w-full py-3.5 rounded-lg bg-yellow-400 text-slate-900 font-black text-sm tracking-wider uppercase hover:bg-yellow-300 transition-all hover:scale-[1.02] active:scale-[0.98]">Kirim Pengaduan</button>
+                </form>
+            </div>
+            <div class="card rounded-2xl bg-blue-900/15 p-8 flex flex-col justify-between stagger-5">
+                <div><h3 class="text-lg font-bold tracking-tight uppercase mb-4 flex items-center gap-2"><i data-lucide="phone" class="w-5 h-5 text-green-400"></i> Layanan Langsung</h3><p class="text-blue-100/40 text-sm leading-relaxed mb-6">Hubungi kami via WhatsApp. Pengaduan ditindaklanjuti maksimal <strong class="text-yellow-400">2x24 jam</strong>.</p>
+                    <div class="space-y-3">
+                        <a href="https://wa.me/6281234567890" target="_blank" class="flex items-center gap-4 p-4 rounded-xl bg-green-500/8 border border-green-500/15 hover:border-green-500/40 transition-all group"><div class="w-12 h-12 rounded-xl bg-green-500/15 flex items-center justify-center group-hover:scale-110 transition-transform"><i data-lucide="message-circle" class="w-6 h-6 text-green-400"></i></div><div><div class="font-bold text-sm text-green-400">WhatsApp Pelayanan</div><div class="text-blue-300/30 text-xs">0812-3456-7890</div></div></a>
+                        <a href="mailto:sdnmwt7@sch.id" class="flex items-center gap-4 p-4 rounded-xl bg-blue-500/8 border border-blue-500/15 hover:border-blue-500/40 transition-all group"><div class="w-12 h-12 rounded-xl bg-blue-500/15 flex items-center justify-center group-hover:scale-110 transition-transform"><i data-lucide="mail" class="w-6 h-6 text-blue-400"></i></div><div><div class="font-bold text-sm text-blue-400">Email Sekolah</div><div class="text-blue-300/30 text-xs">sdnmwt7@sch.id</div></div></a>
                     </div>
                 </div>
-                <div class="bento-item">
-                    <i class="fas fa-leaf bento-icon" style="color: var(--success);"></i>
-                    <h3>Program SABUDIGI</h3>
-                    <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 0.5rem;">Sahabat Bumi & Digital Gen. Inovatif.</p>
-                </div>
-                <div class="bento-item">
-                    <i class="fas fa-file-signature bento-icon" style="color: #fbbf24;"></i>
-                    <h3>Administrasi</h3>
-                    <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 0.5rem;">Surat Aktif, Pindah, Legalisir.</p>
-                    <div style="margin-top: auto;"><span style="color: var(--success); font-size: 0.8rem;">⚡ Max 1 Hari</span></div>
-                </div>
-                <div class="bento-item">
-                    <i class="fas fa-chalkboard-teacher bento-icon"></i>
-                    <h3>Akademik</h3>
-                    <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 0.5rem;">Pembelajaran & Rapor.</p>
-                </div>
-                <div class="bento-item">
-                    <i class="fas fa-headset bento-icon" style="color: var(--accent);"></i>
-                    <h3>Pengaduan</h3>
-                    <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 0.5rem;">Layanan Informasi & Aduan.</p>
-                    <div style="margin-top: auto;"><span style="color: var(--accent); font-size: 0.8rem;">⚡ 2x24 Jam</span></div>
-                </div>
+                <div class="mt-6 p-4 rounded-xl bg-blue-800/20 border border-blue-500/10"><div class="text-xs text-blue-300/30 flex items-start gap-2"><i data-lucide="info" class="w-4 h-4 text-yellow-400 flex-shrink-0 mt-0.5"></i><span>Pengaduan juga bisa via Google Form atau kotak saran di ruang TU.</span></div></div>
             </div>
         </div>
+    </div></div>
+</div>
 
-        <!-- VIEW 3: STANDAR WAKTU (Hidden) -->
-        <div id="standar" class="content-section">
-            <div class="section-header">
-                <h2>Standar Waktu Pelayanan</h2>
-                <p>Komitmen kami terhadap efisiensi waktu.</p>
-            </div>
-            <table class="glass-table">
-                <thead>
-                    <tr>
-                        <th>Layanan</th>
-                        <th>Waktu Penyelesaian</th>
-                        <th>Kategori</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>Surat Keterangan Siswa Aktif</td>
-                        <td>Maks. 1 Hari Kerja</td>
-                        <td><span style="color: var(--success);">Cepat</span></td>
-                    </tr>
-                    <tr>
-                        <td>Legalisir Dokumen</td>
-                        <td>Maks. 1 Hari Kerja</td>
-                        <td><span style="color: var(--success);">Cepat</span></td>
-                    </tr>
-                    <tr>
-                        <td>Surat Pindah Sekolah</td>
-                        <td>Maks. 2 Hari Kerja</td>
-                        <td><span style="color: #fbbf24;">Standar</span></td>
-                    </tr>
-                    <tr>
-                        <td>Informasi Sekolah</td>
-                        <td>Saat itu juga</td>
-                        <td><span style="color: var(--primary);">Instan</span></td>
-                    </tr>
-                    <tr>
-                        <td>Pengaduan Masyarakat</td>
-                        <td>Maks. 2 x 24 Jam</td>
-                        <td><span style="color: var(--accent);">Responsif</span></td>
-                    </tr>
-                </tbody>
-            </table>
+<!-- ═══════ PAGE: SABUDIGI ═══════ -->
+<div id="page-sabudigi" class="page">
+    <div class="pt-32 pb-24"><div class="max-w-7xl mx-auto px-6">
+        <div class="text-center mb-16 page-enter"><span class="text-[10px] font-black tracking-[0.3em] uppercase text-yellow-400 mb-4 block stagger-1">Program Unggulan</span><h2 class="text-4xl md:text-6xl font-black tracking-tighter uppercase stagger-2">SABUDIGI</h2><p class="text-blue-100/40 mt-4 max-w-2xl mx-auto text-sm stagger-3"><strong class="text-white">Sahabat Bumi & Digital Generasi Inovatif</strong></p><div class="w-20 h-0.5 bg-blue-500 mx-auto mt-6 stagger-3" style="animation:lineGrow 1s 0.6s both;transform-origin:left"></div></div>
+        <div class="grid md:grid-cols-2 gap-8 mb-16 page-enter">
+            <div class="card rounded-2xl bg-blue-900/15 p-8 md:p-10 relative overflow-hidden group stagger-2"><div class="absolute top-0 right-0 w-48 h-48 bg-green-500/5 rounded-full blur-3xl group-hover:bg-green-500/10 transition-all duration-700"></div><div class="relative z-10"><div class="w-16 h-16 rounded-2xl bg-green-500/10 border border-green-500/20 flex items-center justify-center mb-6 group-hover:scale-110 group-hover:border-green-500/40 transition-all duration-300" style="animation:float 5s ease-in-out infinite"><i data-lucide="trees" class="w-8 h-8 text-green-400"></i></div><h3 class="text-2xl font-black tracking-tight uppercase mb-4">Sahabat Bumi 🌿</h3><ul class="space-y-3"><li class="flex items-start gap-3 text-sm text-blue-100/50"><span class="w-5 h-5 rounded-full bg-green-500/20 flex items-center justify-center flex-shrink-0 mt-0.5"><i data-lucide="check" class="w-3 h-3 text-green-400"></i></span> Petani Cilik — Bercocok tanam</li><li class="flex items-start gap-3 text-sm text-blue-100/50"><span class="w-5 h-5 rounded-full bg-green-500/20 flex items-center justify-center flex-shrink-0 mt-0.5"><i data-lucide="check" class="w-3 h-3 text-green-400"></i></span> Bank Sampah Sekolah</li><li class="flex items-start gap-3 text-sm text-blue-100/50"><span class="w-5 h-5 rounded-full bg-green-500/20 flex items-center justify-center flex-shrink-0 mt-0.5"><i data-lucide="check" class="w-3 h-3 text-green-400"></i></span> Jumat Bersih Lingkungan</li><li class="flex items-start gap-3 text-sm text-blue-100/50"><span class="w-5 h-5 rounded-full bg-green-500/20 flex items-center justify-center flex-shrink-0 mt-0.5"><i data-lucide="check" class="w-3 h-3 text-green-400"></i></span> Eco-Workshop</li></ul></div></div>
+            <div class="card rounded-2xl bg-blue-900/15 p-8 md:p-10 relative overflow-hidden group stagger-3"><div class="absolute top-0 right-0 w-48 h-48 bg-blue-500/5 rounded-full blur-3xl group-hover:bg-blue-500/10 transition-all duration-700"></div><div class="relative z-10"><div class="w-16 h-16 rounded-2xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-center mb-6 group-hover:scale-110 group-hover:border-blue-500/40 transition-all duration-300" style="animation:float 5s ease-in-out infinite;animation-delay:1s"><i data-lucide="laptop" class="w-8 h-8 text-blue-400"></i></div><h3 class="text-2xl font-black tracking-tight uppercase mb-4">Digital Generasi Inovatif 💻</h3><ul class="space-y-3"><li class="flex items-start gap-3 text-sm text-blue-100/50"><span class="w-5 h-5 rounded-full bg-blue-500/20 flex items-center justify-center flex-shrink-0 mt-0.5"><i data-lucide="check" class="w-3 h-3 text-blue-400"></i></span> Literasi Digital</li><li class="flex items-start gap-3 text-sm text-blue-100/50"><span class="w-5 h-5 rounded-full bg-blue-500/20 flex items-center justify-center flex-shrink-0 mt-0.5"><i data-lucide="check" class="w-3 h-3 text-blue-400"></i></span> Projek Kepemimpinan</li><li class="flex items-start gap-3 text-sm text-blue-100/50"><span class="w-5 h-5 rounded-full bg-blue-500/20 flex items-center justify-center flex-shrink-0 mt-0.5"><i data-lucide="check" class="w-3 h-3 text-blue-400"></i></span> Coding Dasar</li><li class="flex items-start gap-3 text-sm text-blue-100/50"><span class="w-5 h-5 rounded-full bg-blue-500/20 flex items-center justify-center flex-shrink-0 mt-0.5"><i data-lucide="check" class="w-3 h-3 text-blue-400"></i></span> Presentasi Digital</li></ul></div></div>
         </div>
-
-        <!-- VIEW 4: DASAR HUKUM (Hidden) -->
-        <div id="hukum" class="content-section">
-            <div class="section-header">
-                <h2>Dasar Hukum</h2>
-                <p>Landasan operasional pelayanan kami.</p>
-            </div>
-            <div style="display: grid; gap: 1rem;">
-                <div class="bento-item" style="min-height: auto;">
-                    <h4 style="color: var(--primary);">UU No. 20 Tahun 2003</h4>
-                    <p style="font-size: 0.9rem; color: var(--text-muted);">Sistem Pendidikan Nasional</p>
-                </div>
-                <div class="bento-item" style="min-height: auto;">
-                    <h4 style="color: var(--primary);">PP No. 57 Tahun 2021</h4>
-                    <p style="font-size: 0.9rem; color: var(--text-muted);">Standar Nasional Pendidikan</p>
-                </div>
-                <div class="bento-item" style="min-height: auto;">
-                    <h4 style="color: var(--primary);">Permendikbudristek No. 32 Tahun 2022</h4>
-                    <p style="font-size: 0.9rem; color: var(--text-muted);">Standar Teknis Pelayanan Minimal Pendidikan</p>
-                </div>
+        <div class="page-enter"><h3 class="text-2xl font-black tracking-tight uppercase mb-8 text-center stagger-2">Galeri <span class="gt">Kegiatan</span></h3>
+            <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+                <div class="card rounded-2xl overflow-hidden group aspect-square stagger-2"><img src="https://picsum.photos/seed/s1v7/600/600.jpg" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"><div class="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-end p-4"><span class="text-sm font-semibold">🌱 Petani Cilik</span></div></div>
+                <div class="card rounded-2xl overflow-hidden group aspect-square md:row-span-2 stagger-3"><img src="https://picsum.photos/seed/s2v7/600/1200.jpg" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"><div class="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-end p-4"><span class="text-sm font-semibold">💻 Workshop Digital</span></div></div>
+                <div class="card rounded-2xl overflow-hidden group aspect-square stagger-4"><img src="https://picsum.photos/seed/s3v7/600/600.jpg" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"><div class="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-end p-4"><span class="text-sm font-semibold">♻️ Bank Sampah</span></div></div>
+                <div class="card rounded-2xl overflow-hidden group aspect-square stagger-4"><img src="https://picsum.photos/seed/s4v7/600/600.jpg" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"><div class="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-end p-4"><span class="text-sm font-semibold">🏆 Presentasi</span></div></div>
+                <div class="card rounded-2xl overflow-hidden group aspect-square stagger-5"><img src="https://picsum.photos/seed/s5v7/600/600.jpg" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"><div class="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-end p-4"><span class="text-sm font-semibold">🌿 Jumat Bersih</span></div></div>
             </div>
         </div>
+    </div></div>
+</div>
 
-        <!-- VIEW 5: MAKLUMAT (Hidden) -->
-        <div id="maklumat" class="content-section">
-            <div class="section-header">
-                <h2>Maklumat Pelayanan</h2>
+<!-- ═══════ PAGE: INFORMASI ═══════ -->
+<div id="page-informasi" class="page">
+    <div class="pt-32 pb-24"><div class="max-w-7xl mx-auto px-6">
+        <div class="text-center mb-16 page-enter"><span class="text-[10px] font-black tracking-[0.3em] uppercase text-yellow-400 mb-4 block stagger-1">Informasi</span><h2 class="text-4xl md:text-6xl font-black tracking-tighter uppercase stagger-2">Informasi <span class="gt">Publik</span></h2><div class="w-20 h-0.5 bg-blue-500 mx-auto mt-6 stagger-3" style="animation:lineGrow 1s 0.5s both;transform-origin:left"></div></div>
+        <div class="card rounded-2xl bg-gradient-to-br from-blue-500/5 to-transparent p-8 md:p-12 mb-8 border-blue-500/15 relative overflow-hidden page-enter stagger-2"><div class="absolute top-0 right-0 w-64 h-64 bg-blue-500/5 rounded-full blur-3xl"></div><div class="relative z-10">
+            <div class="flex items-center gap-4 mb-8"><div class="w-16 h-16 rounded-2xl bg-blue-500/15 flex items-center justify-center"><i data-lucide="graduation-cap" class="w-8 h-8 text-blue-400"></i></div><div><h3 class="text-3xl font-black tracking-tight uppercase">PPDB 2026/2027</h3><p class="text-blue-300/50 text-xs font-bold tracking-wider">Penerimaan Peserta Didik Baru</p></div></div>
+            <div class="grid md:grid-cols-3 gap-6 mb-8">
+                <div class="p-5 rounded-xl bg-blue-950/40 border border-blue-500/10"><div class="text-[10px] text-yellow-400 font-black tracking-wider uppercase mb-2">📅 Jadwal</div><p class="text-sm text-blue-100/50">Mei - Juni 2026<br><span class="text-blue-300/25 text-xs">Sen-Sab, 08:00-12:00</span></p></div>
+                <div class="p-5 rounded-xl bg-blue-950/40 border border-blue-500/10"><div class="text-[10px] text-yellow-400 font-black tracking-wider uppercase mb-2">📋 Syarat</div><ul class="text-sm text-blue-100/50 space-y-1"><li>• Akta Kelahiran</li><li>• Kartu Keluarga</li><li>• Surat Keterangan Sehat</li><li>• Pas Foto 3x4 (4 lbr)</li></ul></div>
+                <div class="p-5 rounded-xl bg-blue-950/40 border border-blue-500/10"><div class="text-[10px] text-yellow-400 font-black tracking-wider uppercase mb-2">🔗 Alur</div><p class="text-sm text-blue-100/50">1. Ambil formulir<br>2. Lengkapi berkas<br>3. Verifikasi data<br>4. Pengumuman</p></div>
             </div>
-            <div class="bento-item large" style="text-align: center; padding: 3rem;">
-                <i class="fas fa-quote-left" style="font-size: 2rem; color: var(--accent); margin-bottom: 1rem;"></i>
-                <p style="font-size: 1.2rem; line-height: 1.8; font-style: italic;">
-                    "Kami Warga SDN Majalengka Wetan 7 siap memberikan pelayanan pendidikan yang profesional, cepat, transparan, ramah, dan bertanggung jawab."
-                </p>
-                <div style="margin-top: 2rem; border-top: 1px solid var(--glass-border); padding-top: 1rem;">
-                    <p style="font-weight: 700; color: var(--primary);">Iyus Susnardi, S.Pd., M.Pd.</p>
-                    <p style="font-size: 0.9rem; color: var(--text-muted);">Kepala Sekolah</p>
-                </div>
+            <a href="#" class="inline-flex items-center gap-2 px-8 py-3.5 rounded-lg bg-blue-500 text-white font-black text-sm tracking-wider uppercase hover:bg-blue-400 transition-all hover:scale-105"><i data-lucide="external-link" class="w-4 h-4"></i> Link PPDB Online</a>
+        </div></div>
+        <div class="card rounded-2xl bg-blue-900/15 p-8 md:p-12 mb-8 page-enter stagger-3"><h3 class="text-2xl font-black tracking-tight uppercase mb-8">Ekstrakurikuler</h3>
+            <div class="grid grid-cols-3 sm:grid-cols-6 gap-3">
+                <div class="card rounded-xl bg-blue-800/20 p-4 text-center group"><div class="text-3xl mb-2 group-hover:scale-125 transition-transform duration-300">⚽</div><div class="text-xs font-semibold">Sepak Bola</div></div>
+                <div class="card rounded-xl bg-blue-800/20 p-4 text-center group"><div class="text-3xl mb-2 group-hover:scale-125 transition-transform duration-300">🥋</div><div class="text-xs font-semibold">Pencak Silat</div></div>
+                <div class="card rounded-xl bg-blue-800/20 p-4 text-center group"><div class="text-3xl mb-2 group-hover:scale-125 transition-transform duration-300">🎒</div><div class="text-xs font-semibold">Pramuka</div></div>
+                <div class="card rounded-xl bg-blue-800/20 p-4 text-center group"><div class="text-3xl mb-2 group-hover:scale-125 transition-transform duration-300">🎨</div><div class="text-xs font-semibold">Seni Rupa</div></div>
+                <div class="card rounded-xl bg-blue-800/20 p-4 text-center group"><div class="text-3xl mb-2 group-hover:scale-125 transition-transform duration-300">🎵</div><div class="text-xs font-semibold">Paduan Suara</div></div>
+                <div class="card rounded-xl bg-blue-800/20 p-4 text-center group"><div class="text-3xl mb-2 group-hover:scale-125 transition-transform duration-300">💻</div><div class="text-xs font-semibold">Coding Club</div></div>
             </div>
         </div>
+    </div></div>
+</div>
 
-    </main>
+<!-- ═══════ PAGE: PORTAL ═══════ -->
+<div id="page-portal" class="page">
+    <div class="pt-32 pb-24"><div class="max-w-7xl mx-auto px-6">
+        <div class="text-center mb-16 page-enter"><span class="text-[10px] font-black tracking-[0.3em] uppercase text-yellow-400 mb-4 block stagger-1">Integrasi Sistem</span><h2 class="text-4xl md:text-6xl font-black tracking-tighter uppercase stagger-2">Portal <span class="gt">Aplikasi</span></h2><div class="w-20 h-0.5 bg-blue-500 mx-auto mt-6 stagger-3" style="animation:lineGrow 1s 0.5s both;transform-origin:left"></div></div>
+        <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 page-enter">
+            <a href="https://dapo.kemdikbud.go.id" target="_blank" class="portal-card card rounded-2xl bg-blue-900/15 p-6 flex items-start gap-4 group stagger-2"><div class="w-14 h-14 rounded-2xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-center flex-shrink-0 group-hover:bg-blue-500/20 group-hover:scale-110 transition-all duration-300"><i data-lucide="database" class="w-7 h-7 text-blue-400"></i></div><div><h4 class="font-bold text-sm mb-1 group-hover:text-blue-400 transition-colors">DAPODIK</h4><p class="text-blue-300/30 text-xs leading-relaxed mb-2">Sinkronisasi data sekolah</p><span class="px-2 py-0.5 rounded bg-blue-800/30 text-blue-300/40 text-[10px]">Operator Sekolah</span></div></a>
+            <a href="https://raporpendidikan.kemdikbud.go.id" target="_blank" class="portal-card card rounded-2xl bg-blue-900/15 p-6 flex items-start gap-4 group stagger-3"><div class="w-14 h-14 rounded-2xl bg-green-500/10 border border-green-500/20 flex items-center justify-center flex-shrink-0 group-hover:bg-green-500/20 group-hover:scale-110 transition-all duration-300"><i data-lucide="bar-chart-3" class="w-7 h-7 text-green-400"></i></div><div><h4 class="font-bold text-sm mb-1 group-hover:text-green-400 transition-colors">Rapor Pendidikan</h4><p class="text-blue-300/30 text-xs leading-relaxed mb-2">Evaluasi mutu & asesmen</p><span class="px-2 py-0.5 rounded bg-blue-800/30 text-blue-300/40 text-[10px]">Kepsek & Guru</span></div></a>
+            <a href="https://arkas.kemdikbud.go.id" target="_blank" class="portal-card card rounded-2xl bg-blue-900/15 p-6 flex items-start gap-4 group stagger-4"><div class="w-14 h-14 rounded-2xl bg-yellow-400/10 border border-yellow-400/20 flex items-center justify-center flex-shrink-0 group-hover:bg-yellow-400/20 group-hover:scale-110 transition-all duration-300"><i data-lucide="wallet" class="w-7 h-7 text-yellow-400"></i></div><div><h4 class="font-bold text-sm mb-1 group-hover:text-yellow-400 transition-colors">ARKAS</h4><p class="text-blue-300/30 text-xs leading-relaxed mb-2">Pengelolaan dana BOS</p><span class="px-2 py-0.5 rounded bg-blue-800/30 text-blue-300/40 text-[10px]">Bendahara & Kepsek</span></div></a>
+            <a href="https://guru.kemdikbud.go.id" target="_blank" class="portal-card card rounded-2xl bg-blue-900/15 p-6 flex items-start gap-4 group stagger-3"><div class="w-14 h-14 rounded-2xl bg-purple-500/10 border border-purple-500/20 flex items-center justify-center flex-shrink-0 group-hover:bg-purple-500/20 group-hover:scale-110 transition-all duration-300"><i data-lucide="sparkles" class="w-7 h-7 text-purple-400"></i></div><div><h4 class="font-bold text-sm mb-1 group-hover:text-purple-400 transition-colors">PMM (Merdeka Mengajar)</h4><p class="text-blue-300/30 text-xs leading-relaxed mb-2">Pelatihan & Kurikulum Merdeka</p><span class="px-2 py-0.5 rounded bg-blue-800/30 text-blue-300/40 text-[10px]">Guru & Kepsek</span></div></a>
+            <a href="#" class="portal-card card rounded-2xl bg-blue-900/15 p-6 flex items-start gap-4 group stagger-4"><div class="w-14 h-14 rounded-2xl bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center flex-shrink-0 group-hover:bg-cyan-500/20 group-hover:scale-110 transition-all duration-300"><i data-lucide="user-plus" class="w-7 h-7 text-cyan-400"></i></div><div><h4 class="font-bold text-sm mb-1 group-hover:text-cyan-400 transition-colors">PPDB Online</h4><p class="text-blue-300/30 text-xs leading-relaxed mb-2">Pendaftaran siswa baru</p><span class="px-2 py-0.5 rounded bg-blue-800/30 text-blue-300/40 text-[10px]">Calon Orang Tua</span></div></a>
+            <a href="#" class="portal-card card rounded-2xl bg-blue-900/15 p-6 flex items-start gap-4 group stagger-5"><div class="w-14 h-14 rounded-2xl bg-rose-500/10 border border-rose-500/20 flex items-center justify-center flex-shrink-0 group-hover:bg-rose-500/20 group-hover:scale-110 transition-all duration-300"><i data-lucide="file-text" class="w-7 h-7 text-rose-400"></i></div><div><h4 class="font-bold text-sm mb-1 group-hover:text-rose-400 transition-colors">E-Rapor / LMS</h4><p class="text-blue-300/30 text-xs leading-relaxed mb-2">Nilai & pembelajaran digital</p><span class="px-2 py-0.5 rounded bg-blue-800/30 text-blue-300/40 text-[10px]">Guru, Siswa, Ortu</span></div></a>
+        </div>
+    </div></div>
+</div>
 
-    <!-- Scripts -->
-    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-    <script>
-        // Init Animation
-        AOS.init({ once: true, duration: 800 });
+<!-- ═══════ FOOTER ═══════ -->
+<footer id="main-footer" class="pt-20 pb-8 bg-slate-950 border-t border-blue-500/10">
+    <div class="max-w-7xl mx-auto px-6">
+        <div class="grid md:grid-cols-4 gap-12 mb-16">
+            <div><div class="flex items-center gap-3 mb-6"><img src="https://www.image2url.com/r2/default/images/1781412123690-177b96ef-efc4-4f7b-888b-1689e2ec1c52.jpeg" alt="Logo" class="w-12 h-12 rounded-xl bg-white p-0.5 shadow-lg shadow-blue-500/10"><div><div class="font-bold text-sm leading-none">SDN Majalengka<br>Wetan VII</div></div></div><p class="text-blue-300/30 text-xs leading-relaxed mb-4 italic">"Majalengka Langkung Sae — TA 2026/2027"</p><div class="flex items-center gap-2 text-xs text-blue-300/20"><i data-lucide="map-pin" class="w-3.5 h-3.5"></i><span>Kec. Majalengka, Kab. Majalengka, Jawa Barat</span></div></div>
+            <div><h4 class="text-[10px] font-black tracking-widest uppercase text-yellow-400 mb-6">Kontak Resmi</h4><ul class="space-y-4"><li class="flex items-start gap-3 text-sm text-blue-200/40"><i data-lucide="mail" class="w-4 h-4 text-blue-400/30 mt-0.5 flex-shrink-0"></i>sdnmwt7@sch.id</li><li class="flex items-start gap-3 text-sm text-blue-200/40"><i data-lucide="phone" class="w-4 h-4 text-blue-400/30 mt-0.5 flex-shrink-0"></i>(0233) 123456</li><li class="flex items-start gap-3 text-sm text-blue-200/40"><i data-lucide="message-circle" class="w-4 h-4 text-green-400/40 mt-0.5 flex-shrink-0"></i>0812-3456-7890<br><span class="text-blue-300/15 text-xs">(WhatsApp Pelayanan)</span></li></ul></div>
+            <div><h4 class="text-[10px] font-black tracking-widest uppercase text-yellow-400 mb-6">Tautan Pintar</h4><ul class="space-y-3"><li><button onclick="navigateTo('informasi')" class="text-sm text-blue-200/40 hover:text-yellow-400 transition-colors flex items-center gap-2"><i data-lucide="chevron-right" class="w-3 h-3"></i> PPDB 2026/2027</button></li><li><button onclick="navigateTo('pelayanan')" class="text-sm text-blue-200/40 hover:text-yellow-400 transition-colors flex items-center gap-2"><i data-lucide="chevron-right" class="w-3 h-3"></i> Standar Pelayanan</button></li><li><button onclick="navigateTo('pelayanan')" class="text-sm text-blue-200/40 hover:text-yellow-400 transition-colors flex items-center gap-2"><i data-lucide="chevron-right" class="w-3 h-3"></i> Pengaduan Masyarakat</button></li><li><button onclick="navigateTo('sabudigi')" class="text-sm text-blue-200/40 hover:text-yellow-400 transition-colors flex items-center gap-2"><i data-lucide="chevron-right" class="w-3 h-3"></i> Program SABUDIGI</button></li><li><button onclick="navigateTo('portal')" class="text-sm text-blue-200/40 hover:text-yellow-400 transition-colors flex items-center gap-2"><i data-lucide="chevron-right" class="w-3 h-3"></i> Portal Aplikasi</button></li></ul></div>
+            <div><h4 class="text-[10px] font-black tracking-widest uppercase text-yellow-400 mb-6">Media Sosial</h4><div class="grid grid-cols-2 gap-3"><a href="#" class="card rounded-xl bg-blue-900/15 p-4 text-center group"><i data-lucide="instagram" class="w-6 h-6 mx-auto mb-2 text-blue-300/30 group-hover:text-pink-400 transition-colors"></i><div class="text-[10px] text-blue-300/30 group-hover:text-blue-100/60 transition-colors">Instagram</div></a><a href="#" class="card rounded-xl bg-blue-900/15 p-4 text-center group"><i data-lucide="youtube" class="w-6 h-6 mx-auto mb-2 text-blue-300/30 group-hover:text-red-400 transition-colors"></i><div class="text-[10px] text-blue-300/30 group-hover:text-blue-100/60 transition-colors">YouTube</div></a><a href="#" class="card rounded-xl bg-blue-900/15 p-4 text-center group"><i data-lucide="facebook" class="w-6 h-6 mx-auto mb-2 text-blue-300/30 group-hover:text-blue-400 transition-colors"></i><div class="text-[10px] text-blue-300/30 group-hover:text-blue-100/60 transition-colors">Facebook</div></a><a href="#" class="card rounded-xl bg-blue-900/15 p-4 text-center group"><i data-lucide="twitter" class="w-6 h-6 mx-auto mb-2 text-blue-300/30 group-hover:text-sky-400 transition-colors"></i><div class="text-[10px] text-blue-300/30 group-hover:text-blue-100/60 transition-colors">Twitter</div></a></div></div>
+        </div>
+        <div class="border-t border-blue-500/10 pt-8 flex flex-col md:flex-row items-center justify-between gap-4"><p class="text-blue-300/15 text-xs text-center md:text-left">© 2026 SDN Majalengka Wetan VII. All Rights Reserved. <span class="text-yellow-400/30">Majalengka Langkung Sae.</span></p><div class="flex items-center gap-1 text-blue-300/15 text-xs"><span>Dibuat dengan</span><i data-lucide="heart" class="w-3 h-3 text-yellow-400/30"></i><span>untuk pendidikan</span></div></div>
+    </div>
+</footer>
 
-        // --- Navigation Logic ---
-        function switchView(viewId, navElement) {
-            // Update Navigation Active State
-            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
-            if(navElement) navElement.classList.add('active');
+<!-- ═══════ LOGIN MODAL ═══════ -->
+<div id="login-modal" class="modal-bg fixed inset-0 z-[60] bg-slate-900/80 backdrop-blur-md flex items-center justify-center p-6">
+    <div class="modal-box glass rounded-2xl border border-blue-500/15 p-8 max-w-lg w-full max-h-[90vh] overflow-y-auto">
+        <div class="flex justify-between items-center mb-6"><h3 class="text-xl font-bold tracking-tight">Pusat Aplikasi</h3><button onclick="closeModal()" class="p-2 rounded-lg hover:bg-white/10 transition-colors"><i data-lucide="x" class="w-5 h-5"></i></button></div>
+        <div class="space-y-2">
+            <a href="https://dapo.kemdikbud.go.id" target="_blank" class="flex items-center gap-4 p-4 rounded-xl bg-blue-900/20 border border-blue-500/10 hover:border-blue-400/40 hover:bg-blue-500/5 transition-all group"><div class="w-10 h-10 rounded-lg bg-blue-500/15 flex items-center justify-center flex-shrink-0"><i data-lucide="database" class="w-5 h-5 text-blue-400"></i></div><div class="flex-1"><div class="font-semibold text-sm">DAPODIK</div><div class="text-blue-300/30 text-xs">dapo.kemdikbud.go.id</div></div><i data-lucide="external-link" class="w-4 h-4 text-blue-300/20 group-hover:text-blue-400 transition-colors"></i></a>
+            <a href="https://raporpendidikan.kemdikbud.go.id" target="_blank" class="flex items-center gap-4 p-4 rounded-xl bg-blue-900/20 border border-blue-500/10 hover:border-green-400/40 hover:bg-green-500/5 transition-all group"><div class="w-10 h-10 rounded-lg bg-green-500/15 flex items-center justify-center flex-shrink-0"><i data-lucide="bar-chart-3" class="w-5 h-5 text-green-400"></i></div><div class="flex-1"><div class="font-semibold text-sm">Rapor Pendidikan</div><div class="text-blue-300/30 text-xs">raporpendidikan.kemdikbud.go.id</div></div><i data-lucide="external-link" class="w-4 h-4 text-blue-300/20 group-hover:text-green-400 transition-colors"></i></a>
+            <a href="https://arkas.kemdikbud.go.id" target="_blank" class="flex items-center gap-4 p-4 rounded-xl bg-blue-900/20 border border-blue-500/10 hover:border-yellow-400/40 hover:bg-yellow-400/5 transition-all group"><div class="w-10 h-10 rounded-lg bg-yellow-400/15 flex items-center justify-center flex-shrink-0"><i data-lucide="wallet" class="w-5 h-5 text-yellow-400"></i></div><div class="flex-1"><div class="font-semibold text-sm">ARKAS</div><div class="text-blue-300/30 text-xs">arkas.kemdikbud.go.id</div></div><i data-lucide="external-link" class="w-4 h-4 text-blue-300/20 group-hover:text-yellow-400 transition-colors"></i></a>
+            <a href="https://guru.kemdikbud.go.id" target="_blank" class="flex items-center gap-4 p-4 rounded-xl bg-blue-900/20 border border-blue-500/10 hover:border-purple-400/40 hover:bg-purple-500/5 transition-all group"><div class="w-10 h-10 rounded-lg bg-purple-500/15 flex items-center justify-center flex-shrink-0"><i data-lucide="sparkles" class="w-5 h-5 text-purple-400"></i></div><div class="flex-1"><div class="font-semibold text-sm">Platform Merdeka Mengajar</div><div class="text-blue-300/30 text-xs">guru.kemdikbud.go.id</div></div><i data-lucide="external-link" class="w-4 h-4 text-blue-300/20 group-hover:text-purple-400 transition-colors"></i></a>
+            <a href="#" class="flex items-center gap-4 p-4 rounded-xl bg-blue-900/20 border border-blue-500/10 hover:border-cyan-400/40 hover:bg-cyan-500/5 transition-all group"><div class="w-10 h-10 rounded-lg bg-cyan-500/15 flex items-center justify-center flex-shrink-0"><i data-lucide="user-plus" class="w-5 h-5 text-cyan-400"></i></div><div class="flex-1"><div class="font-semibold text-sm">PPDB Online</div><div class="text-blue-300/30 text-xs">Link PPDB Kab. Majalengka</div></div><i data-lucide="external-link" class="w-4 h-4 text-blue-300/20 group-hover:text-cyan-400 transition-colors"></i></a>
+            <a href="#" class="flex items-center gap-4 p-4 rounded-xl bg-blue-900/20 border border-blue-500/10 hover:border-rose-400/40 hover:bg-rose-500/5 transition-all group"><div class="w-10 h-10 rounded-lg bg-rose-500/15 flex items-center justify-center flex-shrink-0"><i data-lucide="file-text" class="w-5 h-5 text-rose-400"></i></div><div class="flex-1"><div class="font-semibold text-sm">E-Rapor / LMS Sekolah</div><div class="text-blue-300/30 text-xs">Link internal server sekolah</div></div><i data-lucide="external-link" class="w-4 h-4 text-blue-300/20 group-hover:text-rose-400 transition-colors"></i></a>
+        </div>
+    </div>
+</div>
 
-            // Hide all sections
-            const sections = ['dashboard', 'layanan', 'standar', 'hukum', 'maklumat'];
-            sections.forEach(id => {
-                const el = document.getElementById(id);
-                el.style.display = 'none';
-                el.classList.remove('active-section');
-            });
+<!-- WhatsApp Float -->
+<a href="https://wa.me/6281234567890?text=Halo,%20saya%20ingin%20bertanya%20tentang%20SDN%20Majalengka%20Wetan%20VII" target="_blank" class="fixed bottom-24 left-6 z-50 w-14 h-14 rounded-full bg-green-500 flex items-center justify-center shadow-2xl hover:bg-green-400 hover:scale-110 transition-all duration-300 group" style="box-shadow:0 0 30px rgba(34,197,94,0.4)"><i data-lucide="message-circle" class="w-7 h-7 text-white"></i><span class="absolute left-full ml-3 px-3 py-1.5 rounded-lg bg-white text-slate-900 text-xs font-semibold whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">Chat WhatsApp</span></a>
 
-            // Show selected section
-            const target = document.getElementById(viewId);
-            target.style.display = (viewId === 'dashboard') ? 'grid' : 'block';
-            
-            // Trigger reflow for animation
-            void target.offsetWidth; 
-            target.classList.add('active-section');
+<!-- ═══════ MUSIC PLAYER ═══════ -->
+<div class="music-player">
+    <div class="music-label" id="musicLabel">🎵 Klik untuk putar musik pendidikan</div>
+    <div class="music-status off" id="musicStatus">✕</div>
+    <button id="musicBtn" class="music-btn" onclick="toggleMusic()">
+        <div class="eq-bars" id="eqBars">
+            <div class="eq-bar" style="height:4px"></div>
+            <div class="eq-bar" style="height:4px"></div>
+            <div class="eq-bar" style="height:4px"></div>
+            <div class="eq-bar" style="height:4px"></div>
+        </div>
+    </button>
+</div>
 
-            // Update Title
-            const titles = {
-                'dashboard': 'Dashboard Overview',
-                'layanan': 'Jenis Pelayanan',
-                'standar': 'Standar Waktu',
-                'hukum': 'Dasar Hukum',
-                'maklumat': 'Maklumat Pelayanan'
-            };
-            document.getElementById('page-title').innerText = titles[viewId];
+<!-- Toast -->
+<div id="toast" class="toast"><div class="glass rounded-xl border border-green-500/30 px-6 py-4 flex items-center gap-3 shadow-2xl"><div class="w-8 h-8 rounded-full bg-green-500/20 flex items-center justify-center flex-shrink-0"><i data-lucide="check-circle" class="w-5 h-5 text-green-400"></i></div><div><div class="font-bold text-sm">Pengaduan Terkirim!</div><div class="text-blue-200/40 text-xs">Ditindaklanjuti maks. 2x24 jam.</div></div></div></div>
 
-            // Close mobile sidebar if open
-            if(window.innerWidth <= 900) {
-                document.getElementById('sidebar').classList.remove('active');
-            }
-        }
+<!-- ═══════ JAVASCRIPT ═══════ -->
+<script>
+lucide.createIcons();
 
-        function toggleSidebar() {
-            document.getElementById('sidebar').classList.toggle('active');
-        }
+let currentPage='home',isPlaying=false;
+const audio=document.getElementById('bgMusic');
+audio.volume=0.35;
 
-        // --- Typewriter Effect ---
-        const words = ["Satu Data", "Transparansi", "Inovasi", "Kemudahan Akses", "Masa Depan"];
-        let i = 0;
-        let timer;
+// ✅ Auto-play check
+audio.addEventListener('canplaythrough',function(){
+    document.getElementById('musicLabel').textContent='🎵 Musik Pendidikan — Klik untuk play/pause';
+});
 
-        function typeWriter() {
-            const element = document.getElementById('typewriter');
-            const word = words[i];
-            let k = 0;
-            
-            // Type
-            const typeInterval = setInterval(() => {
-                element.innerHTML = word.substring(0, k + 1);
-                k++;
-                if (k > word.length) {
-                    clearInterval(typeInterval);
-                    // Wait then delete
-                    setTimeout(() => {
-                        deleteInterval();
-                    }, 2000);
-                }
-            }, 150);
+function navigateTo(page){
+    if(page===currentPage)return;
+    const loader=document.getElementById('page-loader');
+    loader.classList.add('show');
+    setTimeout(()=>{
+        document.querySelectorAll('.page').forEach(p=>{p.classList.remove('active','page-enter')});
+        document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+        const target=document.getElementById('page-'+page);
+        const navBtn=document.querySelector(`[data-nav="${page}"]`);
+        if(target){target.classList.add('active','page-enter');target.querySelectorAll('[class*="stagger-"]').forEach(el=>{el.style.animation='none';el.offsetHeight;el.style.animation=''})}
+        if(navBtn)navBtn.classList.add('active');
+        currentPage=page;
+        window.scrollTo({top:0,behavior:'instant'});
+        if(page==='home')initCounters();
+        loader.classList.remove('show');
+    },400);
+}
 
-            function deleteInterval() {
-                const delInterval = setInterval(() => {
-                    element.innerHTML = word.substring(0, k - 1);
-                    k--;
-                    if (k < 0) {
-                        clearInterval(delInterval);
-                        i = (i + 1) % words.length;
-                        typeWriter();
-                    }
-                }, 100);
-            }
-        }
+function toggleMob(){document.getElementById('mob-menu').classList.toggle('open')}
+function openModal(){document.getElementById('login-modal').classList.add('show');document.body.style.overflow='hidden'}
+function closeModal(){document.getElementById('login-modal').classList.remove('show');document.body.style.overflow=''}
+document.getElementById('login-modal').addEventListener('click',function(e){if(e.target===this)closeModal()});
+window.addEventListener('scroll',()=>{document.getElementById('navbar').style.top=window.scrollY>80?'0':'28px'});
 
-        // Start Typewriter
-        typeWriter();
+function initCounters(){
+    document.querySelectorAll('[data-count]').forEach(el=>{
+        el.textContent='0';const target=parseInt(el.getAttribute('data-count'));if(!target)return;
+        let cur=0;const inc=Math.ceil(target/50);const t=setInterval(()=>{cur+=inc;if(cur>=target){cur=target;clearInterval(t)}el.textContent=cur+'+';},35);
+    });
+}
 
-    </script>
+// Motivasi Slider
+let curSlide=0;const slides=document.querySelectorAll('.m-slide'),dotsWrap=document.getElementById('dots');
+slides.forEach((_,i)=>{const d=document.createElement('button');d.className=i===0?'w-8 h-1 rounded-full bg-yellow-400 transition-all duration-300':'w-4 h-1 rounded-full bg-blue-500/20 transition-all duration-300';d.onclick=()=>goSlide(i);dotsWrap.appendChild(d)});
+function goSlide(n){slides.forEach(s=>s.classList.remove('on'));dotsWrap.querySelectorAll('button').forEach((d,i)=>{d.className=i===n?'w-8 h-1 rounded-full bg-yellow-400 transition-all duration-300':'w-4 h-1 rounded-full bg-blue-500/20 transition-all duration-300'});curSlide=(n+slides.length)%slides.length;slides[curSlide].classList.add('on')}
+setInterval(()=>goSlide(curSlide+1),5000);
+
+// ✅ MUSIK TOGGLE
+function toggleMusic(){
+    const btn=document.getElementById('musicBtn'),bars=document.querySelectorAll('.eq-bar'),status=document.getElementById('musicStatus'),label=document.getElementById('musicLabel');
+    if(isPlaying){
+        audio.pause();btn.classList.remove('playing');bars.forEach(b=>{b.classList.remove('active');b.style.height='4px'});status.className='music-status off';status.textContent='✕';label.textContent='🎵 Klik untuk putar musik';isPlaying=false;
+    }else{
+        audio.play().then(()=>{
+            btn.classList.add('playing');bars.forEach(b=>b.classList.add('active'));status.className='music-status on';status.textContent='♪';label.textContent='🎵 Musik Pendidikan sedang diputar';isPlaying=true;spawnNote();
+        }).catch(err=>{
+            console.log('Audio play error:',err);label.textContent='⚠️ Klik 2x untuk mulai musik';
+        });
+    }
+}
+function spawnNote(){
+    if(!isPlaying)return;
+    const btn=document.getElementById('musicBtn'),notes=['♪','♫','♬','🎵','🎶'];
+    const note=document.createElement('span');note.className='note';note.textContent=notes[Math.floor(Math.random()*notes.length)];
+    note.style.left=(Math.random()*40-20)+'px';note.style.top='-10px';btn.appendChild(note);
+    setTimeout(()=>note.remove(),1800);setTimeout(()=>spawnNote(),1500+Math.random()*2500);
+}
+
+function submitPengaduan(e){e.preventDefault();const t=document.getElementById('toast');t.classList.add('show');e.target.reset();setTimeout(()=>t.classList.remove('show'),4000)}
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal()});
+initCounters();
+</script>
 </body>
 </html>
