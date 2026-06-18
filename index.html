@@ -125,7 +125,7 @@
         /* --- STYLES KHUSUS ADMIN --- */
         .admin-panel { display: none; position: fixed; inset: 0; z-index: 90; background: #0f172a; }
         .admin-panel.active { display: flex; }
-        .admin-sidebar { width: 250px; background: #0f172a; border-right: 1px solid #334155; padding: 20px; overflow-y: auto; }
+        .admin-sidebar { width: 250px; background: #0f172a; border-right: 1px solid #334155; padding: 20px; }
         .admin-content { flex: 1; padding: 40px; overflow-y: auto; }
         .admin-input { width: 100%; background: #1e293b; border: 1px solid #334155; color: white; padding: 10px; border-radius: 6px; margin-bottom: 10px; }
         .admin-btn { background: #facc15; color: black; font-weight: bold; padding: 10px; border-radius: 6px; cursor: pointer; border: none; width: 100%; }
@@ -245,7 +245,6 @@
         </div>
         <div onclick="switchAdminTab('home')" class="admin-tab-link active" id="link-home">🏠 Beranda & Media</div>
         <div onclick="switchAdminTab('profil')" class="admin-tab-link" id="link-profil">🏫 Profil Sekolah</div>
-        <div onclick="switchAdminTab('pelayanan')" class="admin-tab-link" id="link-pelayanan">📋 Pelayanan</div>
         <div onclick="switchAdminTab('news')" class="admin-tab-link" id="link-news">📰 Berita & Kegiatan</div>
         <div onclick="switchAdminTab('guru')" class="admin-tab-link" id="link-guru">👨‍🏫 Data Guru</div>
         <div onclick="switchAdminTab('portal')" class="admin-tab-link" id="link-portal">🔗 Portal Aplikasi</div>
@@ -303,7 +302,7 @@
                 <div class="bg-slate-800/50 p-6 rounded-xl border border-slate-700">
                     <h3 class="font-bold text-blue-400 mb-4">Misi</h3>
                     <textarea id="misi-text" class="admin-input" rows="5"></textarea>
-                    <p class="text-xs text-gray-500">*Pisahkan tiap misi dengan tanda titik komma (;)</p>
+                    <p class="text-xs text-gray-500">*Pisahkan tiap misi dengan tanda titik koma (;)</p>
                 </div>
             </div>
             <div class="bg-slate-800/50 p-6 rounded-xl border border-slate-700 mt-6">
@@ -313,39 +312,6 @@
                 <input id="kepsek-foto" class="admin-input" placeholder="URL Foto Kepsek">
                 <textarea id="kepsek-sambutan" class="admin-input" rows="5" placeholder="Isi Sambutan"></textarea>
                 <button onclick="saveProfilSettings()" class="admin-btn">Simpan Profil</button>
-            </div>
-        </div>
-
-                <!-- Tab PELAYANAN (BARU) -->
-        <div id="tab-pelayanan" class="admin-tab-content hidden">
-            <h2 class="text-2xl font-bold mb-6">Update Standar Pelayanan</h2>
-            
-            <!-- Add New Service -->
-            <div class="bg-slate-800/50 p-6 rounded-xl border border-slate-700 mb-8">
-                <h3 class="font-bold text-yellow-400 mb-4">Tambah Layanan Baru</h3>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                        <label class="text-xs text-gray-400">Nama Layanan</label>
-                        <input id="srv-name" class="admin-input" placeholder="Cth: Legalisir Ijazah">
-                    </div>
-                    <div>
-                        <label class="text-xs text-gray-400">Keterangan Waktu</label>
-                        <input id="srv-time" class="admin-input" placeholder="Cth: 1 Hari Kerja">
-                    </div>
-                </div>
-                <!-- TAMBAHAN: INPUT LINK -->
-                <label class="text-xs text-gray-400">Link Tujuan (Opsional)</label>
-                <input id="srv-link" class="admin-input" placeholder="Contoh: https://forms.google.com/...">
-                
-                <label class="text-xs text-gray-400">Deskripsi Detail</label>
-                <textarea id="srv-desc" class="admin-input" rows="2" placeholder="Syarat dan ketentuan..."></textarea>
-                <button onclick="addService()" class="admin-btn">Tambah ke Daftar Layanan</button>
-            </div>
-
-            <!-- List Service -->
-            <h3 class="text-lg font-bold text-gray-300 mb-4">Daftar Layanan Aktif:</h3>
-            <div id="admin-srv-list" class="grid grid-cols-1 gap-4">
-                <!-- Item will be loaded here -->
             </div>
         </div>
 
@@ -455,7 +421,7 @@
                 <span class="w-2 h-2 rounded-full bg-yellow-400 animate-pulse"></span>
                 <span id="hero-subtitle-display" class="text-[10px] font-black tracking-[0.2em] uppercase text-blue-300">SD Negeri Majalengka Wetan VII — TA 2026/2027</span>
             </div>
-            <h1 class="hero-title text-6xl sm:text-7xl md:text-8xl lg:text-5xl font-black tracking-tighter leading-[0.9] mb-8" style="animation:fadeInUp 1s ease-out 0.2s both">
+            <h1 class="hero-title text-6xl sm:text-7xl md:text-8xl lg:text-9xl font-black tracking-tighter leading-[0.9] mb-8" style="animation:fadeInUp 1s ease-out 0.2s both">
                 <span id="hero-title1-display" class="block text-white">Majalengka</span>
                 <span id="hero-title2-display" class="gt block">Langkung Sae</span>
             </h1>
@@ -526,20 +492,13 @@
     </div></div>
 </div>
 
-<!-- ═══════ PAGE: PELAYANAN (Diupdate) ═══════ -->
+<!-- ═══════ PAGE: PELAYANAN ═══════ -->
 <div id="page-pelayanan" class="page">
     <div class="pt-32 pb-24"><div class="max-w-7xl mx-auto px-6">
-        <div class="text-center mb-16 page-enter">
-            <span class="text-[10px] font-black tracking-[0.3em] uppercase text-yellow-400 mb-4 block stagger-1">Layanan Kami</span>
-            <h2 class="text-4xl md:text-6xl font-black tracking-tighter uppercase stagger-2">Standar <span class="gt">Pelayanan</span></h2>
-        </div>
-
-        <!-- Daftar Layanan Dinamis (Ganti Tampilan Grid Jadi List Check) -->
-        <div class="max-w-4xl mx-auto page-enter stagger-3">
-            <div id="pelayanan-container" class="space-y-4">
-                <!-- Item layanan akan dirender di sini oleh JS -->
-                <div class="text-center text-blue-300/30 py-8">Memuat data layanan...</div>
-            </div>
+        <div class="text-center mb-16 page-enter"><h2 class="text-4xl md:text-6xl font-black tracking-tighter uppercase stagger-2">Standar <span class="gt">Pelayanan</span></h2></div>
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8 page-enter stagger-2">
+            <div class="card rounded-2xl bg-blue-900/15 p-8 group hover:bg-blue-900/25"><div class="w-16 h-16 rounded-2xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform"><i data-lucide="file-check" class="w-8 h-8 text-blue-400"></i></div><h3 class="text-xl font-bold mb-3">Administrasi PPDB</h3><p class="text-blue-100/40 text-sm leading-relaxed mb-4">Layanan pendaftaran peserta didik baru yang transparan, cepat, dan akuntabel.</p><div class="text-xs font-bold text-yellow-400 uppercase tracking-wider">⏱ 1 Hari Kerja</div></div>
+            <div class="card rounded-2xl bg-blue-900/15 p-8 group hover:bg-blue-900/25"><div class="w-16 h-16 rounded-2xl bg-green-500/10 border border-green-500/20 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform"><i data-lucide="users" class="w-8 h-8 text-green-400"></i></div><h3 class="text-xl font-bold mb-3">Bimbingan Konseling</h3><p class="text-blue-100/40 text-sm leading-relaxed mb-4">Layanan pendampingan perkembangan karakter dan akademik siswa.</p><div class="text-xs font-bold text-green-400 uppercase tracking-wider">📅 Setiap Hari Kerja</div></div>
         </div>
     </div></div>
 </div>
@@ -644,22 +603,7 @@
     } catch (e) { console.error("Firebase Error:", e); }
 
     // ═══════════════════════════════════════════════════════════════
-    // 2. DATA AWAL (SEED DATA) - DITAMBAH LINK
-    // ═══════════════════════════════════════════════════════════════
-    const initialServices = [
-        { id: "srv_1", name: "Penerimaan Peserta Didik Baru (PPDB)", time: "Juni - Juli", desc: "Layanan pendaftaran siswa baru setiap tahun ajaran baru.", link: "https://ppdb.dikbud.go.id" },
-        { id: "srv_2", name: "Pengajuan Surat Keterangan Aktif", time: "1 Hari Kerja", desc: "Pembuatan surat keterangan aktif siswa untuk keperluan beasiswa atau tunjangan.", link: "#" },
-        { id: "srv_3", name: "Pengajuan Rekomendasi Mutasi Masuk/Keluar", time: "2 Hari Kerja", desc: "Pembuatan surat rekomendasi bagi siswa yang akan pindah sekolah.", link: "#" },
-        { id: "srv_4", name: "Legalisir Surat Tanda Tamat Belajar (STTB)", time: "30 Menit", desc: "Layanan legalisir fotokopi ijazah/STTB yang dilegalisir kepala sekolah.", link: "#" },
-        { id: "srv_5", name: "Pengajuan Surat Keterangan Pindah", time: "1 Hari Kerja", desc: "Administrasi surat pindah bagi siswa yang pindah domisili.", link: "#" },
-        { id: "srv_6", name: "Peminjaman Sarana Prasarana", time: "Sesuai Ketentuan", desc: "Layanan peminjaman ruangan atau alat sekolah untuk kegiatan masyarakat/osis.", link: "#" },
-        { id: "srv_7", name: "Pengaduan Masyarakat", time: "24 Jam", desc: "Layanan aspirasi dan pengaduan layanan sekolah secara online maupun langsung.", link: "https://wa.me/6281234567890" }
-    ];
-
-    const defaultLogo = "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a0/Logo_SD_Negeri_1_Majalengka_Wetan.png/800px-Logo_SD_Negeri_1_Majalengka_Wetan.png";
-
-    // ═══════════════════════════════════════════════════════════════
-    // 3. FUNGSI NAVIGASI & UI
+    // 2. NAVIGASI
     // ═══════════════════════════════════════════════════════════════
     function navigateTo(pageId) {
         document.querySelectorAll('.page').forEach(p => {
@@ -681,17 +625,9 @@
     function toggleMob() {
         document.getElementById('mob-menu').classList.toggle('open');
     }
-    function showToast(title, msg) {
-        const toast = document.getElementById('toast');
-        if(!toast) return;
-        document.querySelector('#toast h4').innerText = title;
-        document.getElementById('toast-msg').innerText = msg;
-        toast.classList.add('show');
-        setTimeout(() => toast.classList.remove('show'), 3000);
-    }
 
     // ═══════════════════════════════════════════════════════════════
-    // 4. AUTH & ADMIN PANEL
+    // 3. AUTH & ADMIN
     // ═══════════════════════════════════════════════════════════════
     function toggleLoginModal() {
         document.getElementById('modal-login').classList.toggle('show');
@@ -710,7 +646,7 @@
             toggleLoginModal();
             openAdminPanel();
             updateLoginButton(true);
-        }).catch(err => showToast("Gagal", "Email/Password salah: " + err.message));
+        }).catch(err => showToast("Gagal", "Email/Password salah."));
     }
     function openAdminPanel() {
         document.getElementById('admin-panel').classList.add('active');
@@ -729,390 +665,342 @@
             btn.onclick = toggleLoginModal;
         }
     }
-    function switchAdminTab(tabId) {
-        document.querySelectorAll('.admin-tab-content').forEach(el => el.classList.add('hidden'));
-        document.querySelectorAll('.admin-tab-link').forEach(el => el.classList.remove('active'));
-        document.getElementById('tab-' + tabId).classList.remove('hidden');
-        document.getElementById('link-' + tabId).classList.add('active');
+    function showToast(title, msg) {
+        const toast = document.getElementById('toast');
+        toast.querySelector('h4').innerText = title;
+        document.getElementById('toast-msg').innerText = msg;
+        toast.classList.add('show');
+        setTimeout(() => toast.classList.remove('show'), 3000);
     }
 
     // ═══════════════════════════════════════════════════════════════
-    // 5. LOGIKA DATA (CRUD & SYNC)
+    // 4. LOGIC UPDATE DATA (SIMPAN KE DATABASE)
     // ═══════════════════════════════════════════════════════════════
     
-    // --- A. HOME & GENERAL ---
-    db.ref('settings/home').on('value', snap => {
-        const data = snap.val() || {};
-        // Form Values
-        if(document.getElementById('hero-title1')) document.getElementById('hero-title1').value = data.title1 || "Majalengka";
-        if(document.getElementById('hero-title2')) document.getElementById('hero-title2').value = data.title2 || "Langkung Sae";
-        if(document.getElementById('hero-desc')) document.getElementById('hero-desc').value = data.desc || "Membentuk Generasi Berkarakter...";
-        if(document.getElementById('hero-logo')) document.getElementById('hero-logo').value = data.logo || defaultLogo;
-        
-        // Display Values
-        document.getElementById('hero-title1-display').innerText = data.title1 || "Majalengka";
-        document.getElementById('hero-title2-display').innerText = data.title2 || "Langkung Sae";
-        document.getElementById('hero-desc-display').innerText = data.desc || "Membentuk Generasi Berkarakter...";
-        const img = data.logo || defaultLogo;
-        document.getElementById('hero-logo-display').src = img;
-        document.getElementById('nav-logo').src = img;
-        document.getElementById('mob-logo').src = img;
-        document.getElementById('footer-logo').src = img;
-    });
-
-    db.ref('settings/marquee').on('value', snap => {
-        const data = snap.val() || {};
-        if(document.getElementById('marquee-text')) document.getElementById('marquee-text').value = data.text || "Selamat Datang di Website SDN Majalengka Wetan VII";
-        if(document.getElementById('marquee-duration')) document.getElementById('marquee-duration').value = data.duration || 28;
-        
-        const items = (data.text || "Selamat Datang...").split(',');
-        let html = '';
-        items.forEach(t => html += `<span class="inline-flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-yellow-400"></span>${t}</span>`);
-        document.getElementById('marquee-content').innerHTML = html + html; 
-        document.querySelector('.marquee-track').style.animationDuration = (data.duration || 28) + 's';
-    });
-
-    db.ref('settings/music').on('value', snap => {
-        const data = snap.val() || {};
-        if(document.getElementById('bg-music-url')) document.getElementById('bg-music-url').value = data.url || "";
-        if(data.url && document.getElementById('bgMusicSource')) {
-            document.getElementById('bgMusicSource').src = data.url;
-            document.getElementById('bgMusic').load();
-        }
-    });
-
-    // --- B. LAYANAN (UPDATE LINK) ---
-    db.ref('layanan').on('value', snap => {
-        const data = snap.val();
-        const listAdmin = document.getElementById('admin-srv-list');
-        const containerPublic = document.getElementById('pelayanan-container');
-        
-        listAdmin.innerHTML = '';
-        containerPublic.innerHTML = '';
-
-        if(!data || Object.keys(data).length === 0) {
-            containerPublic.innerHTML = `
-                <div class="text-center py-10">
-                    <div class="animate-pulse text-blue-300/50 mb-2">Memuat layanan...</div>
-                </div>`;
-            return;
-        }
-
-        Object.values(data).forEach((item) => {
-            // 1. Render di Admin Panel
-            listAdmin.innerHTML += `
-                <div class="bg-slate-700/50 p-4 rounded-lg border border-slate-600 flex justify-between items-center mb-2">
-                    <div>
-                        <div class="font-bold text-yellow-400 text-sm">${item.name}</div>
-                        <div class="text-xs text-gray-400 truncate max-w-[200px]">${item.link || 'Tidak ada link'}</div>
-                    </div>
-                    <button onclick="deleteService('${item.id}')" class="bg-red-500/20 hover:bg-red-500 text-red-400 hover:text-white px-3 py-1 rounded text-xs font-bold transition-colors">Hapus</button>
-                </div>
-            `;
-
-            // 2. Render di Halaman Publik (Support Link)
-            // Cek apakah ada link, jika ada gunakan <a>, jika tidak gunakan <div>
-            const hasLink = item.link && item.link.trim() !== "" && item.link !== "#";
-            const tagOpen = hasLink ? `<a href="${item.link}" target="_blank" class="group flex items-start gap-4 p-5 rounded-2xl bg-slate-800/40 border border-slate-700 hover:border-blue-500/30 hover:bg-slate-800/80 transition-all duration-300 animate-[fadeInUp_0.5s_ease-out] cursor-pointer">` : `<div class="group flex items-start gap-4 p-5 rounded-2xl bg-slate-800/40 border border-slate-700">`;
-            const tagClose = hasLink ? `</a>` : `</div>`;
-            
-            // Icon tambahan jika ada link (panah kecil)
-            const linkIcon = hasLink ? `<i data-lucide="arrow-up-right" class="w-4 h-4 ml-2 text-blue-400 group-hover:text-yellow-400"></i>` : '';
-
-            containerPublic.innerHTML += `
-                ${tagOpen}
-                    <div class="mt-1 w-6 h-6 rounded-full border-2 border-yellow-400/50 flex items-center justify-center text-yellow-400 text-xs font-bold group-hover:bg-yellow-400 group-hover:text-black transition-colors shrink-0">
-                        <i data-lucide="check" class="w-4 h-4"></i>
-                    </div>
-                    <div class="flex-1">
-                        <div class="flex items-center justify-between mb-1 flex-wrap gap-2">
-                            <h3 class="text-lg font-bold text-white group-hover:text-yellow-400 transition-colors flex items-center">${item.name} ${linkIcon}</h3>
-                            <span class="px-3 py-1 rounded-full bg-blue-500/10 text-blue-300 text-[10px] font-bold uppercase tracking-wider border border-blue-500/20 whitespace-nowrap">${item.time}</span>
-                        </div>
-                        <p class="text-sm text-gray-400 leading-relaxed">${item.desc}</p>
-                    </div>
-                ${tagClose}
-            `;
-        });
-        lucide.createIcons();
-    });
-
-    function checkAndSeedLayanan() {
-        db.ref('layanan').once('value').then(snap => {
-            if(!snap.exists()) {
-                console.log("Database Layanan kosong. Mengisi data awal...");
-                initialServices.forEach(srv => {
-                    db.ref('layanan').child(srv.id).set(srv);
-                });
-                showToast("Sistem", "Data standar pelayanan berhasil dimuat.");
-            }
-        }).catch(err => {
-            console.error("Gagal mengecek database:", err);
-        });
-    }
-
-    // --- C. PROFIL ---
-    db.ref('settings/profil').on('value', snap => {
-        const data = snap.val() || {};
-        if(document.getElementById('visi-text')) document.getElementById('visi-text').value = data.visi || "";
-        if(document.getElementById('misi-text')) document.getElementById('misi-text').value = data.misi || "";
-        if(document.getElementById('kepsek-nama')) document.getElementById('kepsek-nama').value = data.kepsekNama || "";
-        if(document.getElementById('kepsek-nip')) document.getElementById('kepsek-nip').value = data.kepsekNip || "";
-        if(document.getElementById('kepsek-foto')) document.getElementById('kepsek-foto').value = data.kepsekFoto || "";
-        if(document.getElementById('kepsek-sambutan')) document.getElementById('kepsek-sambutan').value = data.kepsekSambutan || "";
-
-        document.getElementById('visi-display').innerText = data.visi || "Belum ada data visi";
-        const misiArr = (data.misi || "").split(';');
-        document.getElementById('misi-display').innerHTML = misiArr.map(m => `<li>${m}</li>`).join('');
-        document.getElementById('kepsek-name-display').innerText = data.kepsekNama || "Kepala Sekolah";
-        document.getElementById('kepsek-nip-display').innerText = "NIP. " + (data.kepsekNip || "-");
-        document.getElementById('kepsek-img-display').src = data.kepsekFoto || "https://picsum.photos/seed/kepsek/400/500";
-        document.getElementById('kepsek-msg-display').innerText = data.kepsekSambutan || "";
-    });
-
-    // --- D. GURU ---
-    db.ref('guru').on('value', snap => {
-        const data = snap.val();
-        const list = document.getElementById('admin-guru-list');
-        const container = document.getElementById('guru-container');
-        list.innerHTML = ''; container.innerHTML = '';
-        if(data) {
-            Object.values(data).forEach(item => {
-                list.innerHTML += `
-                    <div class="bg-slate-700/50 p-3 rounded border border-slate-600 relative">
-                        <img src="${item.img}" class="w-full h-24 object-cover rounded mb-2">
-                        <div class="font-bold text-xs truncate">${item.name}</div>
-                        <div class="text-[10px] text-gray-400 truncate">${item.role}</div>
-                        <button onclick="deleteGuru('${item.id}')" class="absolute top-1 right-1 bg-red-500 text-white w-5 h-5 flex items-center justify-center rounded text-xs">X</button>
-                    </div>`;
-                container.innerHTML += `
-                    <div class="text-center group">
-                        <div class="relative overflow-hidden rounded-xl border border-blue-500/20 mb-3 aspect-[3/4]">
-                            <img src="${item.img}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
-                            <div class="absolute inset-0 bg-gradient-to-t from-slate-900 via-transparent to-transparent opacity-60"></div>
-                        </div>
-                        <div class="font-bold text-sm tracking-tight text-blue-100 group-hover:text-yellow-400 transition-colors">${item.name}</div>
-                        <div class="text-xs text-blue-400/60 uppercase tracking-wider font-bold">${item.role}</div>
-                    </div>`;
-            });
-        }
-    });
-
-    // --- E. NEWS ---
-    db.ref('news').limitToLast(6).on('value', snap => {
-        const data = snap.val();
-        const container = document.getElementById('news-container');
-        const adminList = document.getElementById('admin-news-list');
-        const infoPage = document.getElementById('news-container-page');
-        container.innerHTML = ''; adminList.innerHTML = ''; infoPage.innerHTML = '';
-        if(data) {
-            Object.values(data).reverse().forEach(item => {
-                const html = `
-                    <div class="card rounded-2xl bg-slate-800/30 overflow-hidden group">
-                        <div class="aspect-video overflow-hidden"><img src="${item.img}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"></div>
-                        <div class="p-6">
-                            <div class="text-xs font-bold text-blue-400 mb-2 uppercase tracking-wider">Berita</div>
-                            <h3 class="text-lg font-bold mb-2 leading-tight group-hover:text-yellow-400 transition-colors">${item.title}</h3>
-                            <p class="text-sm text-gray-400 line-clamp-3">${item.desc}</p>
-                        </div>
-                    </div>`;
-                container.innerHTML += html;
-                infoPage.innerHTML += html;
-                adminList.innerHTML += `
-                    <div class="flex gap-4 items-center bg-slate-700/50 p-3 rounded border border-slate-600">
-                        <img src="${item.img}" class="w-16 h-16 object-cover rounded">
-                        <div class="flex-1">
-                            <div class="font-bold text-sm">${item.title}</div>
-                        </div>
-                        <button onclick="deleteNews('${item.id}')" class="admin-btn-danger">Hapus</button>
-                    </div>`;
-            });
-        } else {
-            container.innerHTML = '<div class="col-span-3 text-center text-blue-300/30">Belum ada berita</div>';
-        }
-    });
-
-    // --- F. PORTAL ---
-    db.ref('portal').on('value', snap => {
-        const data = snap.val();
-        const container = document.getElementById('portal-container');
-        const adminList = document.getElementById('admin-app-list');
-        container.innerHTML = ''; adminList.innerHTML = '';
-        if(data) {
-            Object.values(data).forEach(item => {
-                const iconHtml = item.icon === 'image' 
-                    ? `<img src="${item.customImg}" class="w-8 h-8 object-contain">` 
-                    : `<i data-lucide="${item.icon}" class="w-8 h-8 text-blue-400"></i>`;
-                
-                container.innerHTML += `
-                    <a href="${item.link}" target="_blank" class="portal-card block p-6 rounded-2xl bg-blue-900/10 border border-blue-500/10 hover:bg-blue-900/20 hover:border-blue-500/30 transition-all group text-center">
-                        <div class="w-16 h-16 mx-auto rounded-2xl bg-slate-800 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform border border-slate-700 shadow-lg">
-                            ${iconHtml}
-                        </div>
-                        <div class="font-bold text-sm tracking-tight group-hover:text-yellow-400 transition-colors">${item.name}</div>
-                    </a>`;
-                adminList.innerHTML += `
-                    <div class="bg-slate-700/50 p-3 rounded border border-slate-600 flex justify-between items-center">
-                        <div class="flex items-center gap-2">
-                            <div class="w-8 h-8 bg-slate-800 rounded flex items-center justify-center">${iconHtml}</div>
-                            <span class="text-sm font-bold truncate w-32">${item.name}</span>
-                        </div>
-                        <button onclick="deleteApp('${item.id}')" class="admin-btn-danger">X</button>
-                    </div>`;
-            });
-            lucide.createIcons();
-        }
-    });
-
-    // --- G. CONTACTS ---
-    db.ref('settings/contacts').on('value', snap => {
-        const data = snap.val() || {};
-        if(document.getElementById('contact-wa')) document.getElementById('contact-wa').value = data.wa || "";
-        if(document.getElementById('contact-wa-msg')) document.getElementById('contact-wa-msg').value = data.waMsg || "";
-        if(document.getElementById('link-fb')) document.getElementById('link-fb').value = data.fb || "";
-        if(document.getElementById('link-ig')) document.getElementById('link-ig').value = data.ig || "";
-        if(document.getElementById('link-yt')) document.getElementById('link-yt').value = data.yt || "";
-
-        if(data.wa) {
-            document.getElementById('wa-float-btn').href = `https://wa.me/${data.wa}?text=${encodeURIComponent(data.waMsg || 'Halo Admin...')}`;
-            document.getElementById('wa-float-btn').style.display = 'flex';
-        }
-        if(data.fb) document.getElementById('link-fb-disp').href = data.fb;
-        if(data.ig) document.getElementById('link-ig-disp').href = data.ig;
-        if(data.yt) document.getElementById('link-yt-disp').href = data.yt;
-    });
-
-    // ═══════════════════════════════════════════════════════════════
-    // 6. FUNGSI SIMPAN (CRUD)
-    // ═══════════════════════════════════════════════════════════════
-
+    // Home Settings
     function saveHomeSettings() {
-        db.ref('settings/home').set({
+        const data = {
             title1: document.getElementById('hero-title1').value,
             title2: document.getElementById('hero-title2').value,
             desc: document.getElementById('hero-desc').value,
-            logo: document.getElementById('hero-logo').value
-        }).then(()=>showToast("Berhasil", "Tampilan Beranda diupdate"));
+            logo: document.getElementById('hero-logo').value,
+            marquee: document.getElementById('marquee-text').value,
+            marqueeDuration: document.getElementById('marquee-duration').value
+        };
+        db.ref('settings/home').set(data).then(()=>showToast("Berhasil", "Tampilan Beranda & Marquee diupdate"));
     }
+
+    // Music Settings
     function saveMusicSettings() {
-        db.ref('settings/music').set({
-            url: document.getElementById('bg-music-url').value
-        }).then(()=>showToast("Berhasil", "Lagu diupdate"));
+        const url = document.getElementById('bg-music-url').value;
+        if(!url) return alert("URL lagu wajib diisi");
+        
+        // Kita update musik di node yang sama dengan Home settings atau terpisah
+        // Update partial data (deep merge)
+        db.ref('settings/home').update({
+            musicUrl: url
+        }).then(()=>showToast("Berhasil", "Lagu berhasil diganti. Refresh jika perlu."));
+        
+        // Load ulang audio element
+        const audio = document.getElementById('bgMusic');
+        audio.src = url;
+        audio.load();
     }
+
+    // Profil Settings
     function saveProfilSettings() {
-        db.ref('settings/profil').set({
+        const data = {
             visi: document.getElementById('visi-text').value,
             misi: document.getElementById('misi-text').value,
             kepsekNama: document.getElementById('kepsek-nama').value,
-            kepsekNip: document.getElementById('kepsek-nip').value,
+            kepsekNIP: document.getElementById('kepsek-nip').value,
             kepsekFoto: document.getElementById('kepsek-foto').value,
             kepsekSambutan: document.getElementById('kepsek-sambutan').value
-        }).then(()=>showToast("Berhasil", "Profil Sekolah diupdate"));
+        };
+        db.ref('settings/profil').set(data).then(()=>showToast("Berhasil", "Profil diupdate"));
     }
+
+    // Save App
+    function saveApp() {
+        const name = document.getElementById('app-name').value;
+        const link = document.getElementById('app-link').value;
+        const icon = document.getElementById('app-icon').value;
+        const imgUrl = document.getElementById('app-img-url').value;
+
+        if(!name || !link) return alert("Nama dan Link wajib diisi");
+
+        const data = {
+            name: name,
+            link: link,
+            icon: icon, // nama lucide icon
+            imgUrl: imgUrl // url custom image
+        };
+        db.ref('portalApps').push(data).then(()=>showToast("Sukses", "Aplikasi ditambahkan"));
+        
+        // Reset Form
+        document.getElementById('app-name').value = "";
+        document.getElementById('app-link').value = "";
+        document.getElementById('app-img-url').value = "";
+    }
+    
+    // Contact Settings
     function saveContactSettings() {
-        db.ref('settings/contacts').set({
+        const data = {
             wa: document.getElementById('contact-wa').value,
             waMsg: document.getElementById('contact-wa-msg').value,
             fb: document.getElementById('link-fb').value,
             ig: document.getElementById('link-ig').value,
-            yt: document.getElementById('link-yt').value
-        }).then(()=>showToast("Berhasil", "Kontak diupdate"));
+            yt: document.getElementById('link-yt').value,
+            email: document.getElementById('footer-email').innerText,
+            address: document.getElementById('footer-address').innerText 
+        };
+        db.ref('settings/contacts').set(data).then(()=>showToast("Berhasil", "Kontak & Sosmed diupdate"));
     }
 
-    // --- LAYANAN FUNCTIONS (UPDATE LINK) ---
-    function addService() {
-        const name = document.getElementById('srv-name').value;
-        const time = document.getElementById('srv-time').value;
-        const desc = document.getElementById('srv-desc').value;
-        const link = document.getElementById('srv-link').value; // Ambil link
-        
-        if(!name) return alert("Nama layanan wajib diisi");
-        
-        const newRef = db.ref('layanan').push();
-        newRef.set({
-            id: newRef.key,
-            name: name,
-            time: time,
-            desc: desc,
-            link: link // Simpan link
-        }).then(() => {
-            showToast("Berhasil", "Layanan ditambahkan");
-            document.getElementById('srv-name').value = "";
-            document.getElementById('srv-time').value = "";
-            document.getElementById('srv-desc').value = "";
-            document.getElementById('srv-link').value = "";
-        });
-    }
-    function deleteService(id) {
-        if(confirm("Hapus layanan ini?")) {
-            db.ref('layanan').child(id).remove();
-        }
-    }
-
+    // News
     function saveNews() {
         const title = document.getElementById('news-title').value;
         const desc = document.getElementById('news-desc').value;
         const img = document.getElementById('news-img').value;
         if(!title) return alert("Judul wajib diisi");
-        
-        const newRef = db.ref('news').push();
-        newRef.set({ id: newRef.key, title, desc, img }).then(()=>showToast("Berhasil", "Berita diposting"));
-    }
-    function deleteNews(id) {
-        db.ref('news').child(id).remove();
+        const data = { title, desc, image: img || "https://picsum.photos/seed/news/600/340", date: new Date().toLocaleDateString('id-ID') };
+        db.ref('news').push(data).then(()=>{
+            showToast("Sukses", "Berita ditambahkan");
+            document.getElementById('news-title').value = ""; 
+            document.getElementById('news-desc').value = "";
+            document.getElementById('news-img').value = "";
+        });
     }
 
+    // Guru
     function saveGuru() {
         const name = document.getElementById('guru-name').value;
         const role = document.getElementById('guru-role').value;
         const img = document.getElementById('guru-img').value;
         if(!name) return alert("Nama wajib diisi");
+        const data = { name, role, image: img || "https://picsum.photos/seed/guru/400/530" };
+        db.ref('teachers').push(data).then(()=>{
+            showToast("Sukses", "Guru ditambahkan");
+            document.getElementById('guru-name').value = "";
+            document.getElementById('guru-role').value = "";
+            document.getElementById('guru-img').value = "";
+        });
+    }
+
+    function deleteItem(path, id) {
+        if(confirm("Hapus data ini?")) db.ref(path+'/'+id).remove();
+    }
+
+    // ═══════════════════════════════════════════════════════════════
+    // 5. REALTIME LISTENER (MEMUAT DATA KE TAMPILAN)
+    // ═══════════════════════════════════════════════════════════════
+    
+    // Default Values
+    const defaultLogo = "https://www.image2url.com/r2/default/images/1781412123690-177b96ef-efc4-4f7b-888b-1689e2ec1c52.jpeg";
+    const defaultMusic = "https://pdftolink.io/file/r2_dXNlcnMvaW5kcmFzZXRpYXdhbjIwX2d1cnUuc2QuYmVsYWphci5pZC80YWNlYjMxZC04YTZmLTRhMjUtYjYyMi02YzYzN2JhYzhhZTEubXAz";
+    
+    const defaults = {
+        home: { 
+            title1: "Majalengka", title2: "Langkung Sae", 
+            desc: "Membentuk Generasi Berkarakter...", logo: defaultLogo, 
+            marquee: "MAJALENGKA LANGKUNG SAE, SDN MAJALENGKA WETAN VII — TA 2026/2027",
+            marqueeDuration: 28,
+            musicUrl: defaultMusic
+        },
+        profil: { visi: "Visi Sekolah...", misi: "Misi 1; Misi 2;", kepsekNama: "Iyus Susnardi", kepsekNIP: "NIP...", kepsekFoto: defaultLogo, kepsekSambutan: "Sambutan..." },
+        contacts: { wa: "62812345678", waMsg: "Halo Admin SDN MWT VII...", fb: "#", ig: "#", yt: "#", address: "Alamat Sekolah", email: "info@mwt7.sch.id" }
+    };
+
+    // Listener Home (Includes Music & Marquee Duration)
+    db.ref('settings/home').on('value', snap => {
+        const data = snap.val() || defaults.home;
         
-        const newRef = db.ref('guru').push();
-        newRef.set({ id: newRef.key, name, role, img }).then(()=>showToast("Berhasil", "Guru ditambahkan"));
-    }
-    function deleteGuru(id) {
-        db.ref('guru').child(id).remove();
-    }
+        // Display Text
+        document.getElementById('hero-title1-display').innerText = data.title1;
+        document.getElementById('hero-title2-display').innerText = data.title2;
+        document.getElementById('hero-desc-display').innerText = data.desc;
+        document.getElementById('hero-logo-display').src = data.logo;
+        
+        // Marquee Logic
+        const marqueeTexts = data.marquee ? data.marquee.split(',') : defaults.home.marquee.split(',');
+        document.getElementById('marquee-content').innerHTML = marqueeTexts.map(t => `<span>${t}</span>`).join(' ') + marqueeTexts.map(t => `<span>${t}</span>`).join(' ');
+        
+        // Update Marquee Speed (Duration)
+        const duration = data.marqueeDuration || 28;
+        const tracks = document.querySelectorAll('.marquee-track');
+        tracks.forEach(t => t.style.animationDuration = duration + 's');
 
-    function saveApp() {
-        const name = document.getElementById('app-name').value;
-        const link = document.getElementById('app-link').value;
-        const icon = document.getElementById('app-icon').value;
-        const customImg = document.getElementById('app-img-url').value;
-        if(!name) return alert("Nama wajib diisi");
-
-        const newRef = db.ref('portal').push();
-        newRef.set({ id: newRef.key, name, link, icon, customImg }).then(()=>showToast("Berhasil", "Aplikasi ditambahkan"));
-    }
-    function deleteApp(id) {
-        db.ref('portal').child(id).remove();
-    }
-
-    // ═══════════════════════════════════════════════════════════════
-    // 7. UTILITAS
-    // ═══════════════════════════════════════════════════════════════
-    let isPlaying = false;
-    const audio = document.getElementById('bgMusic');
-    function toggleMusic() {
-        if(isPlaying) {
-            audio.pause();
-            document.getElementById('musicBtn').classList.remove('playing');
-            document.querySelector('.music-status').classList.remove('on');
-            document.querySelector('.music-status').classList.add('off');
-            document.querySelectorAll('.eq-bar').forEach(b => b.classList.remove('active'));
-        } else {
-            audio.play().catch(e => console.log("Audio play blocked until interaction"));
-            document.getElementById('musicBtn').classList.add('playing');
-            document.querySelector('.music-status').classList.add('on');
-            document.querySelector('.music-status').classList.remove('off');
-            document.querySelectorAll('.eq-bar').forEach(b => b.classList.add('active'));
+        // Music Logic
+        const bgMusic = document.getElementById('bgMusic');
+        const bgMusicSource = document.getElementById('bgMusicSource');
+        // Only change src if different to prevent reload glitch
+        if(bgMusicSource.src !== data.musicUrl) {
+            bgMusicSource.src = data.musicUrl;
+            bgMusic.load();
         }
+
+        // Admin Inputs
+        document.getElementById('hero-title1').value = data.title1;
+        document.getElementById('hero-title2').value = data.title2;
+        document.getElementById('hero-desc').value = data.desc;
+        document.getElementById('hero-logo').value = data.logo;
+        document.getElementById('marquee-text').value = data.marquee;
+        document.getElementById('marquee-duration').value = data.marqueeDuration;
+        document.getElementById('bg-music-url').value = data.musicUrl;
+
+        // Nav Logos
+        document.getElementById('nav-logo').src = data.logo;
+        document.getElementById('mob-logo').src = data.logo;
+        document.getElementById('footer-logo').src = data.logo;
+    });
+
+    // Listener Profil
+    db.ref('settings/profil').on('value', snap => {
+        const data = snap.val() || defaults.profil;
+        document.getElementById('visi-display').innerText = data.visi;
+        document.getElementById('misi-display').innerHTML = data.misi.split(';').map(m => `<li>${m}</li>`).join('');
+        document.getElementById('kepsek-name-display').innerText = data.kepsekNama;
+        document.getElementById('kepsek-nip-display').innerText = data.kepsekNIP;
+        document.getElementById('kepsek-img-display').src = data.kepsekFoto;
+        document.getElementById('kepsek-msg-display').innerText = data.kepsekSambutan;
+
+        document.getElementById('visi-text').value = data.visi;
+        document.getElementById('misi-text').value = data.misi;
+        document.getElementById('kepsek-nama').value = data.kepsekNama;
+        document.getElementById('kepsek-nip').value = data.kepsekNIP;
+        document.getElementById('kepsek-foto').value = data.kepsekFoto;
+        document.getElementById('kepsek-sambutan').value = data.kepsekSambutan;
+    });
+
+    // Listener Portal Apps (DYNAMIC)
+    db.ref('portalApps').on('value', snap => {
+        const container = document.getElementById('portal-container');
+        const adminList = document.getElementById('admin-app-list');
+        container.innerHTML = "";
+        adminList.innerHTML = "";
+        
+        // Default Apps jika belum ada di database
+        if(!snap.val()) {
+            container.innerHTML = `
+            <div class="portal-card rounded-2xl bg-blue-900/15 p-6 text-center hover:bg-blue-900/30 cursor-pointer border border-blue-500/10 transition-all"><div class="w-16 h-16 bg-white rounded-2xl mx-auto mb-4 flex items-center justify-center shadow-lg"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Google_%22G%22_logo.svg/150px-Google_%22G%22_logo.svg.png" class="w-10 h-10 object-contain"></div><h4 class="font-bold text-sm mb-1">Google Classroom</h4><p class="text-[10px] text-zinc-400">E-Learning</p></div>
+            `;
+            return;
+        }
+
+        snap.forEach(c => {
+            const d = c.val();
+            
+            // Icon Logic
+            let iconHtml = '';
+            if(d.icon === 'image' && d.imgUrl) {
+                iconHtml = `<img src="${d.imgUrl}" class="w-10 h-10 object-contain">`;
+            } else {
+                iconHtml = `<i data-lucide="${d.icon}" class="w-10 h-10"></i>`;
+            }
+            
+            // Public Card
+            container.innerHTML += `
+            <div class="portal-card rounded-2xl bg-blue-900/15 p-6 text-center hover:bg-blue-900/30 cursor-pointer border border-blue-500/10 transition-all" onclick="window.open('${d.link}', '_blank')">
+                <div class="w-16 h-16 bg-white rounded-2xl mx-auto mb-4 flex items-center justify-center shadow-lg ${d.icon==='image'?'':'text-blue-500'}">
+                    ${iconHtml}
+                </div>
+                <h4 class="font-bold text-sm mb-1">${d.name}</h4>
+                <p class="text-[10px] text-zinc-400">Akses Aplikasi</p>
+            </div>`;
+            
+            // Admin List
+            adminList.innerHTML += `
+            <div class="flex justify-between items-center bg-slate-800 p-3 rounded border border-slate-700">
+                <span class="text-sm font-bold">${d.name}</span>
+                <button onclick="deleteItem('portalApps','${c.key}')" class="admin-btn-danger">Hapus</button>
+            </div>`;
+        });
+        
+        // Re-render icons for new elements
+        lucide.createIcons();
+    });
+
+    // Listener Contacts & Sosmed
+    db.ref('settings/contacts').on('value', snap => {
+        const data = snap.val() || defaults.contacts;
+        document.getElementById('footer-address').innerText = data.address;
+        document.getElementById('footer-email').innerText = data.email;
+        document.getElementById('link-fb-disp').href = data.fb;
+        document.getElementById('link-ig-disp').href = data.ig;
+        document.getElementById('link-yt-disp').href = data.yt;
+        
+        // WA Button
+        document.getElementById('wa-float-btn').href = `https://wa.me/${data.wa}?text=${encodeURIComponent(data.waMsg)}`;
+
+        // Inputs
+        document.getElementById('contact-wa').value = data.wa;
+        document.getElementById('contact-wa-msg').value = data.waMsg;
+        document.getElementById('link-fb').value = data.fb;
+        document.getElementById('link-ig').value = data.ig;
+        document.getElementById('link-yt').value = data.yt;
+    });
+
+    // Listener News
+    db.ref('news').on('value', snap => {
+        const container = document.getElementById('news-container');
+        const containerPage = document.getElementById('news-container-page');
+        const adminList = document.getElementById('admin-news-list');
+        container.innerHTML = ""; containerPage.innerHTML = ""; adminList.innerHTML = "";
+        if(!snap.val()) { container.innerHTML = containerPage.innerHTML = `<div class="text-blue-300/30 col-span-3 text-center">Belum ada berita.</div>`; return; }
+        snap.forEach(c => {
+            const d = c.val();
+            const card = `<div class="card rounded-2xl bg-blue-900/15 overflow-hidden group cursor-pointer"><div class="aspect-video overflow-hidden"><img src="${d.image}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"></div><div class="p-5"><div class="flex items-center gap-2 mb-2"><span class="px-2 py-0.5 rounded bg-yellow-400/10 text-yellow-400 text-[9px] font-black tracking-wider uppercase">Berita</span><span class="text-blue-400/30 text-[10px]">${d.date}</span></div><h4 class="font-bold text-sm mb-2 group-hover:text-yellow-400 transition-colors">${d.title}</h4><p class="text-blue-200/30 text-xs leading-relaxed">${d.desc}</p></div></div>`;
+            container.innerHTML += card; containerPage.innerHTML += card;
+            adminList.innerHTML += `<div class="flex justify-between items-center bg-slate-800 p-3 rounded border border-slate-700 mb-2"><span class="text-sm font-bold truncate mr-4">${d.title}</span><button onclick="deleteItem('news','${c.key}')" class="admin-btn-danger">Hapus</button></div>`;
+        });
+    });
+
+    // Listener Guru
+    db.ref('teachers').on('value', snap => {
+        const container = document.getElementById('guru-container');
+        const adminList = document.getElementById('admin-guru-list');
+        container.innerHTML = ""; adminList.innerHTML = "";
+        if(!snap.val()) { container.innerHTML = `<div class="text-blue-300/30 col-span-4 text-center">Belum ada data guru.</div>`; return; }
+        snap.forEach(c => {
+            const d = c.val();
+            container.innerHTML += `<div class="card rounded-2xl overflow-hidden group"><div class="aspect-[3/4] overflow-hidden"><img src="${d.image}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"></div><div class="p-4 bg-slate-900/80"><div class="font-bold text-sm">${d.name}</div><div class="text-blue-300/30 text-xs">${d.role}</div></div></div>`;
+            adminList.innerHTML += `<div class="flex justify-between items-center bg-slate-800 p-3 rounded border border-slate-700"><div class="flex items-center gap-3"><img src="${d.image}" class="w-10 h-10 rounded object-cover"><span class="text-sm">${d.name}</span></div><button onclick="deleteItem('teachers','${c.key}')" class="admin-btn-danger">Hapus</button></div>`;
+        });
+    });
+
+    function switchAdminTab(tab) {
+        document.querySelectorAll('.admin-tab-content').forEach(t => t.classList.add('hidden'));
+        document.querySelectorAll('.admin-tab-link').forEach(l => l.classList.remove('active'));
+        document.getElementById('tab-'+tab).classList.remove('hidden');
+        document.getElementById('link-'+tab).classList.add('active');
+    }
+
+    // Music Player
+    const musicBtn = document.getElementById('musicBtn');
+    const bgMusic = document.getElementById('bgMusic');
+    let isPlaying = false;
+    function toggleMusic() {
+        if(isPlaying) { bgMusic.pause(); musicBtn.classList.remove('playing'); document.querySelectorAll('.eq-bar').forEach(b => b.classList.remove('active')); }
+        else { bgMusic.play().then(()=>{ musicBtn.classList.add('playing'); document.querySelectorAll('.eq-bar').forEach(b => b.classList.add('active')); }); }
         isPlaying = !isPlaying;
     }
 
-    // Jalankan fungsi cek data saat halaman dimuat
-    checkAndSeedLayanan();
+    // Slider Logic
+    let sIdx = 0; const slides = document.querySelectorAll('.m-slide'); const dotsContainer = document.getElementById('dots');
+    if(slides.length > 0) {
+        slides.forEach((_,i) => {
+            const dot = document.createElement('div'); dot.className = `w-2 h-2 rounded-full transition-all duration-300 cursor-pointer ${i===0?'bg-yellow-400 w-6':'bg-blue-500/30'}`;
+            dot.onclick = () => setSlide(i); dotsContainer.appendChild(dot);
+        });
+        function setSlide(n) {
+            slides.forEach(s => s.classList.remove('on'));
+            const dots = dotsContainer.children;
+            Array.from(dots).forEach(d => { d.className = 'w-2 h-2 rounded-full bg-blue-500/30 transition-all duration-300 cursor-pointer'; });
+            slides[n].classList.add('on'); dots[n].className = 'w-6 h-2 rounded-full bg-yellow-400 transition-all duration-300 cursor-pointer'; sIdx = n;
+        }
+        setInterval(() => { let next = (sIdx + 1) % slides.length; setSlide(next); }, 6000);
+    }
+
     lucide.createIcons();
 
 </script>
