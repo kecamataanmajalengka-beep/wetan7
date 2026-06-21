@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SDN Majalengka Wetan VII — Majalengka Langkung Sae</title>
+    <title>SDN Majalengka Wetan VII</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -23,15 +23,14 @@
         ::-webkit-scrollbar-track{background:#1e293b}
         ::-webkit-scrollbar-thumb{background:#3b82f6;border-radius:3px}
         ::-webkit-scrollbar-thumb:hover{background:#facc15}
-        
         @keyframes fadeInUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
-        @keyframes fadeInDown{from{opacity:0;transform:translateY(-30px)}to{opacity:1;transform:translateY(0)}}
         @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
         @keyframes gradientMove{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
         @keyframes marqueeScroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
         @keyframes rotate{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
         @keyframes rotateR{from{transform:rotate(0deg)}to{transform:rotate(-360deg)}}
-        @keyframes starTwinkle{0%,100%{opacity:0.2;transform:scale(0.8)}50%{opacity:1;transform:scale(1.2)}}
+        @keyframes spinPulse{0%{transform:rotate(0deg);opacity:1}100%{transform:rotate(360deg);opacity:0.5}}
+        @keyframes shakeX{0%,100%{transform:translateX(0)}20%,60%{transform:translateX(-4px)}40%,80%{transform:translateX(4px)}}
 
         .page{display:none;min-height:100vh;position:relative}
         .page.active{display:block}
@@ -39,22 +38,17 @@
         .glass-card:hover{background:rgba(30,41,59,0.6);border-color:rgba(59,130,246,0.3);transform:translateY(-5px)}
         .hero-bg{background:radial-gradient(circle at 50% 50%,rgba(59,130,246,0.15) 0%,rgba(15,23,42,0) 50%),radial-gradient(circle at 0% 0%,rgba(250,204,21,0.08) 0%,transparent 40%),#0f172a}
         .gt{background:linear-gradient(135deg,#60a5fa,#3b82f6,#facc15,#eab308);background-size:300% 300%;animation:gradientMove 5s ease infinite;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-        
         .animate-on-scroll{opacity:0;transform:translateY(30px);transition:all 0.8s cubic-bezier(0.16,1,0.3,1)}
         .animate-on-scroll.visible{opacity:1;transform:translateY(0)}
         .deco-ring{position:absolute;border-radius:50%;border:1px solid rgba(59,130,246,0.08);pointer-events:none}
-        .star{position:absolute;width:2px;height:2px;background:#facc15;border-radius:50%;box-shadow:0 0 6px #facc15;animation:starTwinkle var(--dur) ease-in-out infinite}
-
         .modal-bg{opacity:0;visibility:hidden;transition:all 0.3s}
         .modal-bg.show{opacity:1;visibility:visible}
         .admin-panel{display:none;position:fixed;inset:0;z-index:90;background:#0f172a}
         .admin-panel.active{display:flex}
         .toast{position:fixed;bottom:24px;left:24px;z-index:200;transform:translateY(150%) scale(0.8);opacity:0;transition:all 0.4s cubic-bezier(0.16,1,0.3,1)}
         .toast.show{transform:translateY(0) scale(1);opacity:1}
-        
         #chat-widget{position:fixed;bottom:11.5rem;right:1.5rem;z-index:45;pointer-events:none}
         #chat-widget > div{pointer-events:auto}
-        
         .fab-group{position:fixed;right:1.5rem;z-index:30;display:flex;flex-direction:column;align-items:center;gap:0.875rem}
         .fab-group .fab-btn{width:3.5rem;height:3.5rem;border-radius:9999px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all 0.3s cubic-bezier(0.16,1,0.3,1);box-shadow:0 4px 15px rgba(0,0,0,0.3);border:none;outline:none;position:relative;text-decoration:none}
         .fab-group .fab-btn:hover{transform:scale(1.12);box-shadow:0 6px 25px rgba(0,0,0,0.4)}
@@ -62,7 +56,19 @@
         .fab-group .fab-btn .fab-tooltip{position:absolute;right:calc(100% + 12px);top:50%;transform:translateY(-50%) translateX(8px);background:#1e293b;color:#f1f5f9;font-size:11px;font-weight:600;padding:6px 14px;border-radius:10px;white-space:nowrap;opacity:0;pointer-events:none;transition:all 0.25s ease;box-shadow:0 4px 15px rgba(0,0,0,0.4);border:1px solid rgba(255,255,255,0.08)}
         .fab-group .fab-btn .fab-tooltip::after{content:'';position:absolute;right:-5px;top:50%;transform:translateY(-50%) rotate(45deg);width:10px;height:10px;background:#1e293b;border-right:1px solid rgba(255,255,255,0.08);border-top:1px solid rgba(255,255,255,0.08)}
         .fab-group .fab-btn:hover .fab-tooltip{opacity:1;transform:translateY(-50%) translateX(0)}
-
+        .btn-loading{position:relative;pointer-events:none;opacity:0.7}
+        .btn-loading::after{content:'';position:absolute;right:12px;top:50%;width:16px;height:16px;border:2px solid rgba(255,255,255,0.3);border-top-color:#fff;border-radius:50%;animation:spinPulse 0.6s linear infinite;margin-top:-8px}
+        .confirm-overlay{position:fixed;inset:0;z-index:300;background:rgba(0,0,0,0.7);backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;opacity:0;visibility:hidden;transition:all 0.25s}
+        .confirm-overlay.show{opacity:1;visibility:visible}
+        .confirm-box{background:#1e293b;border:1px solid #334155;border-radius:1rem;padding:2rem;max-width:360px;width:90%;transform:scale(0.9);transition:transform 0.25s cubic-bezier(0.16,1,0.3,1);box-shadow:0 25px 50px rgba(0,0,0,0.5)}
+        .confirm-overlay.show .confirm-box{transform:scale(1)}
+        .conn-bar{position:fixed;top:0;left:0;right:0;z-index:999;text-align:center;padding:4px;font-size:11px;font-weight:700;transition:all 0.4s;transform:translateY(-100%)}
+        .conn-bar.show{transform:translateY(0)}
+        .conn-bar.connected{background:#065f46;color:#6ee7b7}
+        .conn-bar.disconnected{background:#7f1d1d;color:#fca5a5;animation:shakeX 0.5s ease}
+        .status-dot{width:8px;height:8px;border-radius:50%;display:inline-block;margin-right:6px}
+        .status-dot.online{background:#22c55e;box-shadow:0 0 6px #22c55e}
+        .status-dot.offline{background:#ef4444;box-shadow:0 0 6px #ef4444}
         @media(max-width:768px){.hero-title{font-size:2.5rem!important;line-height:1.2!important}}
         @media(max-width:1024px){.nav-desktop{display:none!important}.nav-mobile-trigger{display:flex!important}}
         @media(min-width:1025px){.nav-mobile-trigger{display:none!important}}
@@ -72,42 +78,70 @@
 
 <audio id="bgMusic" loop preload="auto"><source id="bgMusicSource" src="" type="audio/mpeg"></audio>
 
-<div id="toast" class="toast bg-slate-900 border border-blue-500 px-6 py-4 rounded-xl shadow-2xl flex items-center gap-3">
-    <i data-lucide="info" class="w-5 h-5 text-blue-400"></i>
-    <div><h4 class="font-bold text-sm">Notifikasi</h4><p id="toast-msg" class="text-xs text-zinc-400">Pesan</p></div>
+<!-- Koneksi Status Bar -->
+<div id="conn-bar" class="conn-bar">
+    <span id="conn-dot" class="status-dot"></span>
+    <span id="conn-text">Menghubungkan ke database...</span>
 </div>
 
-<!-- Top Marquee -->
-<div class="bg-blue-900/20 border-b border-blue-500/10 py-2 relative z-50 backdrop-blur-sm">
+<!-- Toast Notifikasi -->
+<div id="toast" class="toast bg-slate-900 border border-blue-500 px-6 py-4 rounded-xl shadow-2xl flex items-center gap-3 max-w-sm">
+    <i data-lucide="info" class="w-5 h-5 text-blue-400 shrink-0" id="toast-icon"></i>
+    <div><h4 class="font-bold text-sm" id="toast-title">Notifikasi</h4><p id="toast-msg" class="text-xs text-zinc-400">Pesan</p></div>
+</div>
+
+<!-- Konfirmasi Dialog -->
+<div id="confirm-dialog" class="confirm-overlay">
+    <div class="confirm-box">
+        <div class="flex items-center gap-3 mb-4">
+            <div class="w-10 h-10 rounded-full bg-red-500/15 flex items-center justify-center shrink-0">
+                <i data-lucide="alert-triangle" class="w-5 h-5 text-red-400"></i>
+            </div>
+            <h3 class="text-lg font-bold text-white" id="confirm-title">Konfirmasi Hapus</h3>
+        </div>
+        <p class="text-sm text-zinc-400 mb-6" id="confirm-msg">Apakah Anda yakin ingin menghapus data ini? Tindakan ini tidak dapat dibatalkan.</p>
+        <div class="flex gap-3">
+            <button onclick="cancelConfirm()" class="flex-1 py-2.5 bg-slate-700 hover:bg-slate-600 text-white font-bold text-sm rounded-lg transition-colors">Batal</button>
+            <button id="confirm-btn" class="flex-1 py-2.5 bg-red-600 hover:bg-red-500 text-white font-bold text-sm rounded-lg transition-colors">Hapus</button>
+        </div>
+    </div>
+</div>
+
+<!-- Top Marquee (Akan diisi/dihapus oleh Firebase) -->
+<div id="marquee-wrapper" class="bg-blue-900/20 border-b border-blue-500/10 py-2 relative z-30 backdrop-blur-sm hidden" style="margin-top: 90px;">
     <div class="overflow-hidden whitespace-nowrap relative">
-        <div id="marquee-content" class="inline-block animate-[marqueeScroll_30s_linear_infinite] text-sm font-medium text-blue-200">Memuat informasi...</div>
+        <div id="marquee-content" class="inline-block text-sm font-medium text-blue-200"></div>
+    </div>
+</div>
+
+<!-- Berita Berjalan (Akan diisi/dihapus oleh Firebase) -->
+<div id="news-ticker-wrapper" class="bg-slate-900/80 border-b border-slate-800 py-3 relative z-20 backdrop-blur-sm hidden">
+    <div class="overflow-hidden relative w-full">
+        <div id="news-ticker" class="flex gap-4 w-max hover:[animation-play-state:paused]"></div>
     </div>
 </div>
 
 <!-- Navigation -->
-<nav id="navbar" class="fixed left-0 right-0 z-40 top-[40px] transition-all duration-300">
-    <div class="max-w-7xl mx-auto px-4 md:px-6">
+<nav id="navbar" class="fixed left-0 right-0 z-40 top-0 transition-all duration-300">
+    <div class="max-w-7xl mx-auto px-4 md:px-6 py-3">
         <div class="glass-card rounded-full px-4 md:px-6 py-2.5 flex items-center justify-between">
             <button onclick="navigateTo('home')" class="flex items-center gap-3 group flex-shrink-0">
-                <img id="nav-logo" src="" alt="Logo" class="w-12 h-12 rounded-xl bg-white/10 p-1.5 object-contain group-hover:scale-105 transition-transform shadow-lg shadow-blue-500/20">
+                <img id="nav-logo" src="https://picsum.photos/seed/logo7/100/100" alt="Logo" class="w-12 h-12 rounded-xl bg-white/10 p-1.5 object-contain group-hover:scale-105 transition-transform shadow-lg shadow-blue-500/20">
                 <div class="hidden md:block">
                     <div class="text-xs font-bold tracking-tight text-white">SDN MWT VII</div>
                     <div class="text-[9px] text-blue-300/60 uppercase tracking-wider">Majalengka</div>
                 </div>
             </button>
-
-            <!-- DESKTOP NAV — Semua menu termasuk KKG, Ekstra, Koku -->
             <div class="nav-desktop hidden lg:flex items-center gap-0.5 flex-wrap justify-center">
                 <button onclick="navigateTo('home')" class="nav-btn active px-3 py-2 rounded-full text-[10px] font-bold uppercase text-zinc-300 transition-colors hover:text-white hover:bg-white/5" data-nav="home">Beranda</button>
                 <button onclick="navigateTo('profil')" class="nav-btn px-3 py-2 rounded-full text-[10px] font-bold uppercase text-zinc-300 transition-colors hover:text-white hover:bg-white/5" data-nav="profil">Profil</button>
                 <button onclick="navigateTo('pelayanan')" class="nav-btn px-3 py-2 rounded-full text-[10px] font-bold uppercase text-zinc-300 transition-colors hover:text-white hover:bg-white/5" data-nav="pelayanan">Pelayanan</button>
                 <button onclick="navigateTo('sabudigi')" class="nav-btn px-3 py-2 rounded-full text-[10px] font-bold uppercase text-zinc-300 transition-colors hover:text-white hover:bg-white/5" data-nav="sabudigi">Sabudigi</button>
                 <button onclick="navigateTo('kkg')" class="nav-btn px-3 py-2 rounded-full text-[10px] font-bold uppercase text-zinc-300 transition-colors hover:text-white hover:bg-white/5" data-nav="kkg">KKG</button>
-                <button onclick="navigateTo('ekstra')" class="nav-btn px-3 py-2 rounded-full text-[10px] font-bold uppercase text-zinc-300 transition-colors hover:text-white hover:bg-white/5" data-nav="ekstra">Ekstrakurikuler</button>
+                <button onclick="navigateTo('ekstra')" class="nav-btn px-3 py-2 rounded-full text-[10px] font-bold uppercase text-zinc-300 transition-colors hover:text-white hover:bg-white/5" data-nav="ekstra">Ekstra</button>
                 <button onclick="navigateTo('koku')" class="nav-btn px-3 py-2 rounded-full text-[10px] font-bold uppercase text-zinc-300 transition-colors hover:text-white hover:bg-white/5" data-nav="koku">Ko-Kurikuler</button>
                 <button onclick="navigateTo('portal')" class="nav-btn px-3 py-2 rounded-full text-[10px] font-bold uppercase text-zinc-300 transition-colors hover:text-white hover:bg-white/5" data-nav="portal">Portal</button>
             </div>
-
             <div class="flex items-center gap-3">
                 <button id="login-btn" onclick="toggleLoginModal()" class="hidden sm:flex items-center gap-2 px-5 py-2 rounded-full bg-yellow-400 text-slate-900 text-[10px] font-black uppercase hover:bg-yellow-300 hover:scale-105 transition-all shadow-lg shadow-yellow-400/20">
                     <i data-lucide="log-in" class="w-3 h-3"></i> <span id="login-text">Login</span>
@@ -118,11 +152,11 @@
     </div>
 </nav>
 
-<!-- Mobile Menu — Semua menu termasuk KKG, Ekstra, Koku -->
+<!-- Mobile Menu -->
 <div id="mob-menu" class="fixed inset-0 z-50 bg-slate-900/98 backdrop-blur-xl transform translate-x-full transition-transform duration-500">
     <div class="p-6 h-full flex flex-col overflow-y-auto">
         <div class="flex justify-between items-center mb-10">
-            <div class="flex items-center gap-3"><img id="mob-logo" src="" alt="Logo" class="w-12 h-12 rounded-lg bg-white p-1"><span class="font-bold">SDN MWT VII</span></div>
+            <div class="flex items-center gap-3"><img id="mob-logo" src="https://picsum.photos/seed/logo7/100/100" alt="Logo" class="w-12 h-12 rounded-lg bg-white p-1"><span class="font-bold">SDN MWT VII</span></div>
             <button onclick="toggleMob()" class="p-2 rounded-full bg-white/5"><i data-lucide="x" class="w-6 h-6"></i></button>
         </div>
         <div class="flex-1 space-y-1">
@@ -130,16 +164,12 @@
             <button onclick="navigateTo('profil');toggleMob()" class="w-full text-left px-5 py-3.5 text-lg font-bold text-white rounded-xl hover:bg-blue-600/20 hover:text-blue-400 transition-all flex items-center gap-4"><i data-lucide="school" class="w-5 h-5"></i> Profil Sekolah</button>
             <button onclick="navigateTo('pelayanan');toggleMob()" class="w-full text-left px-5 py-3.5 text-lg font-bold text-white rounded-xl hover:bg-blue-600/20 hover:text-blue-400 transition-all flex items-center gap-4"><i data-lucide="file-check" class="w-5 h-5"></i> Pelayanan</button>
             <button onclick="navigateTo('sabudigi');toggleMob()" class="w-full text-left px-5 py-3.5 text-lg font-bold text-white rounded-xl hover:bg-blue-600/20 hover:text-blue-400 transition-all flex items-center gap-4"><i data-lucide="leaf" class="w-5 h-5"></i> SABUDIGI</button>
-
             <div class="border-t border-slate-800 my-3"></div>
             <p class="px-5 text-[10px] font-black uppercase tracking-[0.2em] text-zinc-600 mb-1">Kegiatan</p>
-
             <button onclick="navigateTo('kkg');toggleMob()" class="w-full text-left px-5 py-3.5 text-lg font-bold text-white rounded-xl hover:bg-orange-600/20 hover:text-orange-400 transition-all flex items-center gap-4"><i data-lucide="briefcase" class="w-5 h-5"></i> KKG</button>
             <button onclick="navigateTo('ekstra');toggleMob()" class="w-full text-left px-5 py-3.5 text-lg font-bold text-white rounded-xl hover:bg-pink-600/20 hover:text-pink-400 transition-all flex items-center gap-4"><i data-lucide="trophy" class="w-5 h-5"></i> Ekstrakurikuler</button>
             <button onclick="navigateTo('koku');toggleMob()" class="w-full text-left px-5 py-3.5 text-lg font-bold text-white rounded-xl hover:bg-cyan-600/20 hover:text-cyan-400 transition-all flex items-center gap-4"><i data-lucide="aperture" class="w-5 h-5"></i> Ko-Kurikuler</button>
-
             <div class="border-t border-slate-800 my-3"></div>
-
             <button onclick="navigateTo('portal');toggleMob()" class="w-full text-left px-5 py-3.5 text-lg font-bold text-white rounded-xl hover:bg-blue-600/20 hover:text-blue-400 transition-all flex items-center gap-4"><i data-lucide="grid" class="w-5 h-5"></i> Portal Aplikasi</button>
         </div>
     </div>
@@ -157,7 +187,8 @@
         <form id="loginForm" onsubmit="handleLogin(event)" class="space-y-4">
             <input type="email" id="email" required class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all" placeholder="Email Admin">
             <input type="password" id="password" required class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all" placeholder="Password">
-            <button type="submit" class="w-full bg-gradient-to-r from-blue-600 to-blue-500 text-white font-bold text-sm tracking-wider uppercase py-3 rounded-xl hover:shadow-lg hover:shadow-blue-500/25 transition-all">Masuk Dashboard</button>
+            <div id="login-error" class="text-red-400 text-xs hidden"></div>
+            <button type="submit" id="login-submit-btn" class="w-full bg-gradient-to-r from-blue-600 to-blue-500 text-white font-bold text-sm tracking-wider uppercase py-3 rounded-xl hover:shadow-lg hover:shadow-blue-500/25 transition-all">Masuk Dashboard</button>
         </form>
         <div class="mt-6 text-center"><button type="button" onclick="openAdminPanel()" class="text-xs text-zinc-500 hover:text-blue-400 underline transition-colors">Bypass (Demo Mode)</button></div>
     </div>
@@ -189,27 +220,32 @@
 <!-- Admin Panel -->
 <div id="admin-panel" class="admin-panel">
     <div class="w-72 bg-slate-900 border-r border-slate-800 p-6 overflow-y-auto hidden md:block">
-        <h2 class="text-xl font-bold text-yellow-400 mb-2">Admin Panel</h2>
-        <p class="text-xs text-gray-500 mb-8">Update Semua Fitur</p>
-        <div class="space-y-1">
-            <div onclick="switchAdminTab('home')" class="admin-tab-link active p-3 rounded-lg cursor-pointer text-sm font-medium text-zinc-400 hover:bg-slate-800 hover:text-white transition-colors flex items-center gap-3"><i data-lucide="layout" class="w-4 h-4"></i> Beranda & Media</div>
-            <div onclick="switchAdminTab('profil')" class="admin-tab-link p-3 rounded-lg cursor-pointer text-sm font-medium text-zinc-400 hover:bg-slate-800 hover:text-white transition-colors flex items-center gap-3"><i data-lucide="user" class="w-4 h-4"></i> Profil Sekolah</div>
-            <div onclick="switchAdminTab('news')" class="admin-tab-link p-3 rounded-lg cursor-pointer text-sm font-medium text-zinc-400 hover:bg-slate-800 hover:text-white transition-colors flex items-center gap-3"><i data-lucide="newspaper" class="w-4 h-4"></i> Berita & Kegiatan</div>
-            <div onclick="switchAdminTab('guru')" class="admin-tab-link p-3 rounded-lg cursor-pointer text-sm font-medium text-zinc-400 hover:bg-slate-800 hover:text-white transition-colors flex items-center gap-3"><i data-lucide="users" class="w-4 h-4"></i> Data Guru</div>
-            <div onclick="switchAdminTab('portal')" class="admin-tab-link p-3 rounded-lg cursor-pointer text-sm font-medium text-zinc-400 hover:bg-slate-800 hover:text-white transition-colors flex items-center gap-3"><i data-lucide="link" class="w-4 h-4"></i> Portal Aplikasi</div>
-            <div onclick="switchAdminTab('pelayanan')" class="admin-tab-link p-3 rounded-lg cursor-pointer text-sm font-medium text-zinc-400 hover:bg-slate-800 hover:text-white transition-colors flex items-center gap-3"><i data-lucide="clipboard-list" class="w-4 h-4"></i> Standar Pelayanan</div>
+        <div class="flex items-center gap-3 mb-2">
+            <div class="w-3 h-3 rounded-full bg-green-500" id="admin-db-dot"></div>
+            <h2 class="text-xl font-bold text-yellow-400">Admin Panel</h2>
+        </div>
+        <p class="text-xs text-gray-500 mb-8">CRUD Terkoneksi Firebase RTDB</p>
+        <div class="space-y-1" id="admin-sidebar-desktop">
+            <div onclick="switchAdminTab('home')" class="admin-tab-link active p-3 rounded-lg cursor-pointer text-sm font-medium text-zinc-400 hover:bg-slate-800 hover:text-white transition-colors flex items-center gap-3"><i data-lucide="layout" class="w-4 h-4"></i> Beranda</div>
+            <div onclick="switchAdminTab('profil')" class="admin-tab-link p-3 rounded-lg cursor-pointer text-sm font-medium text-zinc-400 hover:bg-slate-800 hover:text-white transition-colors flex items-center gap-3"><i data-lucide="user" class="w-4 h-4"></i> Profil</div>
+            <div onclick="switchAdminTab('news')" class="admin-tab-link p-3 rounded-lg cursor-pointer text-sm font-medium text-zinc-400 hover:bg-slate-800 hover:text-white transition-colors flex items-center gap-3"><i data-lucide="newspaper" class="w-4 h-4"></i> Berita</div>
+            <div onclick="switchAdminTab('guru')" class="admin-tab-link p-3 rounded-lg cursor-pointer text-sm font-medium text-zinc-400 hover:bg-slate-800 hover:text-white transition-colors flex items-center gap-3"><i data-lucide="users" class="w-4 h-4"></i> Guru</div>
+            <div onclick="switchAdminTab('pelayanan')" class="admin-tab-link p-3 rounded-lg cursor-pointer text-sm font-medium text-zinc-400 hover:bg-slate-800 hover:text-white transition-colors flex items-center gap-3"><i data-lucide="clipboard-list" class="w-4 h-4"></i> Pelayanan</div>
             <div onclick="switchAdminTab('sabudigi')" class="admin-tab-link p-3 rounded-lg cursor-pointer text-sm font-medium text-zinc-400 hover:bg-slate-800 hover:text-white transition-colors flex items-center gap-3"><i data-lucide="sprout" class="w-4 h-4"></i> SABUDIGI</div>
             <div onclick="switchAdminTab('kkg')" class="admin-tab-link p-3 rounded-lg cursor-pointer text-sm font-medium text-zinc-400 hover:bg-slate-800 hover:text-white transition-colors flex items-center gap-3"><i data-lucide="briefcase" class="w-4 h-4"></i> KKG</div>
-            <div onclick="switchAdminTab('ekstra')" class="admin-tab-link p-3 rounded-lg cursor-pointer text-sm font-medium text-zinc-400 hover:bg-slate-800 hover:text-white transition-colors flex items-center gap-3"><i data-lucide="trophy" class="w-4 h-4"></i> Ekstrakurikuler</div>
+            <div onclick="switchAdminTab('ekstra')" class="admin-tab-link p-3 rounded-lg cursor-pointer text-sm font-medium text-zinc-400 hover:bg-slate-800 hover:text-white transition-colors flex items-center gap-3"><i data-lucide="trophy" class="w-4 h-4"></i> Ekstra</div>
             <div onclick="switchAdminTab('koku')" class="admin-tab-link p-3 rounded-lg cursor-pointer text-sm font-medium text-zinc-400 hover:bg-slate-800 hover:text-white transition-colors flex items-center gap-3"><i data-lucide="aperture" class="w-4 h-4"></i> Ko-Kurikuler</div>
+            <div onclick="switchAdminTab('portal')" class="admin-tab-link p-3 rounded-lg cursor-pointer text-sm font-medium text-zinc-400 hover:bg-slate-800 hover:text-white transition-colors flex items-center gap-3"><i data-lucide="link" class="w-4 h-4"></i> Portal</div>
             <div onclick="switchAdminTab('inbox')" class="admin-tab-link p-3 rounded-lg cursor-pointer text-sm font-medium text-zinc-400 hover:bg-slate-800 hover:text-white transition-colors flex items-center gap-3"><i data-lucide="message-square" class="w-4 h-4"></i> Inbox Chat</div>
-            <div onclick="switchAdminTab('contacts')" class="admin-tab-link p-3 rounded-lg cursor-pointer text-sm font-medium text-zinc-400 hover:bg-slate-800 hover:text-white transition-colors flex items-center gap-3"><i data-lucide="phone" class="w-4 h-4"></i> Kontak & Sosmed</div>
+            <div onclick="switchAdminTab('contacts')" class="admin-tab-link p-3 rounded-lg cursor-pointer text-sm font-medium text-zinc-400 hover:bg-slate-800 hover:text-white transition-colors flex items-center gap-3"><i data-lucide="phone" class="w-4 h-4"></i> Kontak</div>
         </div>
         <div class="mt-8 pt-6 border-t border-slate-800"><button onclick="closeAdminPanel()" class="w-full py-2 bg-red-500/10 text-red-400 rounded-lg hover:bg-red-500/20 text-sm font-bold transition-colors">Keluar</button></div>
     </div>
     <div class="flex-1 bg-slate-950/50 p-4 md:p-10 overflow-y-auto">
-        <div class="md:hidden mb-6 flex overflow-x-auto gap-2 pb-2">
+        <div class="md:hidden mb-6 flex overflow-x-auto gap-2 pb-2" id="admin-sidebar-mobile">
             <button onclick="switchAdminTab('home')" class="admin-tab-link active px-4 py-2 bg-slate-800 rounded-lg text-xs whitespace-nowrap">Beranda</button>
+            <button onclick="switchAdminTab('news')" class="admin-tab-link px-4 py-2 bg-slate-800 rounded-lg text-xs whitespace-nowrap">Berita</button>
+            <button onclick="switchAdminTab('guru')" class="admin-tab-link px-4 py-2 bg-slate-800 rounded-lg text-xs whitespace-nowrap">Guru</button>
             <button onclick="switchAdminTab('inbox')" class="admin-tab-link px-4 py-2 bg-slate-800 rounded-lg text-xs whitespace-nowrap">Chat</button>
         </div>
         <div id="admin-content-wrapper"></div>
@@ -225,14 +261,13 @@
         <div class="absolute inset-0 hero-bg"></div>
         <div class="deco-ring w-[500px] h-[500px] -top-20 -right-20 opacity-20" style="animation:rotate 40s linear infinite"></div>
         <div class="deco-ring w-[300px] h-[300px] -bottom-20 -left-20 opacity-20" style="animation:rotateR 30s linear infinite;border-color:rgba(250,204,21,0.1)"></div>
-        <div class="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 brightness-100 contrast-150"></div>
         <div class="relative z-10 max-w-6xl mx-auto px-6 text-center">
-            <div class="mb-6 animate-on-scroll"><img id="hero-logo-display" src="" alt="Logo" class="w-20 h-20 mx-auto rounded-xl bg-white/5 p-2 shadow-2xl shadow-blue-500/10 object-contain border border-white/10"></div>
+            <div class="mb-6 animate-on-scroll"><img id="hero-logo-display" src="https://picsum.photos/seed/logo7/100/100" alt="Logo" class="w-20 h-20 mx-auto rounded-xl bg-white/5 p-2 shadow-2xl shadow-blue-500/10 object-contain border border-white/10"></div>
             <h1 class="hero-title text-4xl sm:text-5xl md:text-6xl font-black tracking-tight leading-tight mb-4 animate-on-scroll">
-                <span id="hero-title1-display" class="block text-white drop-shadow-sm">Membangun Generasi</span>
-                <span id="hero-title2-display" class="gt block text-3xl sm:text-4xl md:text-5xl mt-2">Cerdas & Berkarakter</span>
+                <span id="hero-title1-display" class="block text-white drop-shadow-sm"></span>
+                <span id="hero-title2-display" class="gt block text-3xl sm:text-4xl md:text-5xl mt-2"></span>
             </h1>
-            <p id="hero-desc-display" class="text-base md:text-lg text-blue-100/70 max-w-2xl mx-auto mb-8 leading-relaxed animate-on-scroll font-light">Memuat data...</p>
+            <p id="hero-desc-display" class="text-base md:text-lg text-blue-100/70 max-w-2xl mx-auto mb-8 leading-relaxed animate-on-scroll font-light"></p>
             <div class="flex flex-col sm:flex-row items-center justify-center gap-4 animate-on-scroll">
                 <button onclick="navigateTo('profil')" class="px-8 py-3.5 rounded-full bg-white text-slate-900 font-bold text-sm hover:bg-blue-50 transition-colors shadow-xl shadow-white/10 flex items-center gap-2">Tentang Sekolah <i data-lucide="arrow-right" class="w-4 h-4"></i></button>
                 <button onclick="navigateTo('portal')" class="px-8 py-3.5 rounded-full glass-card text-white font-bold text-sm hover:bg-white/10 flex items-center gap-2"><i data-lucide="layout-grid" class="w-4 h-4"></i> Portal Aplikasi</button>
@@ -240,7 +275,8 @@
         </div>
     </section>
 
-    <section class="py-24 relative overflow-hidden bg-slate-900/20">
+    <!-- SAMBUTAN KEPSEK (Hilang jika data kosong) -->
+    <section id="home-kepsek-section" class="py-24 relative overflow-hidden bg-slate-900/20 hidden">
         <div class="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-blue-500/30 to-transparent"></div>
         <div class="max-w-7xl mx-auto px-6">
             <div class="grid md:grid-cols-12 gap-12 items-center">
@@ -248,7 +284,7 @@
                     <div class="relative rounded-3xl overflow-hidden aspect-[4/5] max-w-sm mx-auto shadow-2xl shadow-blue-900/40 group">
                         <div class="absolute inset-0 bg-blue-600/10 group-hover:bg-transparent transition-colors z-10"></div>
                         <img id="kepsek-img-display" src="" alt="Kepala Sekolah" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
-                        <div class="absolute -bottom-6 -right-6 bg-slate-800 border border-blue-500/20 p-4 rounded-xl shadow-xl z-20 backdrop-blur-md max-w-[200px] animate-pulse">
+                        <div class="absolute -bottom-6 -right-6 bg-slate-800 border border-blue-500/20 p-4 rounded-xl shadow-xl z-20 backdrop-blur-md max-w-[200px]">
                             <p class="text-[10px] text-blue-400 uppercase font-bold tracking-wider mb-1">Pengalaman</p>
                             <p class="text-sm font-bold text-white">20+ Tahun Mengabdi</p>
                         </div>
@@ -257,20 +293,17 @@
                 <div class="md:col-span-7 animate-on-scroll" style="transition-delay:150ms;">
                     <span class="inline-block py-1 px-3 rounded-full bg-yellow-400/10 border border-yellow-400/20 text-yellow-400 text-[10px] font-black tracking-[0.2em] uppercase mb-6">Sambutan Kepala Sekolah</span>
                     <h2 class="text-3xl md:text-4xl font-bold mb-6 leading-tight">Melayani dengan Hati, <br><span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-400">Mendidik dengan Kasih</span></h2>
-                    <div id="kepsek-msg-display" class="space-y-4 text-blue-100/60 text-base leading-relaxed mb-8">Memuat sambutan...</div>
+                    <div id="kepsek-msg-display" class="space-y-4 text-blue-100/60 text-base leading-relaxed mb-8"></div>
                     <div class="border-t border-white/10 pt-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-                        <div><h3 id="kepsek-name-display" class="text-lg font-bold text-white">Nama Kepala Sekolah</h3><p id="kepsek-nip-display" class="text-sm text-blue-400/60 font-mono mt-1">NIP: 19xxxxxxxxxxxxxx</p></div>
-                        <div class="flex gap-3">
-                            <span class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-white hover:bg-white/10 cursor-pointer transition-colors"><i data-lucide="facebook" class="w-5 h-5"></i></span>
-                            <span class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-white hover:bg-white/10 cursor-pointer transition-colors"><i data-lucide="instagram" class="w-5 h-5"></i></span>
-                        </div>
+                        <div><h3 id="kepsek-name-display" class="text-lg font-bold text-white"></h3><p id="kepsek-nip-display" class="text-sm text-blue-400/60 font-mono mt-1"></p></div>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <section class="py-24 bg-slate-900/30">
+    <!-- BERITA (Hilang jika data kosong) -->
+    <section id="home-news-section" class="py-24 bg-slate-900/30 hidden">
         <div class="max-w-7xl mx-auto px-6">
             <div class="flex flex-col md:flex-row justify-between items-end mb-12 animate-on-scroll">
                 <div><h2 class="text-3xl md:text-4xl font-bold mb-2">Berita & <span class="gt">Pengumuman</span></h2><p class="text-blue-200/50">Ikuti perkembangan terbaru di lingkungan sekolah.</p></div>
@@ -279,13 +312,13 @@
         </div>
     </section>
 
-    <section class="py-10 bg-slate-900/50 border-y border-blue-500/10 relative overflow-hidden">
+    <!-- GALERI SLIDER (Hilang jika data kosong) -->
+    <section id="home-slider-section" class="py-10 bg-slate-900/50 border-y border-blue-500/10 relative overflow-hidden hidden">
         <div class="max-w-7xl mx-auto px-6 mb-6 flex justify-between items-center">
             <h3 class="text-xl font-bold text-white flex items-center gap-2"><i data-lucide="activity" class="text-yellow-400"></i> Galeri Kegiatan Sekolah</h3>
-            <span class="text-xs text-zinc-500">SABUDIGI, KKG, Ekstra & Ko-kurikuler</span>
         </div>
         <div class="overflow-hidden relative w-full">
-            <div id="activity-slider" class="flex gap-6 animate-[marqueeScroll_40s_linear_infinite] w-max hover:[animation-play-state:paused]"></div>
+            <div id="activity-slider" class="flex gap-6 w-max hover:[animation-play-state:paused]"></div>
         </div>
     </section>
 </div>
@@ -294,11 +327,15 @@
 <div id="page-profil" class="page">
     <div class="pt-32 pb-24 min-h-screen"><div class="max-w-7xl mx-auto px-6">
         <div class="text-center mb-16 animate-on-scroll"><h2 class="text-4xl md:text-5xl font-black tracking-tighter mb-4">Mengenal Lebih <span class="gt">Dekat</span></h2><div class="w-24 h-1 bg-yellow-400 mx-auto rounded-full"></div></div>
-        <div class="grid md:grid-cols-2 gap-8 mb-16">
-            <div class="glass-card p-8 rounded-3xl animate-on-scroll"><h3 class="text-xl font-bold mb-4 flex items-center gap-2"><i data-lucide="target" class="w-5 h-5 text-yellow-400"></i> Visi Sekolah</h3><p id="visi-display" class="text-blue-100/60 text-sm leading-relaxed font-medium italic border-l-4 border-yellow-400/50 pl-4">Memuat Visi...</p></div>
+        <div id="profil-visi-misi-section" class="grid md:grid-cols-2 gap-8 mb-16 hidden">
+            <div class="glass-card p-8 rounded-3xl animate-on-scroll"><h3 class="text-xl font-bold mb-4 flex items-center gap-2"><i data-lucide="target" class="w-5 h-5 text-yellow-400"></i> Visi Sekolah</h3><p id="visi-display" class="text-blue-100/60 text-sm leading-relaxed font-medium italic border-l-4 border-yellow-400/50 pl-4"></p></div>
             <div class="glass-card p-8 rounded-3xl animate-on-scroll"><h3 class="text-xl font-bold mb-4 flex items-center gap-2"><i data-lucide="check-circle" class="w-5 h-5 text-blue-400"></i> Misi Sekolah</h3><ol id="misi-display" class="space-y-3 text-blue-100/60 text-sm leading-relaxed list-decimal list-inside"></ol></div>
         </div>
-        <div class="mb-12"><h3 class="text-2xl font-black tracking-tight uppercase mb-8 text-center">Dewan Guru & <span class="gt">Staf</span></h3><div id="guru-container" class="grid grid-cols-2 md:grid-cols-4 gap-6"></div></div>
+        <div id="profil-guru-section" class="hidden">
+            <h3 class="text-2xl font-black tracking-tight uppercase mb-8 text-center">Dewan Guru & <span class="gt">Staf</span></h3>
+            <div id="guru-container" class="grid grid-cols-2 md:grid-cols-4 gap-6"></div>
+        </div>
+        <div id="profil-empty-section" class="text-center py-20 text-zinc-500 hidden"><p>Belum ada data profil.</p></div>
     </div></div>
 </div>
 
@@ -307,6 +344,7 @@
     <div class="pt-32 pb-24 min-h-screen"><div class="max-w-7xl mx-auto px-6">
         <div class="text-center mb-16"><h2 class="text-4xl md:text-5xl font-black tracking-tighter mb-4">Standar <span class="gt">Pelayanan</span></h2><p class="text-blue-200/50">Komitmen kami untuk memberikan pelayanan prima.</p></div>
         <div id="pelayanan-container" class="grid md:grid-cols-2 lg:grid-cols-3 gap-8"></div>
+        <div id="pelayanan-empty" class="text-center py-20 text-zinc-500 hidden">Belum ada data pelayanan.</div>
     </div></div>
 </div>
 
@@ -315,51 +353,34 @@
     <div class="pt-32 pb-24 min-h-screen"><div class="max-w-7xl mx-auto px-6">
         <div class="text-center mb-16"><h2 class="text-4xl md:text-5xl font-black tracking-tighter mb-4">SABUDIGI <span class="gt">Kegiatan</span></h2><p class="text-blue-200/50">Dokumentasi aktivitas Sahabat Bumi & Digital.</p></div>
         <div id="sabudigi-container" class="grid md:grid-cols-2 lg:grid-cols-3 gap-8"></div>
+        <div id="sabudigi-empty" class="text-center py-20 text-zinc-500 hidden">Belum ada kegiatan SABUDIGI.</div>
     </div></div>
 </div>
 
-<!-- ══════════ PAGE: KKG (BARU) ══════════ -->
+<!-- PAGE: KKG -->
 <div id="page-kkg" class="page">
     <div class="pt-32 pb-24 min-h-screen"><div class="max-w-7xl mx-auto px-6">
-        <div class="text-center mb-16 animate-on-scroll">
-            <div class="inline-flex items-center gap-2 bg-orange-500/10 border border-orange-500/20 rounded-full px-5 py-2 mb-4">
-                <i data-lucide="briefcase" class="w-4 h-4 text-orange-400"></i>
-                <span class="text-orange-400 text-[10px] font-black uppercase tracking-[0.2em]">Kelompok Kerja Guru</span>
-            </div>
-            <h2 class="text-4xl md:text-5xl font-black tracking-tighter mb-4">Kegiatan <span class="gt">KKG</span></h2>
-            <p class="text-blue-200/50">Dokumentasi kegiatan Kelompok Kerja Guru.</p>
-        </div>
+        <div class="text-center mb-16 animate-on-scroll"><div class="inline-flex items-center gap-2 bg-orange-500/10 border border-orange-500/20 rounded-full px-5 py-2 mb-4"><i data-lucide="briefcase" class="w-4 h-4 text-orange-400"></i><span class="text-orange-400 text-[10px] font-black uppercase tracking-[0.2em]">Kelompok Kerja Guru</span></div><h2 class="text-4xl md:text-5xl font-black tracking-tighter mb-4">Kegiatan <span class="gt">KKG</span></h2></div>
         <div id="kkg-container" class="grid md:grid-cols-2 lg:grid-cols-3 gap-8"></div>
+        <div id="kkg-empty" class="text-center py-20 text-zinc-500 hidden">Belum ada kegiatan KKG.</div>
     </div></div>
 </div>
 
-<!-- ══════════ PAGE: EKSTRAKURIKULER (BARU) ══════════ -->
+<!-- PAGE: EKSTRAKURIKULER -->
 <div id="page-ekstra" class="page">
     <div class="pt-32 pb-24 min-h-screen"><div class="max-w-7xl mx-auto px-6">
-        <div class="text-center mb-16 animate-on-scroll">
-            <div class="inline-flex items-center gap-2 bg-pink-500/10 border border-pink-500/20 rounded-full px-5 py-2 mb-4">
-                <i data-lucide="trophy" class="w-4 h-4 text-pink-400"></i>
-                <span class="text-pink-400 text-[10px] font-black uppercase tracking-[0.2em]">Pengembangan Bakat</span>
-            </div>
-            <h2 class="text-4xl md:text-5xl font-black tracking-tighter mb-4">Kegiatan <span class="gt">Ekstrakurikuler</span></h2>
-            <p class="text-blue-200/50">Dokumentasi kegiatan ekstrakurikuler siswa.</p>
-        </div>
+        <div class="text-center mb-16 animate-on-scroll"><div class="inline-flex items-center gap-2 bg-pink-500/10 border border-pink-500/20 rounded-full px-5 py-2 mb-4"><i data-lucide="trophy" class="w-4 h-4 text-pink-400"></i><span class="text-pink-400 text-[10px] font-black uppercase tracking-[0.2em]">Pengembangan Bakat</span></div><h2 class="text-4xl md:text-5xl font-black tracking-tighter mb-4">Kegiatan <span class="gt">Ekstrakurikuler</span></h2></div>
         <div id="ekstra-container" class="grid md:grid-cols-2 lg:grid-cols-3 gap-8"></div>
+        <div id="ekstra-empty" class="text-center py-20 text-zinc-500 hidden">Belum ada kegiatan Ekstrakurikuler.</div>
     </div></div>
 </div>
 
-<!-- ══════════ PAGE: KO-KURIKULER (BARU) ══════════ -->
+<!-- PAGE: KO-KURIKULER -->
 <div id="page-koku" class="page">
     <div class="pt-32 pb-24 min-h-screen"><div class="max-w-7xl mx-auto px-6">
-        <div class="text-center mb-16 animate-on-scroll">
-            <div class="inline-flex items-center gap-2 bg-cyan-500/10 border border-cyan-500/20 rounded-full px-5 py-2 mb-4">
-                <i data-lucide="aperture" class="w-4 h-4 text-cyan-400"></i>
-                <span class="text-cyan-400 text-[10px] font-black uppercase tracking-[0.2em]">Pendukung Kurikulum</span>
-            </div>
-            <h2 class="text-4xl md:text-5xl font-black tracking-tighter mb-4">Kegiatan <span class="gt">Ko-Kurikuler</span></h2>
-            <p class="text-blue-200/50">Dokumentasi kegiatan ko-kurikuler siswa.</p>
-        </div>
+        <div class="text-center mb-16 animate-on-scroll"><div class="inline-flex items-center gap-2 bg-cyan-500/10 border border-cyan-500/20 rounded-full px-5 py-2 mb-4"><i data-lucide="aperture" class="w-4 h-4 text-cyan-400"></i><span class="text-cyan-400 text-[10px] font-black uppercase tracking-[0.2em]">Pendukung Kurikulum</span></div><h2 class="text-4xl md:text-5xl font-black tracking-tighter mb-4">Kegiatan <span class="gt">Ko-Kurikuler</span></h2></div>
         <div id="koku-container" class="grid md:grid-cols-2 lg:grid-cols-3 gap-8"></div>
+        <div id="koku-empty" class="text-center py-20 text-zinc-500 hidden">Belum ada kegiatan Ko-Kurikuler.</div>
     </div></div>
 </div>
 
@@ -368,6 +389,7 @@
     <div class="pt-32 pb-24 min-h-screen"><div class="max-w-7xl mx-auto px-6">
         <div class="text-center mb-16"><h2 class="text-4xl md:text-5xl font-black tracking-tighter mb-4">Portal <span class="gt">Aplikasi</span></h2><p class="text-blue-200/50">Akses cepat ke berbagai layanan digital sekolah.</p></div>
         <div id="portal-container" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"></div>
+        <div id="portal-empty" class="text-center py-20 text-zinc-500 hidden">Belum ada aplikasi portal.</div>
     </div></div>
 </div>
 
@@ -379,7 +401,7 @@
         <div class="grid md:grid-cols-4 gap-12 mb-12">
             <div class="md:col-span-2">
                 <div class="flex items-center gap-3 mb-6">
-                    <img id="footer-logo" src="" alt="Logo" class="w-10 h-10 rounded-xl bg-white/5 p-1.5 object-contain">
+                    <img id="footer-logo" src="https://picsum.photos/seed/logo7/100/100" alt="Logo" class="w-10 h-10 rounded-xl bg-white/5 p-1.5 object-contain">
                     <div><div class="font-bold text-lg">SDN Majalengka Wetan VII</div><div class="text-xs text-zinc-500">Majalengka Langkung Sae</div></div>
                 </div>
                 <p class="text-sm text-zinc-400 leading-relaxed max-w-md mb-6">Sekolah Dasar Negeri Majalengka Wetan VII berkomitmen mencetak generasi penerus bangsa yang beriman, cerdas, dan berkarakter.</p>
@@ -393,26 +415,21 @@
                 <h4 class="font-bold text-white mb-6">Menu Cepat</h4>
                 <ul class="space-y-3 text-sm text-zinc-400">
                     <li><a href="#" onclick="navigateTo('home')" class="hover:text-yellow-400 transition-colors">Beranda</a></li>
-                    <li><a href="#" onclick="navigateTo('profil')" class="hover:text-yellow-400 transition-colors">Profil Sekolah</a></li>
+                    <li><a href="#" onclick="navigateTo('profil')" class="hover:text-yellow-400 transition-colors">Profil</a></li>
                     <li><a href="#" onclick="navigateTo('pelayanan')" class="hover:text-yellow-400 transition-colors">Pelayanan</a></li>
-                    <li><a href="#" onclick="navigateTo('kkg')" class="hover:text-yellow-400 transition-colors">KKG</a></li>
-                    <li><a href="#" onclick="navigateTo('ekstra')" class="hover:text-yellow-400 transition-colors">Ekstrakurikuler</a></li>
-                    <li><a href="#" onclick="navigateTo('koku')" class="hover:text-yellow-400 transition-colors">Ko-Kurikuler</a></li>
                     <li><a href="#" onclick="navigateTo('portal')" class="hover:text-yellow-400 transition-colors">Portal Aplikasi</a></li>
                 </ul>
             </div>
             <div>
                 <h4 class="font-bold text-white mb-6">Kontak</h4>
                 <ul class="space-y-3 text-sm text-zinc-400">
-                    <li class="flex items-start gap-3"><i data-lucide="map-pin" class="w-5 h-5 text-blue-500 shrink-0"></i><span>Jl. Pangeran Muhamad No.12, Majalengka Wetan</span></li>
+                    <li class="flex items-center gap-3"><i data-lucide="map-pin" class="w-5 h-5 text-blue-500 shrink-0"></i><span>Jl. Pangeran Muhamad No.12, Majalengka Wetan</span></li>
                     <li class="flex items-center gap-3"><i data-lucide="mail" class="w-5 h-5 text-blue-500 shrink-0"></i><span>info@sdnmwt7.sch.id</span></li>
-                    <li class="flex items-center gap-3"><i data-lucide="phone" class="w-5 h-5 text-blue-500 shrink-0"></i><span>+62 812-3456-7890</span></li>
                 </ul>
             </div>
         </div>
         <div class="border-t border-slate-800 pt-8 text-center md:text-left flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-zinc-500">
-            <p>&copy; 2026 SDN Majalengka Wetan VII. All rights reserved.</p>
-            <p>Designed with ❤️ for Education</p>
+            <p>&copy; 2025 SDN Majalengka Wetan VII. All rights reserved.</p>
         </div>
     </div>
 </footer>
@@ -424,11 +441,11 @@
         <div class="absolute top-0 right-0 w-3 h-3 bg-red-500 rounded-full border-2 border-slate-900 hidden" id="chat-badge"></div>
         <span class="fab-tooltip">Live Chat</span>
     </button>
-    <a id="wa-float-btn" href="#" class="fab-btn bg-[#25D366] text-white shadow-green-500/30" style="order:2;" target="_blank">
+    <a id="wa-float-btn" href="#" class="fab-btn bg-[#25D366] text-white shadow-green-500/30 hidden" style="order:2;" target="_blank">
         <svg class="w-7 h-7 fill-white" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
         <span class="fab-tooltip">WhatsApp</span>
     </a>
-    <button id="musicBtn" onclick="toggleMusic()" class="fab-btn bg-gradient-to-br from-blue-600 to-indigo-600 text-white shadow-blue-500/30" style="order:1;">
+    <button id="musicBtn" onclick="toggleMusic()" class="fab-btn bg-gradient-to-br from-blue-600 to-indigo-600 text-white shadow-blue-500/30 hidden" style="order:1;">
         <i data-lucide="music" class="w-6 h-6"></i>
         <div id="music-indicator" class="absolute -top-1 -right-1 w-4 h-4 bg-green-500 rounded-full border-2 border-slate-900 hidden"></div>
         <span class="fab-tooltip">Musik Latar</span>
@@ -436,9 +453,7 @@
 </div>
 
 <script>
-// ═══════════════════════════════════════════════════════════════
-// FIREBASE CONFIG
-// ═══════════════════════════════════════════════════════════════
+// ═════════════ FIREBASE CONFIG & INIT ═════════════
 const firebaseConfig = {
     apiKey: "AIzaSyCXhcsfHrKMh7KOIQ1DQnUK7Wlmi9J-n_s",
     authDomain: "wetan7-beb9f.firebaseapp.com",
@@ -446,518 +461,540 @@ const firebaseConfig = {
     projectId: "wetan7-beb9f",
     storageBucket: "wetan7-beb9f.firebasestorage.app",
     messagingSenderId: "698701670829",
-    appId: "1:698701670829:web:ad30e8ddb02bef6e995924",
-    measurementId: "G-83X845SEND"
+    appId: "1:698701670829:web:ad30e8ddb02bef6e995924"
 };
-let auth, db;
-try { firebase.initializeApp(firebaseConfig); auth = firebase.auth(); db = firebase.database(); } catch (e) { console.error("Firebase Error:", e); }
+let auth, db, isConnected = false;
+try {
+    firebase.initializeApp(firebaseConfig);
+    auth = firebase.auth();
+    db = firebase.database();
+    db.ref('.info/connected').on('value', snap => {
+        isConnected = snap.val() === true;
+        updateConnectionUI(isConnected);
+    });
+} catch (e) { console.error("Firebase Init Error:", e); updateConnectionUI(false); }
 
-// ═══════════════════════════════════════════════════════════════
-// ADMIN TEMPLATES
-// ═══════════════════════════════════════════════════════════════
+// ═════════════ KONEKSI UI ═════════════
+function updateConnectionUI(c) {
+    const bar = document.getElementById('conn-bar'), dot = document.getElementById('conn-dot'), txt = document.getElementById('conn-text'), adm = document.getElementById('admin-db-dot');
+    if (c) {
+        bar.className = 'conn-bar connected show'; dot.className = 'status-dot online'; txt.textContent = 'Database terhubung — data realtime aktif';
+        if(adm){adm.className='w-3 h-3 rounded-full bg-green-500';}
+        setTimeout(() => bar.classList.remove('show'), 3000);
+    } else {
+        bar.className = 'conn-bar disconnected show'; dot.className = 'status-dot offline'; txt.textContent = 'Koneksi database terputus';
+        if(adm){adm.className='w-3 h-3 rounded-full bg-red-500 animate-pulse';}
+    }
+}
+
+// ═════════════ TOAST ═════════════
+let toastTimer = null;
+function showToast(t, m, type='info') {
+    const toast=document.getElementById('toast'), icon=document.getElementById('toast-icon');
+    const c={success:{b:'border-green-500',i:'check-circle',ic:'text-green-400'},error:{b:'border-red-500',i:'alert-circle',ic:'text-red-400'},warning:{b:'border-yellow-500',i:'alert-triangle',ic:'text-yellow-400'},info:{b:'border-blue-500',i:'info',ic:'text-blue-400'}}[type]||{b:'border-blue-500',i:'info',ic:'text-blue-400'};
+    toast.className=`toast bg-slate-900 ${c.b} border px-6 py-4 rounded-xl shadow-2xl flex items-center gap-3 max-w-sm`;
+    icon.setAttribute('data-lucide',c.i); icon.className=`w-5 h-5 ${c.ic} shrink-0`;
+    document.getElementById('toast-title').innerText=t; document.getElementById('toast-msg').innerText=m;
+    lucide.createIcons({nodes:[icon]}); toast.classList.add('show');
+    if(toastTimer)clearTimeout(toastTimer);
+    toastTimer=setTimeout(()=>toast.classList.remove('show'),3500);
+}
+
+// ═════════════ KONFIRMASI DIALOG ═════════════
+let confirmCb=null;
+function showConfirm(t,m,cb){document.getElementById('confirm-title').textContent=t;document.getElementById('confirm-msg').textContent=m;confirmCb=cb;document.getElementById('confirm-dialog').classList.add('show');lucide.createIcons();}
+function cancelConfirm(){document.getElementById('confirm-dialog').classList.remove('show');confirmCb=null;}
+document.getElementById('confirm-btn').addEventListener('click',()=>{document.getElementById('confirm-dialog').classList.remove('show');if(confirmCb){confirmCb();confirmCb=null;}});
+
+// ═════════════ BTN LOADING ═════════════
+function setBtnLoading(b,l){if(l){b.dataset.origText=b.innerText;b.classList.add('btn-loading');b.innerText='Menyimpan...';}else{b.classList.remove('btn-loading');b.innerText=b.dataset.origText||'Simpan';}}
+
+// ═════════════ ADMIN TEMPLATES ═════════════
 const adminTemplates = {
-    home: `
-        <h2 class="text-2xl font-bold mb-6 text-white">Update Beranda</h2>
-        <div class="glass-card p-6 rounded-xl mb-6">
-            <h3 class="text-blue-400 font-bold text-sm mb-4 uppercase tracking-wider">Hero Section</h3>
-            <label class="text-xs text-gray-400 block mb-1">Judul Utama</label><input id="hero-title1" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-sm text-white mb-3 focus:outline-none focus:border-blue-500">
-            <label class="text-xs text-gray-400 block mb-1">Judul Gradient</label><input id="hero-title2" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-sm text-white mb-3 focus:outline-none focus:border-blue-500">
-            <label class="text-xs text-gray-400 block mb-1">Deskripsi</label><textarea id="hero-desc" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-sm text-white mb-3 h-24 focus:outline-none focus:border-blue-500"></textarea>
-            <label class="text-xs text-gray-400 block mb-1">URL Logo</label><input id="hero-logo" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-sm text-white mb-4 focus:outline-none focus:border-blue-500">
-            <button onclick="saveHomeSettings()" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 rounded-lg transition-colors">Simpan Perubahan</button>
-        </div>
-        <div class="glass-card p-6 rounded-xl mb-6">
-             <h3 class="text-yellow-400 font-bold text-sm mb-4 uppercase tracking-wider">Marquee</h3>
-             <textarea id="marquee-text" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-sm text-white mb-3 h-20 focus:outline-none focus:border-blue-500" placeholder="Pisahkan dengan koma"></textarea>
-             <input id="marquee-duration" type="number" value="30" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-sm text-white mb-4 focus:outline-none focus:border-blue-500">
-             <button onclick="saveMarqueeSettings()" class="w-full bg-yellow-500 hover:bg-yellow-400 text-black font-bold py-3 rounded-lg transition-colors">Update Marquee</button>
-        </div>
-        <div class="glass-card p-6 rounded-xl mb-6">
-             <h3 class="text-purple-400 font-bold text-sm mb-4 uppercase tracking-wider">Slider Kegiatan</h3>
-             <input id="activity-duration" type="number" value="40" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-sm text-white mb-4 focus:outline-none focus:border-blue-500">
-             <button onclick="saveActivitySpeedSettings()" class="w-full bg-purple-600 hover:bg-purple-500 text-white font-bold py-3 rounded-lg transition-colors">Update Kecepatan</button>
-        </div>
-        <div class="glass-card p-6 rounded-xl">
-             <h3 class="text-pink-400 font-bold text-sm mb-4 uppercase tracking-wider">Musik Latar</h3>
-             <input id="bg-music-url" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-sm text-white mb-4 focus:outline-none focus:border-blue-500" placeholder="URL MP3">
-             <button onclick="saveMusicSettings()" class="w-full bg-pink-600 hover:bg-pink-500 text-white font-bold py-3 rounded-lg transition-colors">Simpan Musik</button>
-        </div>
-    `,
-    profil: `
-        <h2 class="text-2xl font-bold mb-6 text-white">Update Profil</h2>
-        <div class="grid md:grid-cols-2 gap-6 mb-6">
-            <div class="glass-card p-6 rounded-xl"><h3 class="text-blue-400 font-bold text-sm mb-4">Visi</h3><textarea id="visi-text" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-sm text-white h-40 focus:outline-none focus:border-blue-500"></textarea></div>
-            <div class="glass-card p-6 rounded-xl"><h3 class="text-blue-400 font-bold text-sm mb-4">Misi</h3><textarea id="misi-text" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-sm text-white h-40 focus:outline-none focus:border-blue-500"></textarea></div>
-        </div>
-        <div class="glass-card p-6 rounded-xl">
-            <h3 class="text-yellow-400 font-bold text-sm mb-4">Data Kepala Sekolah</h3>
-            <div class="grid md:grid-cols-2 gap-4 mb-4"><input id="kepsek-nama" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-2 text-sm text-white" placeholder="Nama"><input id="kepsek-nip" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-2 text-sm text-white" placeholder="NIP"></div>
-            <input id="kepsek-foto" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-2 text-sm text-white mb-4" placeholder="URL Foto">
-            <textarea id="kepsek-sambutan" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-sm text-white h-32 mb-4 focus:outline-none focus:border-blue-500"></textarea>
-            <button onclick="saveProfilSettings()" class="w-full bg-yellow-500 hover:bg-yellow-400 text-black font-bold py-3 rounded-lg transition-colors">Simpan Profil</button>
-        </div>
-    `,
-    news: `<h2 class="text-2xl font-bold mb-6 text-white">Kelola Berita</h2><div class="glass-card p-6 rounded-xl mb-6"><input type="hidden" id="news-id"><input id="news-title" placeholder="Judul" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-sm text-white mb-3"><textarea id="news-desc" placeholder="Isi" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-sm text-white h-24 mb-3"></textarea><input id="news-img" placeholder="URL Gambar" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-sm text-white mb-4"><button onclick="saveNews()" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 rounded-lg mb-2">Simpan</button><button onclick="resetForm('news')" class="w-full bg-slate-700 hover:bg-slate-600 text-white font-bold py-3 rounded-lg">Batal</button></div><div id="admin-news-list" class="space-y-3"></div>`,
-    guru: `<h2 class="text-2xl font-bold mb-6 text-white">Kelola Guru</h2><div class="glass-card p-6 rounded-xl mb-6"><input type="hidden" id="guru-id"><input id="guru-name" placeholder="Nama" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-sm text-white mb-3"><input id="guru-role" placeholder="Jabatan" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-sm text-white mb-3"><input id="guru-img" placeholder="URL Foto" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-sm text-white mb-4"><button onclick="saveGuru()" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 rounded-lg mb-2">Simpan</button><button onclick="resetForm('guru')" class="w-full bg-slate-700 hover:bg-slate-600 text-white font-bold py-3 rounded-lg">Batal</button></div><div id="admin-guru-list" class="grid grid-cols-2 gap-4"></div>`,
-    portal: `<h2 class="text-2xl font-bold mb-6 text-white">Kelola Portal</h2><div class="glass-card p-6 rounded-xl mb-6"><input type="hidden" id="app-id"><input id="app-name" placeholder="Nama" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-sm text-white mb-3"><input id="app-link" placeholder="Link" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-sm text-white mb-3"><select id="app-icon" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-sm text-white mb-3"><option value="chromebook">Chromebook</option><option value="user-check">User Check</option><option value="calendar">Calendar</option><option value="mail">Mail</option><option value="book">Book</option><option value="smartphone">Smartphone</option><option value="youtube">YouTube</option></select><input id="app-img-url" placeholder="URL Custom Icon" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-sm text-white mb-4"><button onclick="saveApp()" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 rounded-lg mb-2">Simpan</button><button onclick="resetForm('app')" class="w-full bg-slate-700 hover:bg-slate-600 text-white font-bold py-3 rounded-lg">Batal</button></div><div id="admin-app-list" class="grid grid-cols-2 gap-4"></div>`,
-    pelayanan: `<h2 class="text-2xl font-bold mb-6 text-white">Kelola Pelayanan</h2><div class="glass-card p-6 rounded-xl mb-6"><input type="hidden" id="pelayanan-id"><input id="pelayanan-title" placeholder="Judul" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-sm text-white mb-3"><textarea id="pelayanan-desc" placeholder="Deskripsi" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-sm text-white h-24 mb-3"></textarea><input id="pelayanan-link" placeholder="Link" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-sm text-white mb-3"><select id="pelayanan-icon" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-sm text-white mb-3"><option value="file-check">File Check</option><option value="users">Users</option><option value="book">Book</option><option value="calendar">Calendar</option><option value="clock">Clock</option></select><select id="pelayanan-color" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-sm text-white mb-4"><option value="blue">Blue</option><option value="green">Green</option><option value="yellow">Yellow</option><option value="purple">Purple</option></select><button onclick="savePelayanan()" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 rounded-lg mb-2">Simpan</button><button onclick="resetForm('pelayanan')" class="w-full bg-slate-700 hover:bg-slate-600 text-white font-bold py-3 rounded-lg">Batal</button></div><div id="admin-pelayanan-list" class="space-y-3"></div>`,
-    sabudigi: `<h2 class="text-2xl font-bold mb-6 text-white">Kelola SABUDIGI</h2><div class="glass-card p-6 rounded-xl mb-6"><input type="hidden" id="sabudigi-id"><input id="sabudigi-title" placeholder="Nama Kegiatan" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-sm text-white mb-3"><div class="grid grid-cols-2 gap-4 mb-3"><input id="sabudigi-date" type="date" class="bg-slate-800 border border-slate-700 rounded-lg p-3 text-sm text-white"><input id="sabudigi-day" placeholder="Hari" class="bg-slate-800 border border-slate-700 rounded-lg p-3 text-sm text-white"></div><input id="sabudigi-time" type="time" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-sm text-white mb-3"><input id="sabudigi-media" placeholder="URL Foto" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-sm text-white mb-4"><button onclick="saveSabudigi()" class="w-full bg-green-600 hover:bg-green-500 text-white font-bold py-3 rounded-lg mb-2">Simpan</button><button onclick="resetForm('sabudigi')" class="w-full bg-slate-700 hover:bg-slate-600 text-white font-bold py-3 rounded-lg">Batal</button></div><div id="admin-sabudigi-list" class="space-y-3"></div>`,
-    kkg: `<h2 class="text-2xl font-bold mb-6 text-white">Kelola KKG</h2><div class="glass-card p-6 rounded-xl mb-6"><input type="hidden" id="kkg-id"><input id="kkg-title" placeholder="Nama Kegiatan" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-sm text-white mb-3"><input id="kkg-date" type="date" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-sm text-white mb-3"><input id="kkg-media" placeholder="URL Foto" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-sm text-white mb-4"><button onclick="saveKkg()" class="w-full bg-orange-600 hover:bg-orange-500 text-white font-bold py-3 rounded-lg mb-2">Simpan</button><button onclick="resetForm('kkg')" class="w-full bg-slate-700 hover:bg-slate-600 text-white font-bold py-3 rounded-lg">Batal</button></div><div id="admin-kkg-list" class="space-y-3"></div>`,
-    ekstra: `<h2 class="text-2xl font-bold mb-6 text-white">Kelola Ekstrakurikuler</h2><div class="glass-card p-6 rounded-xl mb-6"><input type="hidden" id="ekstra-id"><input id="ekstra-title" placeholder="Nama Ekstrakurikuler" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-sm text-white mb-3"><input id="ekstra-date" type="date" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-sm text-white mb-3"><input id="ekstra-media" placeholder="URL Foto" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-sm text-white mb-4"><button onclick="saveEkstra()" class="w-full bg-pink-600 hover:bg-pink-500 text-white font-bold py-3 rounded-lg mb-2">Simpan</button><button onclick="resetForm('ekstra')" class="w-full bg-slate-700 hover:bg-slate-600 text-white font-bold py-3 rounded-lg">Batal</button></div><div id="admin-ekstra-list" class="space-y-3"></div>`,
-    koku: `<h2 class="text-2xl font-bold mb-6 text-white">Kelola Ko-Kurikuler</h2><div class="glass-card p-6 rounded-xl mb-6"><input type="hidden" id="koku-id"><input id="koku-title" placeholder="Nama Ko-Kurikuler" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-sm text-white mb-3"><input id="koku-date" type="date" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-sm text-white mb-3"><input id="koku-media" placeholder="URL Foto" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-sm text-white mb-4"><button onclick="saveKoku()" class="w-full bg-cyan-600 hover:bg-cyan-500 text-white font-bold py-3 rounded-lg mb-2">Simpan</button><button onclick="resetForm('koku')" class="w-full bg-slate-700 hover:bg-slate-600 text-white font-bold py-3 rounded-lg">Batal</button></div><div id="admin-koku-list" class="space-y-3"></div>`,
-    inbox: `<h2 class="text-2xl font-bold mb-6 text-white">Inbox Chat Pengunjung</h2><div id="chat-admin-container" class="space-y-4"></div>`,
-    contacts: `
-        <h2 class="text-2xl font-bold mb-6 text-white">Kontak & Sosial Media</h2>
-        <div class="glass-card p-6 rounded-xl">
-            <label class="text-xs text-gray-400 block mb-1">Nomor WhatsApp (tanpa +)</label><input id="contact-wa" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-sm text-white mb-3 focus:outline-none focus:border-blue-500">
-            <label class="text-xs text-gray-400 block mb-1">Pesan Default WhatsApp</label><input id="contact-wa-msg" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-sm text-white mb-3 focus:outline-none focus:border-blue-500">
-            <label class="text-xs text-gray-400 block mb-1">Link Facebook</label><input id="link-fb" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-sm text-white mb-3 focus:outline-none focus:border-blue-500">
-            <label class="text-xs text-gray-400 block mb-1">Link Instagram</label><input id="link-ig" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-sm text-white mb-3 focus:outline-none focus:border-blue-500">
-            <label class="text-xs text-gray-400 block mb-1">Link YouTube</label><input id="link-yt" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-sm text-white mb-4 focus:outline-none focus:border-blue-500">
-            <button onclick="saveContactSettings()" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 rounded-lg transition-colors">Simpan Kontak</button>
-        </div>
-    `
+home:`
+    <h2 class="text-2xl font-bold mb-6 text-white">Update Beranda</h2>
+    <div class="glass-card p-6 rounded-xl mb-6">
+        <h3 class="text-blue-400 font-bold text-sm mb-4 uppercase tracking-wider">Hero Section</h3>
+        <label class="text-xs text-gray-400 block mb-1">Judul Utama</label><input id="hero-title1" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-sm text-white mb-3 focus:outline-none focus:border-blue-500">
+        <label class="text-xs text-gray-400 block mb-1">Judul Gradient</label><input id="hero-title2" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-sm text-white mb-3 focus:outline-none focus:border-blue-500">
+        <label class="text-xs text-gray-400 block mb-1">Deskripsi</label><textarea id="hero-desc" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-sm text-white mb-3 h-24 focus:outline-none focus:border-blue-500"></textarea>
+        <label class="text-xs text-gray-400 block mb-1">URL Logo</label><input id="hero-logo" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-sm text-white mb-4 focus:outline-none focus:border-blue-500">
+        <button id="btn-save-home" onclick="saveHomeSettings()" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 rounded-lg transition-colors">Simpan Perubahan</button>
+    </div>
+    <div class="glass-card p-6 rounded-xl mb-6">
+        <h3 class="text-yellow-400 font-bold text-sm mb-4 uppercase tracking-wider">Marquee</h3>
+        <textarea id="marquee-text" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-sm text-white mb-3 h-20 focus:outline-none focus:border-blue-500" placeholder="Pisahkan dengan koma"></textarea>
+        <label class="text-xs text-gray-400 block mb-1">Kecepatan (detik)</label>
+        <input id="marquee-duration" type="number" value="30" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-sm text-white mb-4 focus:outline-none focus:border-blue-500">
+        <button id="btn-save-marquee" onclick="saveMarqueeSettings()" class="w-full bg-yellow-500 hover:bg-yellow-400 text-black font-bold py-3 rounded-lg transition-colors">Update Marquee</button>
+    </div>
+    <div class="glass-card p-6 rounded-xl mb-6">
+        <h3 class="text-pink-400 font-bold text-sm mb-4 uppercase tracking-wider">Musik Latar</h3>
+        <input id="bg-music-url" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-sm text-white mb-4 focus:outline-none focus:border-blue-500" placeholder="URL MP3">
+        <button id="btn-save-music" onclick="saveMusicSettings()" class="w-full bg-pink-600 hover:bg-pink-500 text-white font-bold py-3 rounded-lg transition-colors">Simpan Musik</button>
+    </div>`,
+profil:`
+    <h2 class="text-2xl font-bold mb-6 text-white">Update Profil</h2>
+    <div class="grid md:grid-cols-2 gap-6 mb-6">
+        <div class="glass-card p-6 rounded-xl"><h3 class="text-blue-400 font-bold text-sm mb-4">Visi</h3><textarea id="visi-text" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-sm text-white h-40 focus:outline-none focus:border-blue-500"></textarea></div>
+        <div class="glass-card p-6 rounded-xl"><h3 class="text-blue-400 font-bold text-sm mb-4">Misi (pisahkan dengan ;)</h3><textarea id="misi-text" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-sm text-white h-40 focus:outline-none focus:border-blue-500"></textarea></div>
+    </div>
+    <div class="glass-card p-6 rounded-xl">
+        <h3 class="text-yellow-400 font-bold text-sm mb-4">Data Kepala Sekolah</h3>
+        <div class="grid md:grid-cols-2 gap-4 mb-4"><input id="kepsek-nama" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-2 text-sm text-white" placeholder="Nama"><input id="kepsek-nip" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-2 text-sm text-white" placeholder="NIP"></div>
+        <input id="kepsek-foto" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-2 text-sm text-white mb-4" placeholder="URL Foto">
+        <textarea id="kepsek-sambutan" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-sm text-white h-32 mb-4 focus:outline-none focus:border-blue-500"></textarea>
+        <button id="btn-save-profil" onclick="saveProfilSettings()" class="w-full bg-yellow-500 hover:bg-yellow-400 text-black font-bold py-3 rounded-lg transition-colors">Simpan Profil</button>
+    </div>`,
+news:`
+    <h2 class="text-2xl font-bold mb-6 text-white">Kelola Berita</h2>
+    <div class="glass-card p-6 rounded-xl mb-6">
+        <input type="hidden" id="news-id">
+        <input id="news-title" placeholder="Judul Berita" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-sm text-white mb-3 focus:outline-none focus:border-blue-500">
+        <input id="news-link" placeholder="Link Berita (https://...)" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-sm text-white mb-3 focus:outline-none focus:border-blue-500">
+        <input id="news-img" placeholder="URL Gambar (https://...)" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-sm text-white mb-4 focus:outline-none focus:border-blue-500">
+        <button id="btn-save-news" onclick="saveNews()" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 rounded-lg mb-2 transition-colors">Simpan Berita</button>
+        <button onclick="resetForm('news')" class="w-full bg-slate-700 hover:bg-slate-600 text-white font-bold py-3 rounded-lg transition-colors">Batal / Reset</button>
+    </div>
+    <div id="admin-news-list" class="space-y-3"></div>`,
+guru:`
+    <h2 class="text-2xl font-bold mb-6 text-white">Kelola Data Guru</h2>
+    <div class="glass-card p-6 rounded-xl mb-6">
+        <input type="hidden" id="guru-id">
+        <input id="guru-name" placeholder="Nama Guru" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-sm text-white mb-3 focus:outline-none focus:border-blue-500">
+        <input id="guru-role" placeholder="Jabatan (contoh: Kepala Sekolah)" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-sm text-white mb-3 focus:outline-none focus:border-blue-500">
+        <input id="guru-img" placeholder="URL Foto (opsional)" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-sm text-white mb-4 focus:outline-none focus:border-blue-500">
+        <button id="btn-save-guru" onclick="saveGuru()" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 rounded-lg mb-2 transition-colors">Simpan Guru</button>
+        <button onclick="resetForm('guru')" class="w-full bg-slate-700 hover:bg-slate-600 text-white font-bold py-3 rounded-lg transition-colors">Batal / Reset</button>
+    </div>
+    <div id="admin-guru-list" class="grid grid-cols-1 sm:grid-cols-2 gap-4"></div>`,
+pelayanan:`
+    <h2 class="text-2xl font-bold mb-6 text-white">Kelola Standar Pelayanan</h2>
+    <div class="glass-card p-6 rounded-xl mb-6">
+        <input type="hidden" id="pelayanan-id">
+        <input id="pelayanan-title" placeholder="Judul Layanan" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-sm text-white mb-3 focus:outline-none focus:border-blue-500">
+        <textarea id="pelayanan-desc" placeholder="Deskripsi Layanan" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-sm text-white h-24 mb-3 focus:outline-none focus:border-blue-500"></textarea>
+        <input id="pelayanan-link" placeholder="Link (opsional)" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-sm text-white mb-3 focus:outline-none focus:border-blue-500">
+        <select id="pelayanan-icon" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-sm text-white mb-3 focus:outline-none focus:border-blue-500"><option value="file-check">File Check</option><option value="users">Users</option><option value="book">Book</option><option value="calendar">Calendar</option><option value="clock">Clock</option></select>
+        <select id="pelayanan-color" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-sm text-white mb-4 focus:outline-none focus:border-blue-500"><option value="blue">Blue</option><option value="green">Green</option><option value="yellow">Yellow</option><option value="purple">Purple</option></select>
+        <button id="btn-save-pelayanan" onclick="savePelayanan()" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 rounded-lg mb-2 transition-colors">Simpan Pelayanan</button>
+        <button onclick="resetForm('pelayanan')" class="w-full bg-slate-700 hover:bg-slate-600 text-white font-bold py-3 rounded-lg transition-colors">Batal / Reset</button>
+    </div>
+    <div id="admin-pelayanan-list" class="space-y-3"></div>`,
+sabudigi:`
+    <h2 class="text-2xl font-bold mb-6 text-white">Kelola Kegiatan SABUDIGI</h2>
+    <div class="glass-card p-6 rounded-xl mb-6">
+        <input type="hidden" id="sabudigi-id">
+        <input id="sabudigi-title" placeholder="Nama Kegiatan" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-sm text-white mb-3 focus:outline-none focus:border-blue-500">
+        <div class="grid grid-cols-2 gap-4 mb-3"><input id="sabudigi-date" type="date" class="bg-slate-800 border border-slate-700 rounded-lg p-3 text-sm text-white focus:outline-none focus:border-blue-500"><input id="sabudigi-day" placeholder="Hari (Senin)" class="bg-slate-800 border border-slate-700 rounded-lg p-3 text-sm text-white focus:outline-none focus:border-blue-500"></div>
+        <input id="sabudigi-time" type="time" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-sm text-white mb-3 focus:outline-none focus:border-blue-500">
+        <input id="sabudigi-media" placeholder="URL Foto Kegiatan" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-sm text-white mb-4 focus:outline-none focus:border-blue-500">
+        <button id="btn-save-sabudigi" onclick="saveSabudigi()" class="w-full bg-green-600 hover:bg-green-500 text-white font-bold py-3 rounded-lg mb-2 transition-colors">Simpan SABUDIGI</button>
+        <button onclick="resetForm('sabudigi')" class="w-full bg-slate-700 hover:bg-slate-600 text-white font-bold py-3 rounded-lg transition-colors">Batal / Reset</button>
+    </div>
+    <div id="admin-sabudigi-list" class="space-y-3"></div>`,
+kkg:`
+    <h2 class="text-2xl font-bold mb-6 text-white">Kelola Kegiatan KKG</h2>
+    <div class="glass-card p-6 rounded-xl mb-6">
+        <input type="hidden" id="kkg-id">
+        <input id="kkg-title" placeholder="Nama Kegiatan KKG" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-sm text-white mb-3 focus:outline-none focus:border-blue-500">
+        <input id="kkg-date" type="date" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-sm text-white mb-3 focus:outline-none focus:border-blue-500">
+        <input id="kkg-media" placeholder="URL Foto Kegiatan" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-sm text-white mb-4 focus:outline-none focus:border-blue-500">
+        <button id="btn-save-kkg" onclick="saveKkg()" class="w-full bg-orange-600 hover:bg-orange-500 text-white font-bold py-3 rounded-lg mb-2 transition-colors">Simpan KKG</button>
+        <button onclick="resetForm('kkg')" class="w-full bg-slate-700 hover:bg-slate-600 text-white font-bold py-3 rounded-lg transition-colors">Batal / Reset</button>
+    </div>
+    <div id="admin-kkg-list" class="space-y-3"></div>`,
+ekstra:`
+    <h2 class="text-2xl font-bold mb-6 text-white">Kelola Kegiatan Ekstrakurikuler</h2>
+    <div class="glass-card p-6 rounded-xl mb-6">
+        <input type="hidden" id="ekstra-id">
+        <input id="ekstra-title" placeholder="Nama Ekstrakurikuler" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-sm text-white mb-3 focus:outline-none focus:border-blue-500">
+        <input id="ekstra-date" type="date" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-sm text-white mb-3 focus:outline-none focus:border-blue-500">
+        <input id="ekstra-media" placeholder="URL Foto Kegiatan" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-sm text-white mb-4 focus:outline-none focus:border-blue-500">
+        <button id="btn-save-ekstra" onclick="saveEkstra()" class="w-full bg-pink-600 hover:bg-pink-500 text-white font-bold py-3 rounded-lg mb-2 transition-colors">Simpan Ekstrakurikuler</button>
+        <button onclick="resetForm('ekstra')" class="w-full bg-slate-700 hover:bg-slate-600 text-white font-bold py-3 rounded-lg transition-colors">Batal / Reset</button>
+    </div>
+    <div id="admin-ekstra-list" class="space-y-3"></div>`,
+koku:`
+    <h2 class="text-2xl font-bold mb-6 text-white">Kelola Kegiatan Ko-Kurikuler</h2>
+    <div class="glass-card p-6 rounded-xl mb-6">
+        <input type="hidden" id="koku-id">
+        <input id="koku-title" placeholder="Nama Ko-Kurikuler" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-sm text-white mb-3 focus:outline-none focus:border-blue-500">
+        <input id="koku-date" type="date" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-sm text-white mb-3 focus:outline-none focus:border-blue-500">
+        <input id="koku-media" placeholder="URL Foto Kegiatan" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-sm text-white mb-4 focus:outline-none focus:border-blue-500">
+        <button id="btn-save-koku" onclick="saveKoku()" class="w-full bg-cyan-600 hover:bg-cyan-500 text-white font-bold py-3 rounded-lg mb-2 transition-colors">Simpan Ko-Kurikuler</button>
+        <button onclick="resetForm('koku')" class="w-full bg-slate-700 hover:bg-slate-600 text-white font-bold py-3 rounded-lg transition-colors">Batal / Reset</button>
+    </div>
+    <div id="admin-koku-list" class="space-y-3"></div>`,
+portal:`
+    <h2 class="text-2xl font-bold mb-6 text-white">Kelola Portal Aplikasi</h2>
+    <div class="glass-card p-6 rounded-xl mb-6">
+        <input type="hidden" id="app-id">
+        <input id="app-name" placeholder="Nama Aplikasi" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-sm text-white mb-3 focus:outline-none focus:border-blue-500">
+        <input id="app-link" placeholder="URL Link" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-sm text-white mb-3 focus:outline-none focus:border-blue-500">
+        <select id="app-icon" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-sm text-white mb-3 focus:outline-none focus:border-blue-500"><option value="chromebook">Chromebook</option><option value="user-check">User Check</option><option value="calendar">Calendar</option><option value="mail">Mail</option><option value="book">Book</option><option value="smartphone">Smartphone</option><option value="youtube">YouTube</option><option value="image">Custom Image</option></select>
+        <input id="app-img-url" placeholder="URL Custom Icon (jika pilih Custom Image)" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-sm text-white mb-4 focus:outline-none focus:border-blue-500">
+        <button id="btn-save-app" onclick="saveApp()" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 rounded-lg mb-2 transition-colors">Simpan Aplikasi</button>
+        <button onclick="resetForm('app')" class="w-full bg-slate-700 hover:bg-slate-600 text-white font-bold py-3 rounded-lg transition-colors">Batal / Reset</button>
+    </div>
+    <div id="admin-app-list" class="grid grid-cols-1 sm:grid-cols-2 gap-4"></div>`,
+inbox:`<h2 class="text-2xl font-bold mb-6 text-white">Inbox Chat Pengunjung</h2><div id="chat-admin-container" class="space-y-4"></div>`,
+contacts:`
+    <h2 class="text-2xl font-bold mb-6 text-white">Kontak & Sosial Media</h2>
+    <div class="glass-card p-6 rounded-xl">
+        <label class="text-xs text-gray-400 block mb-1">Nomor WhatsApp (tanpa +)</label><input id="contact-wa" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-sm text-white mb-3 focus:outline-none focus:border-blue-500">
+        <label class="text-xs text-gray-400 block mb-1">Pesan Default WhatsApp</label><input id="contact-wa-msg" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-sm text-white mb-3 focus:outline-none focus:border-blue-500">
+        <label class="text-xs text-gray-400 block mb-1">Link Facebook</label><input id="link-fb" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-sm text-white mb-3 focus:outline-none focus:border-blue-500">
+        <label class="text-xs text-gray-400 block mb-1">Link Instagram</label><input id="link-ig" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-sm text-white mb-3 focus:outline-none focus:border-blue-500">
+        <label class="text-xs text-gray-400 block mb-1">Link YouTube</label><input id="link-yt" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-sm text-white mb-4 focus:outline-none focus:border-blue-500">
+        <button id="btn-save-contacts" onclick="saveContactSettings()" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 rounded-lg transition-colors">Simpan Kontak</button>
+    </div>`
 };
 
-// ═══════════════════════════════════════════════════════════════
-// NAVIGATION
-// ═══════════════════════════════════════════════════════════════
-function navigateTo(page) {
-    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-    const target = document.getElementById('page-' + page);
-    if(target) target.classList.add('active');
-    document.querySelectorAll('.nav-btn').forEach(b => { b.classList.remove('active','text-white','bg-white/10'); b.classList.add('text-zinc-300'); });
-    const activeBtn = document.querySelector(`.nav-btn[data-nav="${page}"]`);
-    if(activeBtn) { activeBtn.classList.add('active','text-white','bg-white/10'); activeBtn.classList.remove('text-zinc-300'); }
-    window.scrollTo({top:0, behavior:'smooth'});
-    if(page === 'sabudigi') updateSabudigiPage();
-    if(page === 'kkg') updateKkgPage();
-    if(page === 'ekstra') updateEkstraPage();
-    if(page === 'koku') updateKokuPage();
-    setTimeout(initScrollAnimations, 100);
+// ═════════════ NAVIGATION ═════════════
+function navigateTo(p) {
+    document.querySelectorAll('.page').forEach(pg=>pg.classList.remove('active'));
+    const t=document.getElementById('page-'+p); if(t)t.classList.add('active');
+    document.querySelectorAll('.nav-btn').forEach(b=>{b.classList.remove('active','text-white','bg-white/10');b.classList.add('text-zinc-300');});
+    const a=document.querySelector(`.nav-btn[data-nav="${p}"]`); if(a){a.classList.add('active','text-white','bg-white/10');a.classList.remove('text-zinc-300');}
+    window.scrollTo({top:0,behavior:'smooth'});
+    setTimeout(initScrollAnimations,100);
 }
+function toggleMob(){const m=document.getElementById('mob-menu');m.classList.toggle('translate-x-full');m.classList.toggle('translate-x-0');}
 
-function toggleMob() {
-    const menu = document.getElementById('mob-menu');
-    menu.classList.toggle('translate-x-full');
-    menu.classList.toggle('translate-x-0');
-}
-
-// ═══════════════════════════════════════════════════════════════
-// LOGIN & ADMIN
-// ═══════════════════════════════════════════════════════════════
-function toggleLoginModal() {
-    const modal = document.getElementById('modal-login');
-    modal.classList.toggle('show');
-    const content = modal.querySelector('.modal-content');
-    if(modal.classList.contains('show')) { setTimeout(()=>{ content.style.transform='scale(1)'; content.style.opacity='1'; },50); }
-    else { content.style.transform='scale(0.95)'; content.style.opacity='0'; }
-}
-
-function handleLogin(e) {
-    e.preventDefault();
-    auth.signInWithEmailAndPassword(document.getElementById('email').value, document.getElementById('password').value).then(() => { toggleLoginModal(); openAdminPanel(); }).catch(err => alert("Login gagal: " + err.message));
-}
-
-function openAdminPanel() {
-    document.getElementById('admin-panel').classList.add('active');
-    document.getElementById('login-text').innerText = 'Dashboard';
-    switchAdminTab('home');
-    setupAdminList('news','news'); setupAdminList('teachers','guru'); setupAdminList('portalApps','app');
-    setupAdminList('services','pelayanan'); setupAdminList('sabudigiEvents','sabudigi');
-    setupAdminList('kkgEvents','kkg'); setupAdminList('ekstraEvents','ekstra'); setupAdminList('kokuEvents','koku');
-    renderAdminInbox();
-}
-
-function closeAdminPanel() {
-    document.getElementById('admin-panel').classList.remove('active');
-    document.getElementById('login-text').innerText = 'Login';
-}
-
-function switchAdminTab(tab) {
-    document.querySelectorAll('.admin-tab-link').forEach(l => { l.classList.remove('active','bg-slate-700','text-white'); });
-    document.querySelectorAll('.admin-tab-link').forEach(l => {
+// ═════════════ LOGIN & ADMIN ═════════════
+function toggleLoginModal(){const m=document.getElementById('modal-login');m.classList.toggle('show');const c=m.querySelector('.modal-content');if(m.classList.contains('show')){setTimeout(()=>{c.style.transform='scale(1)';c.style.opacity='1';},50);}else{c.style.transform='scale(0.95)';c.style.opacity='0';}}
+function handleLogin(e){e.preventDefault();const b=document.getElementById('login-submit-btn'),err=document.getElementById('login-error');err.classList.add('hidden');setBtnLoading(b,true);auth.signInWithEmailAndPassword(document.getElementById('email').value,document.getElementById('password').value).then(()=>{setBtnLoading(b,false);toggleLoginModal();openAdminPanel();}).catch(er=>{setBtnLoading(b,false);err.textContent=er.message;err.classList.remove('hidden');showToast('Login Gagal',er.message,'error');});}
+function openAdminPanel(){document.getElementById('admin-panel').classList.add('active');document.getElementById('login-text').innerText='Dashboard';switchAdminTab('home');['teachers','guru','portalApps','app','services','pelayanan','sabudigiEvents','sabudigi','kkgEvents','kkg','ekstraEvents','ekstra','kokuEvents','koku','news','news'].reduce((a,v,i)=>{if(i%2===0)a.push([v,arguments[0]]);return a;},[]);setupAdminList('teachers','guru');setupAdminList('portalApps','app');setupAdminList('services','pelayanan');setupAdminList('sabudigiEvents','sabudigi');setupAdminList('kkgEvents','kkg');setupAdminList('ekstraEvents','ekstra');setupAdminList('kokuEvents','koku');renderAdminInbox();loadSettingsToAdminForms();}
+function closeAdminPanel(){document.getElementById('admin-panel').classList.remove('active');document.getElementById('login-text').innerText='Login';}
+function switchAdminTab(tab){
+    document.querySelectorAll('.admin-tab-link').forEach(l=>{
+        l.classList.remove('active','bg-slate-700','text-white');
         if(l.onclick && l.onclick.toString().includes(`'${tab}'`)) l.classList.add('active','bg-slate-700','text-white');
     });
-    const wrapper = document.getElementById('admin-content-wrapper');
-    if(adminTemplates[tab]) wrapper.innerHTML = adminTemplates[tab];
-    if(tab === 'inbox') renderAdminInbox();
-    lucide.createIcons();
-}
-
-// ═══════════════════════════════════════════════════════════════
-// TOAST & SCROLL
-// ═══════════════════════════════════════════════════════════════
-function showToast(title, msg) {
-    const toast = document.getElementById('toast');
-    toast.querySelector('h4').innerText = title;
-    document.getElementById('toast-msg').innerText = msg;
-    toast.classList.add('show');
-    setTimeout(() => toast.classList.remove('show'), 3000);
-}
-
-function initScrollAnimations() {
-    const observer = new IntersectionObserver((entries) => { entries.forEach(entry => { if(entry.isIntersecting) entry.target.classList.add('visible'); }); }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
-    document.querySelectorAll('.animate-on-scroll:not(.visible)').forEach(el => observer.observe(el));
-}
-
-// ═══════════════════════════════════════════════════════════════
-// CHAT SYSTEM
-// ═══════════════════════════════════════════════════════════════
-let userChatId = localStorage.getItem('chatId');
-if (!userChatId) { userChatId = 'user_' + Date.now(); localStorage.setItem('chatId', userChatId); }
-
-function toggleChat() {
-    const win = document.getElementById('chat-window');
-    win.classList.toggle('hidden');
-    if(!win.classList.contains('hidden')) { loadUserChat(); document.getElementById('chat-badge').classList.add('hidden'); }
-}
-
-function sendChatMessage() {
-    const input = document.getElementById('chat-input');
-    const msg = input.value.trim();
-    if(!msg) return;
-    db.ref('chats/' + userChatId).push({ sender: 'user', text: msg, timestamp: firebase.database.ServerValue.TIMESTAMP });
-    input.value = '';
-}
-
-function loadUserChat() {
-    const container = document.getElementById('chat-messages');
-    db.ref('chats/' + userChatId).limitToLast(20).on('value', snap => {
-        container.innerHTML = '';
-        if(!snap.val()) { container.innerHTML = '<div class="text-center text-xs text-zinc-500 mt-10">Mulai percakapan dengan kami...</div>'; return; }
-        snap.forEach(c => {
-            const d = c.val();
-            const isUser = d.sender === 'user';
-            const div = document.createElement('div');
-            div.className = `flex ${isUser ? 'justify-end' : 'justify-start'}`;
-            div.innerHTML = `<div class="${isUser ? 'bg-blue-600 text-white' : 'bg-slate-700 text-gray-200'} rounded-lg px-3 py-2 max-w-[80%] text-xs">${d.text}<div class="text-[9px] opacity-50 text-right mt-1">${new Date(d.timestamp).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}</div></div>`;
-            container.appendChild(div);
-        });
-        container.scrollTop = container.scrollHeight;
-    });
-}
-
-function renderAdminInbox() {
-    const container = document.getElementById('chat-admin-container');
-    if(!container) return;
-    container.innerHTML = '<div class="text-zinc-500 text-sm">Memuat pesan...</div>';
-    db.ref('chats').on('value', snap => {
-        container.innerHTML = '';
-        if(!snap.val()) { container.innerHTML = '<div class="text-zinc-500 text-sm">Belum ada pesan</div>'; return; }
-        snap.forEach(userKey => {
-            const userChats = userKey.val();
-            const keys = Object.keys(userChats);
-            const lastMsg = userChats[keys[keys.length - 1]];
-            const div = document.createElement('div');
-            div.className = "glass-card p-4 rounded-xl border border-slate-700 mb-4";
-            div.innerHTML = `<div class="flex justify-between items-start mb-2"><span class="font-bold text-blue-400 text-xs">ID: ${userKey.key}</span><span class="text-[10px] text-zinc-500">${new Date(lastMsg.timestamp).toLocaleString()}</span></div><p class="text-sm text-white mb-2 bg-slate-800 p-2 rounded">${lastMsg.text}</p>${lastMsg.sender === 'user' ? `<div class="flex gap-2"><input id="reply-${userKey.key}" class="flex-1 bg-slate-900 border border-slate-700 rounded px-2 py-1 text-xs text-white" placeholder="Balas..."><button onclick="replyToUser('${userKey.key}')" class="bg-green-600 hover:bg-green-500 text-white px-3 py-1 rounded text-xs">Kirim</button></div>` : `<div class="text-xs text-green-400 font-bold">Dibalas: ${lastMsg.text}</div>`}`;
-            container.appendChild(div);
-        });
-    });
-}
-
-function replyToUser(userId) {
-    const input = document.getElementById(`reply-${userId}`);
-    const msg = input.value.trim();
-    if(!msg) return;
-    db.ref('chats/' + userId).push({ sender: 'admin', text: msg, timestamp: firebase.database.ServerValue.TIMESTAMP }).then(() => { input.value = ''; showToast("Sukses", "Balasan terkirim"); });
-}
-
-function clearChat() {
-    const container = document.getElementById('chat-messages');
-    if(!container.querySelectorAll('.flex.justify-end,.flex.justify-start').length) { showToast("Info","Tidak ada chat"); return; }
-    const box = document.createElement('div');
-    box.id = 'clear-confirm-box';
-    box.className = 'bg-red-500/15 border border-red-500/30 rounded-lg p-3 text-center';
-    box.innerHTML = `<p class="text-red-300 text-xs mb-2 font-medium">Hapus semua percakapan?</p><div class="flex gap-2 justify-center"><button onclick="confirmClearChat()" class="bg-red-500 hover:bg-red-400 text-white text-[11px] font-bold px-4 py-1.5 rounded-md">Ya, Hapus</button><button onclick="cancelClearChat()" class="bg-slate-600 hover:bg-slate-500 text-white text-[11px] font-bold px-4 py-1.5 rounded-md">Batal</button></div>`;
-    container.appendChild(box);
-}
-
-function confirmClearChat() {
-    db.ref('chats/' + userChatId).remove().then(() => {
-        document.getElementById('chat-messages').innerHTML = '<div class="text-center text-xs text-zinc-500 mt-10">Mulai percakapan dengan kami...</div>';
-        document.getElementById('chat-badge').classList.add('hidden');
-        showToast("Berhasil","Chat dihapus");
-    });
-}
-function cancelClearChat() { const b = document.getElementById('clear-confirm-box'); if(b) b.remove(); }
-
-function downloadChat() {
-    db.ref('chats/' + userChatId).once('value').then(snap => {
-        if(!snap.val()) { showToast("Info","Tidak ada chat"); return; }
-        let t = 'LIVE CHAT - SDN MWT VII\nDiunduh: ' + new Date().toLocaleString('id-ID') + '\nID: ' + userChatId + '\n────────────────\n\n';
-        snap.forEach(c => { const d=c.val(); t += `[${new Date(d.timestamp).toLocaleString('id-ID')}]\n${d.sender==='user'?'👤 Saya':'📚 Admin'}:\n  ${d.text}\n\n`; });
-        const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([t],{type:'text/plain'})); a.download = 'chat-sdn-mwt7.txt'; a.click();
-        showToast("Berhasil","Chat diunduh");
-    });
-}
-
-// ═══════════════════════════════════════════════════════════════
-// CRUD
-// ═══════════════════════════════════════════════════════════════
-function setupAdminList(path, prefix) {
-    db.ref(path).on('value', snap => {
-        const container = document.getElementById(`admin-${prefix}-list`);
-        if(!container) return;
-        container.innerHTML = "";
-        if(!snap.val()) { container.innerHTML = `<div class="text-zinc-500 text-sm">Belum ada data</div>`; return; }
-        snap.forEach(c => {
-            const d = c.val();
-            const div = document.createElement('div');
-            div.className = "bg-slate-800 p-3 rounded-lg flex justify-between items-center border border-slate-700";
-            div.innerHTML = `<span class="text-sm text-white font-medium truncate mr-2">${d.title||d.name}</span><div class="flex gap-2 shrink-0"><button onclick="editItem('${path}','${c.key}','${prefix}')" class="p-2 bg-blue-600 hover:bg-blue-500 rounded text-white"><i data-lucide="edit-2" class="w-3 h-3"></i></button><button onclick="deleteItem('${path}','${c.key}')" class="p-2 bg-red-600 hover:bg-red-500 rounded text-white"><i data-lucide="trash" class="w-3 h-3"></i></button></div>`;
-            container.appendChild(div);
-        });
-        lucide.createIcons();
-    });
-}
-
-function editItem(path, id, prefix) {
-    db.ref(path+'/'+id).once('value').then(snap => {
-        const d = snap.val();
-        if(prefix==='news'){document.getElementById('news-id').value=id;document.getElementById('news-title').value=d.title;document.getElementById('news-desc').value=d.desc;document.getElementById('news-img').value=d.image;}
-        if(prefix==='guru'){document.getElementById('guru-id').value=id;document.getElementById('guru-name').value=d.name;document.getElementById('guru-role').value=d.role;document.getElementById('guru-img').value=d.image;}
-        if(prefix==='app'){document.getElementById('app-id').value=id;document.getElementById('app-name').value=d.name;document.getElementById('app-link').value=d.link;document.getElementById('app-icon').value=d.icon;document.getElementById('app-img-url').value=d.imgUrl;}
-        if(prefix==='pelayanan'){document.getElementById('pelayanan-id').value=id;document.getElementById('pelayanan-title').value=d.title;document.getElementById('pelayanan-desc').value=d.desc;document.getElementById('pelayanan-link').value=d.link;document.getElementById('pelayanan-icon').value=d.icon;document.getElementById('pelayanan-color').value=d.color;}
-        if(prefix==='sabudigi'){document.getElementById('sabudigi-id').value=id;document.getElementById('sabudigi-title').value=d.title;document.getElementById('sabudigi-date').value=d.date;document.getElementById('sabudigi-day').value=d.day;document.getElementById('sabudigi-time').value=d.time;document.getElementById('sabudigi-media').value=d.media;}
-        if(prefix==='kkg'){document.getElementById('kkg-id').value=id;document.getElementById('kkg-title').value=d.title;document.getElementById('kkg-date').value=d.date;document.getElementById('kkg-media').value=d.media;}
-        if(prefix==='ekstra'){document.getElementById('ekstra-id').value=id;document.getElementById('ekstra-title').value=d.title;document.getElementById('ekstra-date').value=d.date;document.getElementById('ekstra-media').value=d.media;}
-        if(prefix==='koku'){document.getElementById('koku-id').value=id;document.getElementById('koku-title').value=d.title;document.getElementById('koku-date').value=d.date;document.getElementById('koku-media').value=d.media;}
-        showToast("Edit","Silakan edit data di atas");
-    });
-}
-
-function deleteItem(path, id) { if(confirm("Hapus data ini?")) db.ref(path+'/'+id).remove(); }
-
-function saveNews(){const id=document.getElementById('news-id').value;const data={title:document.getElementById('news-title').value,desc:document.getElementById('news-desc').value,image:document.getElementById('news-img').value||"https://picsum.photos/seed/news/600/340",date:new Date().toLocaleDateString('id-ID')};if(!data.title)return alert("Judul wajib diisi");const a=id?db.ref('news/'+id).update(data):db.ref('news').push(data);a.then(()=>{showToast("Sukses",id?"Diperbarui":"Ditambahkan");resetForm('news');});}
-function saveGuru(){const id=document.getElementById('guru-id').value;const data={name:document.getElementById('guru-name').value,role:document.getElementById('guru-role').value,image:document.getElementById('guru-img').value||"https://picsum.photos/seed/guru/400/530"};if(!data.name)return alert("Nama wajib diisi");const a=id?db.ref('teachers/'+id).update(data):db.ref('teachers').push(data);a.then(()=>{showToast("Sukses",id?"Diperbarui":"Ditambahkan");resetForm('guru');});}
-function saveApp(){const id=document.getElementById('app-id').value;const data={name:document.getElementById('app-name').value,link:document.getElementById('app-link').value,icon:document.getElementById('app-icon').value,imgUrl:document.getElementById('app-img-url').value};if(!data.name||!data.link)return alert("Nama dan Link wajib");const a=id?db.ref('portalApps/'+id).update(data):db.ref('portalApps').push(data);a.then(()=>{showToast("Sukses",id?"Diperbarui":"Ditambahkan");resetForm('app');});}
-function savePelayanan(){const id=document.getElementById('pelayanan-id').value;const data={title:document.getElementById('pelayanan-title').value,desc:document.getElementById('pelayanan-desc').value,link:document.getElementById('pelayanan-link').value,icon:document.getElementById('pelayanan-icon').value,color:document.getElementById('pelayanan-color').value};if(!data.title)return alert("Judul wajib");const a=id?db.ref('services/'+id).update(data):db.ref('services').push(data);a.then(()=>{showToast("Sukses",id?"Diperbarui":"Ditambahkan");resetForm('pelayanan');});}
-function saveSabudigi(){const id=document.getElementById('sabudigi-id').value;const data={title:document.getElementById('sabudigi-title').value,date:document.getElementById('sabudigi-date').value,day:document.getElementById('sabudigi-day').value,time:document.getElementById('sabudigi-time').value,media:document.getElementById('sabudigi-media').value};if(!data.title)return alert("Judul wajib");const a=id?db.ref('sabudigiEvents/'+id).update(data):db.ref('sabudigiEvents').push(data);a.then(()=>{showToast("Sukses","Tersimpan");resetForm('sabudigi');});}
-function saveKkg(){const id=document.getElementById('kkg-id').value;const data={title:document.getElementById('kkg-title').value,date:document.getElementById('kkg-date').value,media:document.getElementById('kkg-media').value};if(!data.title)return alert("Judul wajib");const a=id?db.ref('kkgEvents/'+id).update(data):db.ref('kkgEvents').push(data);a.then(()=>{showToast("Sukses","Tersimpan");resetForm('kkg');});}
-function saveEkstra(){const id=document.getElementById('ekstra-id').value;const data={title:document.getElementById('ekstra-title').value,date:document.getElementById('ekstra-date').value,media:document.getElementById('ekstra-media').value};if(!data.title)return alert("Judul wajib");const a=id?db.ref('ekstraEvents/'+id).update(data):db.ref('ekstraEvents').push(data);a.then(()=>{showToast("Sukses","Tersimpan");resetForm('ekstra');});}
-function saveKoku(){const id=document.getElementById('koku-id').value;const data={title:document.getElementById('koku-title').value,date:document.getElementById('koku-date').value,media:document.getElementById('koku-media').value};if(!data.title)return alert("Judul wajib");const a=id?db.ref('kokuEvents/'+id).update(data):db.ref('kokuEvents').push(data);a.then(()=>{showToast("Sukses","Tersimpan");resetForm('koku');});}
-
-function resetForm(p){
-    const fields={news:['news-id','news-title','news-desc','news-img'],guru:['guru-id','guru-name','guru-role','guru-img'],app:['app-id','app-name','app-link','app-img-url'],pelayanan:['pelayanan-id','pelayanan-title','pelayanan-desc','pelayanan-link'],sabudigi:['sabudigi-id','sabudigi-title','sabudigi-date','sabudigi-day','sabudigi-time','sabudigi-media'],kkg:['kkg-id','kkg-title','kkg-date','kkg-media'],ekstra:['ekstra-id','ekstra-title','ekstra-date','ekstra-media'],koku:['koku-id','koku-title','koku-date','koku-media']};
-    if(fields[p]) fields[p].forEach(f=>{const el=document.getElementById(f);if(el)el.value='';});
-}
-
-function saveHomeSettings(){db.ref('settings/home').update({title1:document.getElementById('hero-title1').value,title2:document.getElementById('hero-title2').value,desc:document.getElementById('hero-desc').value,logo:document.getElementById('hero-logo').value}).then(()=>showToast("Berhasil","Beranda disimpan"));}
-function saveMarqueeSettings(){db.ref('settings/home').update({marquee:document.getElementById('marquee-text').value,marqueeDuration:document.getElementById('marquee-duration').value}).then(()=>showToast("Berhasil","Marquee diperbarui"));}
-function saveMusicSettings(){const u=document.getElementById('bg-music-url').value;if(!u)return alert("URL wajib");db.ref('settings/home').update({musicUrl:u}).then(()=>showToast("Berhasil","Musik diupdate"));document.getElementById('bgMusicSource').src=u;document.getElementById('bgMusic').load();}
-function saveActivitySpeedSettings(){const d=document.getElementById('activity-duration').value;db.ref('settings/home').update({activityDuration:d}).then(()=>showToast("Berhasil","Kecepatan diupdate"));const s=document.getElementById('activity-slider');if(s){s.style.animation='none';s.offsetHeight;s.style.animation=`marqueeScroll ${d}s linear infinite`;}}
-function saveProfilSettings(){db.ref('settings/profil').set({visi:document.getElementById('visi-text').value,misi:document.getElementById('misi-text').value,kepsekNama:document.getElementById('kepsek-nama').value,kepsekNIP:document.getElementById('kepsek-nip').value,kepsekFoto:document.getElementById('kepsek-foto').value,kepsekSambutan:document.getElementById('kepsek-sambutan').value}).then(()=>showToast("Berhasil","Profil diupdate"));}
-function saveContactSettings(){db.ref('settings/contacts').set({wa:document.getElementById('contact-wa').value,waMsg:document.getElementById('contact-wa-msg').value,fb:document.getElementById('link-fb').value,ig:document.getElementById('link-ig').value,yt:document.getElementById('link-yt').value}).then(()=>showToast("Berhasil","Kontak disimpan"));}
-
-// ═══════════════════════════════════════════════════════════════
-// REALTIME LISTENERS
-// ═══════════════════════════════════════════════════════════════
-db.ref('settings/home').on('value', snap => {
-    const d = snap.val();
-    if(!d) return;
-    document.getElementById('hero-title1-display').innerText = d.title1;
-    document.getElementById('hero-title2-display').innerText = d.title2;
-    document.getElementById('hero-desc-display').innerText = d.desc;
-    document.getElementById('hero-logo-display').src = d.logo;
-    document.getElementById('nav-logo').src = d.logo;
-    document.getElementById('mob-logo').src = d.logo;
-    document.getElementById('footer-logo').src = d.logo;
-    const mt = d.marquee ? d.marquee.split(',') : ["SDN Majalengka Wetan VII"];
-    const mc = document.getElementById('marquee-content');
-    mc.innerHTML = mt.map(t=>`<span class="mx-4">${t}</span>`).join(' ') + mt.map(t=>`<span class="mx-4">${t}</span>`).join(' ');
-    mc.style.animation = 'none'; mc.offsetHeight; mc.style.animation = `marqueeScroll ${d.marqueeDuration||30}s linear infinite`;
-    const sl = document.getElementById('activity-slider');
-    if(sl && d.activityDuration) { sl.style.animation='none'; sl.offsetHeight; sl.style.animation=`marqueeScroll ${d.activityDuration}s linear infinite`; }
-    if(d.musicUrl && document.getElementById('bgMusicSource').src !== d.musicUrl) { document.getElementById('bgMusicSource').src = d.musicUrl; document.getElementById('bgMusic').load(); }
-});
-
-db.ref('settings/profil').on('value', snap => {
-    const d = snap.val();
-    if(!d) return;
-    document.getElementById('visi-display').innerText = d.visi;
-    document.getElementById('misi-display').innerHTML = d.misi.split(';').map(m=>`<li>${m}</li>`).join('');
-    const kn = document.getElementById('kepsek-name-display'); if(kn) kn.innerText = d.kepsekNama || "Nama Kepala Sekolah";
-    const ki = document.getElementById('kepsek-nip-display'); if(ki) ki.innerText = "NIP: " + (d.kepsekNIP || "...");
-    const kf = document.getElementById('kepsek-img-display'); if(kf) kf.src = d.kepsekFoto || "";
-    const km = document.getElementById('kepsek-msg-display'); if(km) km.innerText = d.kepsekSambutan || "Memuat sambutan...";
-});
-
-// ─── Generic Event Page Renderer ───
-function renderEventPage(path, containerId, colorClass, label) {
-    const container = document.getElementById(containerId);
-    if(!container) return;
-    container.innerHTML = '';
-    db.ref(path).once('value', snap => {
-        if(!snap.val()) {
-            container.innerHTML = `
-                <div class="col-span-full flex flex-col items-center justify-center py-20">
-                    <div class="w-24 h-24 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center mb-6">
-                        <i data-lucide="calendar-x" class="w-10 h-10 text-zinc-600"></i>
-                    </div>
-                    <h3 class="text-xl font-bold text-zinc-500 mb-2">Belum Ada Kegiatan</h3>
-                    <p class="text-sm text-zinc-600 text-center max-w-md">Kegiatan ${label} belum tersedia. Silakan cek kembali nanti.</p>
-                </div>`;
-            lucide.createIcons();
-            return;
+    const w = document.getElementById('admin-content-wrapper');
+    if(adminTemplates[tab]) w.innerHTML = adminTemplates[tab];
+    
+    // TAMBAHAN LOGIKA KHUSUS BERITA ADMIN (Langsung ambil dari Firebase)
+    if(tab === 'news') {
+        const adminList = document.getElementById('admin-news-list');
+        if(adminList) {
+            db.ref('news').once('value', s => {
+                adminList.innerHTML = "";
+                if(!s.val()) { adminList.innerHTML = '<div class="text-zinc-500 text-sm py-4 text-center">Belum ada berita.</div>'; return; }
+                s.forEach(ch => {
+                    const d = ch.val();
+                    const div = document.createElement('div');
+                    div.className = "bg-slate-800 p-3 rounded-lg flex justify-between items-center border border-slate-700 hover:border-slate-500 transition-colors";
+                    div.innerHTML = `
+                        <div class="flex items-center gap-3 min-w-0 mr-2">
+                            <img src="${d.image||'https://picsum.photos/seed/newsfb/100/100'}" class="w-10 h-10 rounded-lg object-cover shrink-0 border border-slate-700" onerror="this.src='https://picsum.photos/seed/newsfb/100/100'">
+                            <div class="min-w-0">
+                                <span class="text-sm text-white font-medium block truncate">${d.title}</span>
+                                <span class="text-[10px] text-zinc-500 block truncate">${d.link || 'Tanpa link'}</span>
+                            </div>
+                        </div>
+                        <div class="flex gap-2 shrink-0">
+                            <button onclick="editItem('news','${ch.key}','news')" class="p-2 bg-blue-600/20 hover:bg-blue-600 rounded text-blue-400 hover:text-white transition-all" title="Edit"><i data-lucide="edit-2" class="w-3.5 h-3.5"></i></button>
+                            <button onclick="confirmDeleteItem('news','${ch.key}','${(d.title||'Berita').replace(/'/g,"\\'")}')" class="p-2 bg-red-600/20 hover:bg-red-600 rounded text-red-400 hover:text-white transition-all" title="Hapus"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button>
+                        </div>`;
+                    adminList.appendChild(div);
+                });
+                lucide.createIcons();
+            });
         }
-        snap.forEach(c => {
-            const d = c.val();
-            const card = document.createElement('div');
-            card.className = "glass-card rounded-2xl overflow-hidden group";
-            card.innerHTML = `
-                <div class="aspect-video overflow-hidden relative">
-                    <img src="${d.media || 'https://picsum.photos/seed/event/600/340'}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
-                    <div class="absolute inset-0 bg-gradient-to-t from-slate-900 to-transparent opacity-60"></div>
-                    ${d.day ? `<div class="absolute bottom-4 left-4 ${colorClass} text-black font-black text-xs px-3 py-1 rounded shadow-lg">${d.day}</div>` : ''}
-                    ${d.date ? `<div class="absolute top-4 right-4 bg-black/60 backdrop-blur-md px-3 py-1 rounded-full text-[10px] font-bold text-white">${d.date}</div>` : ''}
-                </div>
-                <div class="p-6">
-                    <h3 class="text-xl font-bold text-white mb-2 group-hover:text-yellow-400 transition-colors">${d.title}</h3>
-                    ${d.time ? `<div class="flex items-center gap-2 text-sm text-zinc-400"><i data-lucide="clock" class="w-4 h-4"></i> ${d.time}</div>` : ''}
-                </div>`;
-            container.appendChild(card);
-        });
-        lucide.createIcons();
-    });
+    }
+
+    if(tab==='inbox') renderAdminInbox();
+    
+    // Paksa ambil ulang data untuk tab lainnya
+    if(tab==='guru') setupAdminList('teachers','guru');
+    if(tab==='pelayanan') setupAdminList('services','pelayanan');
+    if(tab==='sabudigi') setupAdminList('sabudigiEvents','sabudigi');
+    if(tab==='kkg') setupAdminList('kkgEvents','kkg');
+    if(tab==='ekstra') setupAdminList('ekstraEvents','ekstra');
+    if(tab==='koku') setupAdminList('kokuEvents','koku');
+    if(tab==='portal') setupAdminList('portalApps','app');
+    
+    lucide.createIcons();
+    if(tab==='home'||tab==='profil'||tab==='contacts') loadSettingsToAdminForms();
+}
+function loadSettingsToAdminForms(){
+    db.ref('settings/home').once('value').then(s=>{const d=s.val();if(!d)return;const f=(i,v)=>{const e=document.getElementById(i);if(e&&v)e.value=v;};f('hero-title1',d.title1);f('hero-title2',d.title2);f('hero-desc',d.desc);f('hero-logo',d.logo);f('marquee-text',d.marquee);f('marquee-duration',d.marqueeDuration);f('bg-music-url',d.musicUrl);}).catch(()=>{});
+    db.ref('settings/profil').once('value').then(s=>{const d=s.val();if(!d)return;const f=(i,v)=>{const e=document.getElementById(i);if(e&&v)e.value=v;};f('visi-text',d.visi);f('misi-text',d.misi);f('kepsek-nama',d.kepsekNama);f('kepsek-nip',d.kepsekNIP);f('kepsek-foto',d.kepsekFoto);f('kepsek-sambutan',d.kepsekSambutan);}).catch(()=>{});
+    db.ref('settings/contacts').once('value').then(s=>{const d=s.val();if(!d)return;const f=(i,v)=>{const e=document.getElementById(i);if(e&&v)e.value=v;};f('contact-wa',d.wa);f('contact-wa-msg',d.waMsg);f('link-fb',d.fb);f('link-ig',d.ig);f('link-yt',d.yt);}).catch(()=>{});
 }
 
-function updateSabudigiPage() { renderEventPage('sabudigiEvents', 'sabudigi-container', 'bg-green-500', 'SABUDIGI'); }
-function updateKkgPage() { renderEventPage('kkgEvents', 'kkg-container', 'bg-orange-500', 'KKG'); }
-function updateEkstraPage() { renderEventPage('ekstraEvents', 'ekstra-container', 'bg-pink-500', 'Ekstrakurikuler'); }
-function updateKokuPage() { renderEventPage('kokuEvents', 'koku-container', 'bg-cyan-500', 'Ko-Kurikuler'); }
+// ═════════════ SCROLL ANIMATIONS ═════════════
+function initScrollAnimations(){const o=new IntersectionObserver(e=>{e.forEach(en=>{if(en.isIntersecting)en.target.classList.add('visible');});},{threshold:0.1,rootMargin:'0px 0px -50px 0px'});document.querySelectorAll('.animate-on-scroll:not(.visible)').forEach(el=>o.observe(el));}
 
-// ─── NEWS ───
-db.ref('news').on('value', snap => {
+// ═════════════ CHAT SYSTEM ═════════════
+let userChatId=localStorage.getItem('chatId');if(!userChatId){userChatId='user_'+Date.now();localStorage.setItem('chatId',userChatId);}
+let chatWindowOpen=false;
+function toggleChat(){chatWindowOpen=!chatWindowOpen;const w=document.getElementById('chat-window');w.classList.toggle('hidden');if(chatWindowOpen){loadUserChat();document.getElementById('chat-badge').classList.add('hidden');}}
+function sendChatMessage(){const i=document.getElementById('chat-input'),m=i.value.trim();if(!m)return;i.value='';db.ref('chats/'+userChatId).push({sender:'user',text:m,timestamp:firebase.database.ServerValue.TIMESTAMP}).catch(()=>showToast('Gagal Kirim','Pesan tidak terkirim','error'));}
+function loadUserChat(){const c=document.getElementById('chat-messages');db.ref('chats/'+userChatId).limitToLast(30).on('value',s=>{c.innerHTML='';if(!s.val()){c.innerHTML='<div class="text-center text-xs text-zinc-500 mt-10">Mulai percakapan...</div>';return;}s.forEach(ch=>{const d=ch.val(),isU=d.sender==='user',div=document.createElement('div');div.className=`flex ${isU?'justify-end':'justify-start'}`;div.innerHTML=`<div class="${isU?'bg-blue-600 text-white':'bg-slate-700 text-gray-200'} rounded-lg px-3 py-2 max-w-[80%] text-xs">${d.text}<div class="text-[9px] opacity-50 text-right mt-1">${new Date(d.timestamp).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}</div></div>`;c.appendChild(div);});c.scrollTop=c.scrollHeight;});}
+function renderAdminInbox(){const c=document.getElementById('chat-admin-container');if(!c)return;c.innerHTML='<div class="text-zinc-500 text-sm">Memuat pesan...</div>';db.ref('chats').on('value',s=>{c.innerHTML='';if(!s.val()){c.innerHTML='<div class="text-center py-12 text-zinc-500">Belum ada pesan masuk</div>';lucide.createIcons();return;}let n=0;s.forEach(uk=>{n++;const uc=uk.val(),ks=Object.keys(uc),lm=uc[ks[ks.length-1]],div=document.createElement('div');div.className="glass-card p-4 rounded-xl border border-slate-700 mb-4";div.innerHTML=`<div class="flex justify-between items-start mb-3"><div class="flex items-center gap-2"><div class="w-8 h-8 rounded-full bg-blue-500/20 flex items-center justify-center text-blue-400 text-xs font-bold">${n}</div><div><span class="font-bold text-blue-400 text-xs block">Pengunjung #${uk.key.slice(-6)}</span><span class="text-[10px] text-zinc-500">${ks.length} pesan</span></div></div><span class="text-[10px] text-zinc-500">${new Date(lm.timestamp).toLocaleString('id-ID')}</span></div><p class="text-sm text-white mb-3 bg-slate-800 p-3 rounded-lg border-l-4 ${lm.sender==='user'?'border-l-blue-500':'border-l-green-500'}">${lm.text}</p>${lm.sender==='user'?`<div class="flex gap-2"><input id="reply-${uk.key}" class="flex-1 bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-blue-500" placeholder="Ketik balasan..." onkeydown="if(event.key==='Enter')replyToUser('${uk.key}')"><button onclick="replyToUser('${uk.key}')" class="bg-green-600 hover:bg-green-500 text-white px-4 py-2 rounded-lg text-xs font-bold transition-colors">Kirim</button></div>`:`<div class="text-xs text-green-400 font-medium flex items-center gap-1"><i data-lucide="check-check" class="w-3 h-3"></i> Dibalas: ${lm.text}</div>`}`;c.appendChild(div);});lucide.createIcons();});}
+function replyToUser(id){const i=document.getElementById(`reply-${id}`),m=i.value.trim();if(!m){showToast('Peringatan','Balasan kosong','warning');return;}i.value='';db.ref('chats/'+id).push({sender:'admin',text:m,timestamp:firebase.database.ServerValue.TIMESTAMP}).then(()=>showToast('Sukses','Balasan terkirim','success')).catch(()=>showToast('Gagal','Tidak terkirim','error'));}
+function clearChat(){showConfirm('Hapus Chat','Hapus semua riwayat percakapan?',()=>{db.ref('chats/'+userChatId).remove().then(()=>{document.getElementById('chat-messages').innerHTML='<div class="text-center text-xs text-zinc-500 mt-10">Mulai percakapan...</div>';document.getElementById('chat-badge').classList.add('hidden');showToast('Berhasil','Chat dihapus','success');}).catch(()=>showToast('Gagal','Tidak dapat menghapus','error'));});}
+function downloadChat(){db.ref('chats/'+userChatId).once('value').then(s=>{if(!s.val()){showToast('Info','Tidak ada chat','warning');return;}let t='CHAT - SDN MWT VII\n'+new Date().toLocaleString('id-ID')+'\n'+'='.repeat(40)+'\n\n';s.forEach(c=>{const d=c.val();t+=`[${new Date(d.timestamp).toLocaleString('id-ID')}]\n${d.sender==='user'?'Anda':'Admin'}: ${d.text}\n\n`;});const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([t],{type:'text/plain'}));a.download='chat-sdn-mwt7.txt';a.click();}).catch(()=>showToast('Gagal','Tidak dapat mengunduh','error'));}
+
+// ═════════════ CRUD GENERIC ═════════════
+function setupAdminList(path,prefix){db.ref(path).on('value',s=>{const c=document.getElementById(`admin-${prefix}-list`);if(!c)return;c.innerHTML="";if(!s.val()){c.innerHTML=`<div class="text-zinc-500 text-sm py-4 text-center col-span-full">Belum ada data.</div>`;return;}s.forEach(ch=>{const d=ch.val(),div=document.createElement('div');div.className="bg-slate-800 p-3 rounded-lg flex justify-between items-center border border-slate-700 hover:border-slate-600 transition-colors";const extra=d.date?`<span class="text-[10px] text-zinc-500 block">${d.date}</span>`:(d.role?`<span class="text-[10px] text-zinc-500 block">${d.role}</span>`:'');div.innerHTML=`<div class="flex items-center gap-3 min-w-0 mr-2">${d.image||d.media?`<img src="${d.image||d.media}" class="w-10 h-10 rounded-lg object-cover shrink-0 border border-slate-700">`:`<div class="w-10 h-10 rounded-lg bg-slate-700 flex items-center justify-center shrink-0"><i data-lucide="file" class="w-4 h-4 text-zinc-500"></i></div>`}<div class="min-w-0"><span class="text-sm text-white font-medium block truncate">${d.title||d.name}</span>${extra}</div></div><div class="flex gap-2 shrink-0"><button onclick="editItem('${path}','${ch.key}','${prefix}')" class="p-2 bg-blue-600/20 hover:bg-blue-600 rounded text-blue-400 hover:text-white transition-all" title="Edit"><i data-lucide="edit-2" class="w-3.5 h-3.5"></i></button><button onclick="confirmDeleteItem('${path}','${ch.key}','${(d.title||d.name||'data').replace(/'/g,"\\'")}')" class="p-2 bg-red-600/20 hover:bg-red-600 rounded text-red-400 hover:text-white transition-all" title="Hapus"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button></div>`;c.appendChild(div);});lucide.createIcons();});}
+
+function editItem(path,id,prefix){db.ref(path+'/'+id).once('value').then(s=>{const d=s.val();if(!d){showToast('Error','Data tidak ditemukan','error');return;}const f=(eid,val)=>{const e=document.getElementById(eid);if(e)e.value=val||'';};if(prefix==='news'){f('news-id',id);f('news-title',d.title);f('news-link',d.link);f('news-img',d.image);}if(prefix==='guru'){f('guru-id',id);f('guru-name',d.name);f('guru-role',d.role);f('guru-img',d.image);}if(prefix==='app'){f('app-id',id);f('app-name',d.name);f('app-link',d.link);f('app-icon',d.icon);f('app-img-url',d.imgUrl);}if(prefix==='pelayanan'){f('pelayanan-id',id);f('pelayanan-title',d.title);f('pelayanan-desc',d.desc);f('pelayanan-link',d.link);f('pelayanan-icon',d.icon);f('pelayanan-color',d.color);}if(prefix==='sabudigi'){f('sabudigi-id',id);f('sabudigi-title',d.title);f('sabudigi-date',d.date);f('sabudigi-day',d.day);f('sabudigi-time',d.time);f('sabudigi-media',d.media);}if(prefix==='kkg'){f('kkg-id',id);f('kkg-title',d.title);f('kkg-date',d.date);f('kkg-media',d.media);}if(prefix==='ekstra'){f('ekstra-id',id);f('ekstra-title',d.title);f('ekstra-date',d.date);f('ekstra-media',d.media);}if(prefix==='koku'){f('koku-id',id);f('koku-title',d.title);f('koku-date',d.date);f('koku-media',d.media);}showToast('Mode Edit','Data dimuat ke form','info');document.getElementById('admin-content-wrapper').scrollTo({top:0,behavior:'smooth'});}).catch(e=>showToast('Error',e.message,'error'));}
+
+function confirmDeleteItem(path,id,name){showConfirm('Hapus Data',`Hapus "${name}"? Tindakan ini tidak dapat dibatalkan.`,()=>{db.ref(path+'/'+id).remove().then(()=>showToast('Berhasil',`"${name}" dihapus`,'success')).catch(e=>showToast('Gagal',e.message,'error'));});}
+
+function resetForm(p){const fields={news:['news-id','news-title','news-link','news-img'],guru:['guru-id','guru-name','guru-role','guru-img'],app:['app-id','app-name','app-link','app-icon','app-img-url'],pelayanan:['pelayanan-id','pelayanan-title','pelayanan-desc','pelayanan-link','pelayanan-icon','pelayanan-color'],sabudigi:['sabudigi-id','sabudigi-title','sabudigi-date','sabudigi-day','sabudigi-time','sabudigi-media'],kkg:['kkg-id','kkg-title','kkg-date','kkg-media'],ekstra:['ekstra-id','ekstra-title','ekstra-date','ekstra-media'],koku:['koku-id','koku-title','koku-date','koku-media']};if(fields[p])fields[p].forEach(f=>{const e=document.getElementById(f);if(e)e.value='';});}
+
+// ═════════════ SAVE FUNCTIONS ═════════════
+function saveNews(){const id=document.getElementById('news-id').value,data={title:document.getElementById('news-title').value,link:document.getElementById('news-link').value,image:document.getElementById('news-img').value};if(!data.title){showToast('Peringatan','Judul wajib diisi','warning');return;}const b=document.getElementById('btn-save-news');setBtnLoading(b,true);const p=id?db.ref('news/'+id).update(data):db.ref('news').push(data);p.then(()=>{showToast("Sukses",id?"Berita diperbarui":"Berita ditambahkan",'success');resetForm('news');setBtnLoading(b,false);}).catch(e=>{showToast("Gagal",e.message,'error');setBtnLoading(b,false);});}
+function saveGuru(){const id=document.getElementById('guru-id').value,data={name:document.getElementById('guru-name').value,role:document.getElementById('guru-role').value,image:document.getElementById('guru-img').value};if(!data.name){showToast('Peringatan','Nama wajib diisi','warning');return;}const b=document.getElementById('btn-save-guru');setBtnLoading(b,true);const p=id?db.ref('teachers/'+id).update(data):db.ref('teachers').push(data);p.then(()=>{showToast("Sukses",id?"Guru diperbarui":"Guru ditambahkan",'success');resetForm('guru');setBtnLoading(b,false);}).catch(e=>{showToast("Gagal",e.message,'error');setBtnLoading(b,false);});}
+function saveApp(){const id=document.getElementById('app-id').value,data={name:document.getElementById('app-name').value,link:document.getElementById('app-link').value,icon:document.getElementById('app-icon').value,imgUrl:document.getElementById('app-img-url').value};if(!data.name||!data.link){showToast('Peringatan','Nama dan Link wajib diisi','warning');return;}const b=document.getElementById('btn-save-app');setBtnLoading(b,true);const p=id?db.ref('portalApps/'+id).update(data):db.ref('portalApps').push(data);p.then(()=>{showToast("Sukses",id?"App diperbarui":"App ditambahkan",'success');resetForm('app');setBtnLoading(b,false);}).catch(e=>{showToast("Gagal",e.message,'error');setBtnLoading(b,false);});}
+function savePelayanan(){const id=document.getElementById('pelayanan-id').value,data={title:document.getElementById('pelayanan-title').value,desc:document.getElementById('pelayanan-desc').value,link:document.getElementById('pelayanan-link').value,icon:document.getElementById('pelayanan-icon').value,color:document.getElementById('pelayanan-color').value};if(!data.title){showToast('Peringatan','Judul wajib diisi','warning');return;}const b=document.getElementById('btn-save-pelayanan');setBtnLoading(b,true);const p=id?db.ref('services/'+id).update(data):db.ref('services').push(data);p.then(()=>{showToast("Sukses",id?"Pelayanan diperbarui":"Pelayanan ditambahkan",'success');resetForm('pelayanan');setBtnLoading(b,false);}).catch(e=>{showToast("Gagal",e.message,'error');setBtnLoading(b,false);});}
+function saveSabudigi(){const id=document.getElementById('sabudigi-id').value,data={title:document.getElementById('sabudigi-title').value,date:document.getElementById('sabudigi-date').value,day:document.getElementById('sabudigi-day').value,time:document.getElementById('sabudigi-time').value,media:document.getElementById('sabudigi-media').value};if(!data.title){showToast('Peringatan','Nama wajib diisi','warning');return;}const b=document.getElementById('btn-save-sabudigi');setBtnLoading(b,true);const p=id?db.ref('sabudigiEvents/'+id).update(data):db.ref('sabudigiEvents').push(data);p.then(()=>{showToast("Sukses",id?"SABUDIGI diperbarui":"SABUDIGI ditambahkan",'success');resetForm('sabudigi');setBtnLoading(b,false);}).catch(e=>{showToast("Gagal",e.message,'error');setBtnLoading(b,false);});}
+function saveKkg(){const id=document.getElementById('kkg-id').value,data={title:document.getElementById('kkg-title').value,date:document.getElementById('kkg-date').value,media:document.getElementById('kkg-media').value};if(!data.title){showToast('Peringatan','Nama wajib diisi','warning');return;}const b=document.getElementById('btn-save-kkg');setBtnLoading(b,true);const p=id?db.ref('kkgEvents/'+id).update(data):db.ref('kkgEvents').push(data);p.then(()=>{showToast("Sukses",id?"KKG diperbarui":"KKG ditambahkan",'success');resetForm('kkg');setBtnLoading(b,false);}).catch(e=>{showToast("Gagal",e.message,'error');setBtnLoading(b,false);});}
+function saveEkstra(){const id=document.getElementById('ekstra-id').value,data={title:document.getElementById('ekstra-title').value,date:document.getElementById('ekstra-date').value,media:document.getElementById('ekstra-media').value};if(!data.title){showToast('Peringatan','Nama wajib diisi','warning');return;}const b=document.getElementById('btn-save-ekstra');setBtnLoading(b,true);const p=id?db.ref('ekstraEvents/'+id).update(data):db.ref('ekstraEvents').push(data);p.then(()=>{showToast("Sukses",id?"Ekstra diperbarui":"Ekstra ditambahkan",'success');resetForm('ekstra');setBtnLoading(b,false);}).catch(e=>{showToast("Gagal",e.message,'error');setBtnLoading(b,false);});}
+function saveKoku(){const id=document.getElementById('koku-id').value,data={title:document.getElementById('koku-title').value,date:document.getElementById('koku-date').value,media:document.getElementById('koku-media').value};if(!data.title){showToast('Peringatan','Nama wajib diisi','warning');return;}const b=document.getElementById('btn-save-koku');setBtnLoading(b,true);const p=id?db.ref('kokuEvents/'+id).update(data):db.ref('kokuEvents').push(data);p.then(()=>{showToast("Sukses",id?"Ko-Kurikuler diperbarui":"Ko-Kurikuler ditambahkan",'success');resetForm('koku');setBtnLoading(b,false);}).catch(e=>{showToast("Gagal",e.message,'error');setBtnLoading(b,false);});}
+
+function saveHomeSettings(){const b=document.getElementById('btn-save-home');if(b)setBtnLoading(b,true);db.ref('settings/home').update({title1:document.getElementById('hero-title1').value,title2:document.getElementById('hero-title2').value,desc:document.getElementById('hero-desc').value,logo:document.getElementById('hero-logo').value}).then(()=>{showToast("Berhasil","Beranda disimpan",'success');if(b)setBtnLoading(b,false);}).catch(e=>{showToast("Gagal",e.message,'error');if(b)setBtnLoading(b,false);});}
+function saveMarqueeSettings(){const b=document.getElementById('btn-save-marquee');if(b)setBtnLoading(b,true);db.ref('settings/home').update({marquee:document.getElementById('marquee-text').value,marqueeDuration:parseInt(document.getElementById('marquee-duration').value)||30}).then(()=>{showToast("Berhasil","Marquee diperbarui",'success');if(b)setBtnLoading(b,false);}).catch(e=>{showToast("Gagal",e.message,'error');if(b)setBtnLoading(b,false);});}
+function saveMusicSettings(){const u=document.getElementById('bg-music-url').value;if(!u){showToast('Peringatan','URL musik wajib diisi','warning');return;}const b=document.getElementById('btn-save-music');if(b)setBtnLoading(b,true);db.ref('settings/home').update({musicUrl:u}).then(()=>{showToast("Berhasil","Musik diperbarui",'success');document.getElementById('bgMusicSource').src=u;document.getElementById('bgMusic').load();if(b)setBtnLoading(b,false);}).catch(e=>{showToast("Gagal",e.message,'error');if(b)setBtnLoading(b,false);});}
+function saveProfilSettings(){const b=document.getElementById('btn-save-profil');if(b)setBtnLoading(b,true);db.ref('settings/profil').set({visi:document.getElementById('visi-text').value,misi:document.getElementById('misi-text').value,kepsekNama:document.getElementById('kepsek-nama').value,kepsekNIP:document.getElementById('kepsek-nip').value,kepsekFoto:document.getElementById('kepsek-foto').value,kepsekSambutan:document.getElementById('kepsek-sambutan').value}).then(()=>{showToast("Berhasil","Profil disimpan",'success');if(b)setBtnLoading(b,false);}).catch(e=>{showToast("Gagal",e.message,'error');if(b)setBtnLoading(b,false);});}
+function saveContactSettings(){const b=document.getElementById('btn-save-contacts');if(b)setBtnLoading(b,true);db.ref('settings/contacts').set({wa:document.getElementById('contact-wa').value,waMsg:document.getElementById('contact-wa-msg').value,fb:document.getElementById('link-fb').value,ig:document.getElementById('link-ig').value,yt:document.getElementById('link-yt').value}).then(()=>{showToast("Berhasil","Kontak disimpan",'success');if(b)setBtnLoading(b,false);}).catch(e=>{showToast("Gagal",e.message,'error');if(b)setBtnLoading(b,false);});}
+
+// ═════════════ REALTIME LISTENERS (LAYAR UTAMA) ═════════════
+// --- HOME ---
+db.ref('settings/home').on('value', s => {
+    const d = s.val(); if(!d) return;
+    const txt = (id, val) => { const e = document.getElementById(id); if(e) e.innerText = val || ''; };
+    const img = (id, val) => { const e = document.getElementById(id); if(e && val) e.src = val; };
+    txt('hero-title1-display', d.title1); txt('hero-title2-display', d.title2); txt('hero-desc-display', d.desc);
+    img('hero-logo-display', d.logo); img('nav-logo', d.logo); img('mob-logo', d.logo); img('footer-logo', d.logo);
+    
+    // Marquee Logic (Hilangkan jika kosong)
+    const mWrap = document.getElementById('marquee-wrapper');
+    const mCont = document.getElementById('marquee-content');
+    if(d.marquee && d.marquee.trim()) {
+        const mt = d.marquee.split(',');
+        mCont.innerHTML = [...mt, ...mt].map(t=>`<span class="mx-4">${t.trim()}</span>`).join(' ');
+        mCont.style.animation = 'none'; mCont.offsetHeight; mCont.style.animation = `marqueeScroll ${d.marqueeDuration||30}s linear infinite`;
+        mWrap.classList.remove('hidden');
+    } else { mWrap.classList.add('hidden'); }
+
+    // Musik Logic
+    if(d.musicUrl) {
+        document.getElementById('bgMusicSource').src = d.musicUrl;
+        document.getElementById('bgMusic').load();
+        document.getElementById('musicBtn').classList.remove('hidden');
+    } else { document.getElementById('musicBtn').classList.add('hidden'); }
+});
+
+// --- PROFIL ---
+db.ref('settings/profil').on('value', s => {
+    const d = s.val();
+    const vmSec = document.getElementById('profil-visi-misi-section');
+    const guruSec = document.getElementById('profil-guru-section');
+    const emptySec = document.getElementById('profil-empty-section');
+    const kepsekSec = document.getElementById('home-kepsek-section');
+
+    // Sambutan Kepsek (Hilang jika kosong)
+    if(d && d.kepsekNama && d.kepsekSambutan) {
+        document.getElementById('kepsek-name-display').innerText = d.kepsekNama;
+        document.getElementById('kepsek-nip-display').innerText = "NIP: " + (d.kepsekNIP || "...");
+        document.getElementById('kepsek-img-display').src = d.kepsekFoto || "https://picsum.photos/seed/kepsek/500/625";
+        document.getElementById('kepsek-msg-display').innerText = d.kepsekSambutan;
+        kepsekSec.classList.remove('hidden');
+    } else { kepsekSec.classList.add('hidden'); }
+
+    // Visi Misi (Hilang jika kosong)
+    if(d && (d.visi || d.misi)) {
+        document.getElementById('visi-display').innerText = d.visi || '';
+        document.getElementById('misi-display').innerHTML = d.misi ? d.misi.split(';').filter(m=>m.trim()).map(m=>`<li>${m.trim()}</li>`).join('') : '';
+        vmSec.classList.remove('hidden');
+    } else { vmSec.classList.add('hidden'); }
+});
+
+// --- GURU (Halaman & Koneksi ke Profil) ---
+db.ref('teachers').on('value', s => {
+    const c = document.getElementById('guru-container');
+    const guruSec = document.getElementById('profil-guru-section');
+    const emptySec = document.getElementById('profil-empty-section');
+    c.innerHTML = "";
+    if(!s.val()) { guruSec.classList.add('hidden'); return; }
+    guruSec.classList.remove('hidden'); emptySec.classList.add('hidden');
+    s.forEach(ch => {
+        const d = ch.val(), div = document.createElement('div');
+        div.className = "glass-card rounded-2xl overflow-hidden group";
+        div.innerHTML = `<div class="aspect-[3/4] overflow-hidden"><img src="${d.image||'https://picsum.photos/seed/gurufb/400/530'}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" onerror="this.src='https://picsum.photos/seed/gurufb/400/530'"></div><div class="p-4 text-center"><div class="font-bold text-white text-sm truncate">${d.name}</div><div class="text-zinc-500 text-xs mt-1">${d.role||'Guru'}</div></div>`;
+        c.appendChild(div);
+    });
+});
+
+// --- BERITA (Frontend: Hanya Judul, Link, Gambar) ---
+db.ref('news').on('value', s => {
     const container = document.getElementById('news-container');
-    if(!container) return;
-    container.innerHTML = "";
-    if(!snap.val()) { container.innerHTML = '<div class="col-span-3 text-center text-blue-300/30">Belum ada berita</div>'; return; }
-    snap.forEach(c => {
-        const d = c.val();
+    const section = document.getElementById('home-news-section');
+    const tickerWrap = document.getElementById('news-ticker-wrapper');
+    const ticker = document.getElementById('news-ticker');
+    
+    container.innerHTML = ""; ticker.innerHTML = "";
+    if(!s.val()) { section.classList.add('hidden'); tickerWrap.classList.add('hidden'); return; }
+    
+    let hasData = false;
+    let newsArr = [];
+    s.forEach(ch => { newsArr.push(ch.val()); });
+    
+    // Render Grid Beranda
+    newsArr.forEach(d => {
+        hasData = true;
         const card = document.createElement('div');
         card.className = "glass-card rounded-2xl overflow-hidden group cursor-pointer h-full flex flex-col";
-        card.innerHTML = `<div class="aspect-video overflow-hidden relative"><img src="${d.image}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"><div class="absolute top-3 right-3 bg-black/60 backdrop-blur-md px-3 py-1 rounded-full text-[10px] font-bold text-white">${d.date}</div></div><div class="p-6 flex-1 flex flex-col"><div class="mb-3"><span class="text-xs font-bold text-blue-400 uppercase tracking-wider">Berita</span></div><h4 class="text-xl font-bold text-white mb-3 group-hover:text-yellow-400 transition-colors">${d.title}</h4><p class="text-zinc-400 text-sm leading-relaxed line-clamp-3 mb-4 flex-1">${d.desc}</p><div class="flex items-center gap-2 text-xs font-bold text-yellow-400 group-hover:translate-x-2 transition-transform">BACA SELENGKAPNYA <i data-lucide="arrow-right" class="w-4 h-4"></i></div></div>`;
+        card.onclick = () => { if(d.link) window.open(d.link, '_blank'); };
+        card.innerHTML = `
+            <div class="aspect-video overflow-hidden relative">
+                <img src="${d.image||'https://picsum.photos/seed/newsfb/600/340'}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" onerror="this.src='https://picsum.photos/seed/newsfb/600/340'">
+            </div>
+            <div class="p-6 flex-1 flex flex-col">
+                <div class="mb-3"><span class="text-xs font-bold text-blue-400 uppercase tracking-wider">Berita</span></div>
+                <h4 class="text-xl font-bold text-white mb-3 group-hover:text-yellow-400 transition-colors">${d.title}</h4>
+                <div class="flex items-center gap-2 text-xs font-bold text-yellow-400 group-hover:translate-x-2 transition-transform mt-auto">BACA SELENGKAPNYA <i data-lucide="external-link" class="w-4 h-4"></i></div>
+            </div>`;
         container.appendChild(card);
     });
+
+        // 2. RENDER TICKER (Dikosongkan dulu agar tidak dobel saat Firebase update)
+    ticker.innerHTML = "";
+    const doubledNews = [...newsArr, ...newsArr];
+    doubledNews.forEach(d => {
+        ticker.innerHTML += `<div class="flex items-center gap-3 px-4 py-2 bg-slate-800/40 hover:bg-slate-800/80 rounded-xl border border-slate-700/50 shrink-0 cursor-pointer transition-all group w-64" onclick="window.open('${d.link||'#'}', '_blank')"><img src="${d.image||'https://picsum.photos/seed/newsfb/100/100'}" class="w-12 h-12 rounded-lg object-cover shrink-0 border border-slate-600 group-hover:border-blue-500 transition-colors" onerror="this.src='https://picsum.photos/seed/newsfb/100/100'"><div class="min-w-0"><h5 class="text-sm font-bold text-white truncate group-hover:text-yellow-400 transition-colors">${d.title}</h5></div></div>`;
+    });
+
+    if(hasData) {
+        section.classList.remove('hidden');
+        tickerWrap.classList.remove('hidden');
+        ticker.style.animation = 'marqueeScroll 45s linear infinite';
+    }
     lucide.createIcons();
 });
 
-// ─── PORTAL ───
-db.ref('portalApps').on('value', snap => {
-    const container = document.getElementById('portal-container');
-    if(!container) return;
-    container.innerHTML = "";
-    if(!snap.val()) { container.innerHTML = '<div class="col-span-full text-center text-zinc-500">Belum ada aplikasi</div>'; return; }
-    snap.forEach(c => {
-        const d = c.val();
-        const card = document.createElement('div');
+// --- PORTAL ---
+db.ref('portalApps').on('value', s => {
+    const c = document.getElementById('portal-container'), emp = document.getElementById('portal-empty');
+    c.innerHTML = "";
+    if(!s.val()) { emp.classList.remove('hidden'); return; }
+    emp.classList.add('hidden');
+    s.forEach(ch => {
+        const d = ch.val(), card = document.createElement('div');
         card.className = "glass-card p-6 rounded-2xl text-center hover:bg-slate-800 transition-all cursor-pointer group";
         card.onclick = () => window.open(d.link, '_blank');
         card.innerHTML = `<div class="w-16 h-16 bg-white/5 rounded-2xl mx-auto mb-4 flex items-center justify-center group-hover:scale-110 group-hover:bg-blue-500/10 transition-all">${d.icon==='image'?`<img src="${d.imgUrl}" class="w-8 h-8 object-contain">`:`<i data-lucide="${d.icon}" class="w-8 h-8 text-blue-400"></i>`}</div><h4 class="font-bold text-white mb-1 group-hover:text-blue-400 transition-colors">${d.name}</h4>`;
-        container.appendChild(card);
+        c.appendChild(card);
     });
     lucide.createIcons();
 });
 
-// ─── TEACHERS ───
-db.ref('teachers').on('value', snap => {
-    const container = document.getElementById('guru-container');
-    if(!container) return;
-    container.innerHTML = "";
-    if(!snap.val()) return;
-    snap.forEach(c => {
-        const d = c.val();
-        const div = document.createElement('div');
-        div.className = "glass-card rounded-2xl overflow-hidden group";
-        div.innerHTML = `<div class="aspect-[3/4] overflow-hidden"><img src="${d.image}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"></div><div class="p-4 text-center"><div class="font-bold text-white text-sm truncate">${d.name}</div><div class="text-zinc-500 text-xs mt-1">${d.role}</div></div>`;
-        container.appendChild(div);
-    });
-});
-
-// ─── SERVICES ───
-db.ref('services').on('value', snap => {
-    const container = document.getElementById('pelayanan-container');
-    if(!container) return;
-    container.innerHTML = "";
-    if(!snap.val()) return;
-    snap.forEach(c => {
-        const d = c.val();
-        const colors = {blue:'text-blue-400',green:'text-green-400',yellow:'text-yellow-400',purple:'text-purple-400'};
-        const ic = colors[d.color]||'text-blue-400';
-        const card = document.createElement('div');
+// --- PELAYANAN ---
+db.ref('services').on('value', s => {
+    const c = document.getElementById('pelayanan-container'), emp = document.getElementById('pelayanan-empty');
+    c.innerHTML = "";
+    if(!s.val()) { emp.classList.remove('hidden'); return; }
+    emp.classList.add('hidden');
+    const cols = {blue:'text-blue-400',green:'text-green-400',yellow:'text-yellow-400',purple:'text-purple-400'};
+    s.forEach(ch => {
+        const d = ch.val(), ic = cols[d.color]||'text-blue-400', card = document.createElement('div');
         card.className = "glass-card p-8 rounded-2xl group hover:bg-slate-800 transition-all relative overflow-hidden";
-        card.innerHTML = `<div class="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-white/5 to-transparent rounded-bl-full -mr-8 -mt-8 transition-all group-hover:scale-150"></div><div class="w-14 h-14 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center mb-6 group-hover:bg-white/10 transition-colors"><i data-lucide="${d.icon}" class="w-7 h-7 ${ic}"></i></div><h3 class="text-xl font-bold text-white mb-3 group-hover:translate-x-1 transition-transform">${d.title}</h3><p class="text-zinc-400 text-sm leading-relaxed mb-6">${d.desc}</p>${d.link?`<a href="${d.link}" target="_blank" class="inline-flex items-center gap-2 text-xs font-bold ${ic} uppercase tracking-wider hover:underline">Akses Layanan <i data-lucide="external-link" class="w-3 h-3"></i></a>`:''}`;
-        container.appendChild(card);
+        card.innerHTML = `<div class="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-white/5 to-transparent rounded-bl-full -mr-8 -mt-8 transition-all group-hover:scale-150"></div><div class="w-14 h-14 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center mb-6 group-hover:bg-white/10 transition-colors"><i data-lucide="${d.icon}" class="w-7 h-7 ${ic}"></i></div><h3 class="text-xl font-bold text-white mb-3 group-hover:translate-x-1 transition-transform">${d.title}</h3><p class="text-zinc-400 text-sm leading-relaxed mb-6">${d.desc}</p>${d.link?`<a href="${d.link}" target="_blank" class="inline-flex items-center gap-2 text-xs font-bold ${ic} uppercase tracking-wider hover:underline">Akses <i data-lucide="external-link" class="w-3 h-3"></i></a>`:''}`;
+        c.appendChild(card);
     });
     lucide.createIcons();
 });
 
-// ─── CONTACTS ───
-db.ref('settings/contacts').on('value', snap => {
-    const d = snap.val();
-    if(!d) return;
+// --- EVENT PAGES (SABUDIGI, KKG, EKSTRA, KOKU) ---
+function renderEventPage(path, containerId, emptyId, colorClass) {
+    const c = document.getElementById(containerId), emp = document.getElementById(emptyId);
+    c.innerHTML = "";
+    db.ref(path).once('value', s => {
+        if(!s.val()) { emp.classList.remove('hidden'); return; }
+        emp.classList.add('hidden');
+        s.forEach(ch => {
+            const d = ch.val(), card = document.createElement('div');
+            card.className = "glass-card rounded-2xl overflow-hidden group";
+            card.innerHTML = `<div class="aspect-video overflow-hidden relative"><img src="${d.media||'https://picsum.photos/seed/'+path+'/600/340'}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" onerror="this.src='https://picsum.photos/seed/fallback/600/340'"><div class="absolute inset-0 bg-gradient-to-t from-slate-900 to-transparent opacity-60"></div>${d.day?`<div class="absolute bottom-4 left-4 ${colorClass} text-black font-black text-xs px-3 py-1 rounded-lg shadow-lg">${d.day}</div>`:''}${d.date?`<div class="absolute top-4 right-4 bg-black/60 backdrop-blur-md px-3 py-1 rounded-full text-[10px] font-bold text-white">${d.date}</div>`:''}</div><div class="p-6"><h3 class="text-xl font-bold text-white mb-2 group-hover:text-yellow-400 transition-colors">${d.title}</h3>${d.time?`<div class="flex items-center gap-2 text-sm text-zinc-400"><i data-lucide="clock" class="w-4 h-4"></i> ${d.time}</div>`:''}</div>`;
+            c.appendChild(card);
+        });
+        lucide.createIcons();
+    });
+}
+// Trigger saat halaman dibuka
+const origNav = navigateTo;
+navigateTo = function(p) {
+    origNav(p);
+    if(p==='sabudigi') renderEventPage('sabudigiEvents','sabudigi-container','sabudigi-empty','bg-green-500');
+    if(p==='kkg') renderEventPage('kkgEvents','kkg-container','kkg-empty','bg-orange-500');
+    if(p==='ekstra') renderEventPage('ekstraEvents','ekstra-container','ekstra-empty','bg-pink-500');
+    if(p==='koku') renderEventPage('kokuEvents','koku-container','koku-empty','bg-cyan-500');
+};
+
+// --- KONTAK & SOSMED ---
+db.ref('settings/contacts').on('value', s => {
+    const d = s.val(); if(!d) return;
     document.getElementById('link-fb-disp').href = d.fb || "#";
     document.getElementById('link-ig-disp').href = d.ig || "#";
     document.getElementById('link-yt-disp').href = d.yt || "#";
-    document.getElementById('wa-float-btn').href = `https://wa.me/${d.wa||''}?text=${encodeURIComponent(d.waMsg||'')}`;
+    const waBtn = document.getElementById('wa-float-btn');
+    if(d.wa) { waBtn.href = `https://wa.me/${d.wa}?text=${encodeURIComponent(d.waMsg||'Halo, saya ingin bertanya...')}`; waBtn.classList.remove('hidden'); }
+    else { waBtn.classList.add('hidden'); }
 });
 
-// ─── CHAT NOTIFICATION ───
-db.ref('chats/' + userChatId).on('child_added', snap => {
-    const d = snap.val();
-    if(d.sender === 'admin') {
-        new Audio('https://assets.mixkit.co/active_storage/sfx/2702/2702-preview.mp3').play().catch(()=>{});
-        showToast("Pesan Baru", d.text);
+// --- CHAT BADGE ---
+db.ref('chats/' + userChatId).on('child_added', s => {
+    const d = s.val();
+    if(d.sender === 'admin' && !chatWindowOpen) {
+        document.getElementById('chat-badge').classList.remove('hidden');
+        try { new Audio('https://assets.mixkit.co/active_storage/sfx/2702/2702-preview.mp3').play().catch(()=>{}); } catch(e){}
+        showToast("Pesan Baru", d.text, 'info');
     }
 });
 
-// ─── ACTIVITY SLIDER ───
-const activityPaths = ['sabudigiEvents','kkgEvents','ekstraEvents','kokuEvents'];
-activityPaths.forEach(path => {
-    db.ref(path).on('value', () => { updateCombinedSlider(); if(path==='sabudigiEvents') updateSabudigiPage(); });
-});
-
+// --- ACTIVITY SLIDER (Gabungan, hilang jika kosong) ---
+const actPaths = ['sabudigiEvents','kkgEvents','ekstraEvents','kokuEvents'];
+const actCats = {sabudigiEvents:'SABUDIGI',kkgEvents:'KKG',ekstraEvents:'EKSTRAKURIKULER',kokuEvents:'KO-KURIKULER'};
 function updateCombinedSlider() {
     const container = document.getElementById('activity-slider');
+    const section = document.getElementById('home-slider-section');
     if(!container) return;
     let all = [], count = 0;
-    activityPaths.forEach(path => {
-        db.ref(path).once('value').then(snap => {
-            if(snap.val()) {
-                const cats = {sabudigiEvents:'SABUDIGI',kkgEvents:'KKG',ekstraEvents:'EKSTRAKURIKULER',kokuEvents:'KO-KURIKULER'};
-                snap.forEach(c => all.push({...c.val(), category: cats[path]||'KEGIATAN'}));
-            }
-            if(++count === activityPaths.length) {
-                all.sort((a,b) => new Date(b.date) - new Date(a.date));
+    actPaths.forEach(path => {
+        db.ref(path).once('value').then(s => {
+            if(s.val()) s.forEach(c => all.push({...c.val(), category: actCats[path]}));
+            if(++count === actPaths.length) {
+                if(all.length === 0) { section.classList.add('hidden'); container.innerHTML = ''; return; }
+                section.classList.remove('hidden');
+                all.sort((a,b) => (b.date||'').localeCompare(a.date||''));
                 const list = [...all,...all];
-                container.innerHTML = list.map(d => `
-                    <div class="relative w-48 h-64 shrink-0 rounded-xl overflow-hidden group border border-white/10 bg-slate-800 cursor-pointer">
-                        <img src="${d.media||'https://picsum.photos/seed/act/300/400'}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
-                        <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-transparent to-transparent flex flex-col justify-end p-3">
-                            <span class="text-[8px] font-bold text-yellow-400 uppercase tracking-wider mb-1">${d.category}</span>
-                            <h5 class="text-xs font-bold text-white leading-tight">${d.title}</h5>
-                        </div>
-                    </div>`).join('');
+                container.innerHTML = list.map(d => `<div class="relative w-48 h-64 shrink-0 rounded-xl overflow-hidden group border border-white/10 bg-slate-800 cursor-pointer"><img src="${d.media||'https://picsum.photos/seed/act/300/400'}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" onerror="this.src='https://picsum.photos/seed/actfb/300/400'"><div class="absolute inset-0 bg-gradient-to-t from-black/90 via-transparent to-transparent flex flex-col justify-end p-3"><span class="text-[8px] font-bold text-yellow-400 uppercase tracking-wider mb-1">${d.category}</span><h5 class="text-xs font-bold text-white leading-tight">${d.title}</h5>${d.date?`<span class="text-[9px] text-zinc-400 mt-1">${d.date}</span>`:''}</div></div>`).join('');
+                container.style.animation = 'none'; container.offsetHeight; container.style.animation = 'marqueeScroll 40s linear infinite';
             }
         });
     });
 }
+actPaths.forEach(p => db.ref(p).on('value', () => updateCombinedSlider()));
 
-// ─── MUSIC ───
+// --- MUSIC TOGGLE ---
 let isPlaying = false;
 function toggleMusic() {
-    const bgMusic = document.getElementById('bgMusic');
-    const ind = document.getElementById('music-indicator');
+    const bgMusic = document.getElementById('bgMusic'), ind = document.getElementById('music-indicator');
     if(isPlaying) { bgMusic.pause(); ind.classList.add('hidden'); }
-    else { bgMusic.play().then(()=>ind.classList.remove('hidden')).catch(()=>{}); }
+    else { bgMusic.play().then(()=>ind.classList.remove('hidden')).catch(()=>showToast('Info','Tidak dapat memutar musik','warning')); }
     isPlaying = !isPlaying;
 }
 
-// ─── INIT ───
+// ═════════════ INIT ═════════════
 lucide.createIcons();
 initScrollAnimations();
+setTimeout(() => { if(!isConnected) updateConnectionUI(false); }, 5000);
 </script>
 </body>
 </html>
