@@ -72,6 +72,8 @@
         @media(max-width:768px){.hero-title{font-size:2.5rem!important;line-height:1.2!important}}
         @media(max-width:1024px){.nav-desktop{display:none!important}.nav-mobile-trigger{display:flex!important}}
         @media(min-width:1025px){.nav-mobile-trigger{display:none!important}}
+        <!-- Tambahkan ini di <head> jika belum ada -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     </style>
 </head>
 <body>
@@ -641,14 +643,47 @@ portal:`
 inbox:`<h2 class="text-2xl font-bold mb-6 text-white">Inbox Chat Pengunjung</h2><div id="chat-admin-container" class="space-y-4"></div>`,
 contacts:`
     <h2 class="text-2xl font-bold mb-6 text-white">Kontak & Sosial Media</h2>
-    <div class="glass-card p-6 rounded-xl">
-        <label class="text-xs text-gray-400 block mb-1">Nomor WhatsApp (tanpa +)</label><input id="contact-wa" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-sm text-white mb-3 focus:outline-none focus:border-blue-500">
-        <label class="text-xs text-gray-400 block mb-1">Pesan Default WhatsApp</label><input id="contact-wa-msg" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-sm text-white mb-3 focus:outline-none focus:border-blue-500">
-        <label class="text-xs text-gray-400 block mb-1">Link Facebook</label><input id="link-fb" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-sm text-white mb-3 focus:outline-none focus:border-blue-500">
-        <label class="text-xs text-gray-400 block mb-1">Link Instagram</label><input id="link-ig" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-sm text-white mb-3 focus:outline-none focus:border-blue-500">
-        <label class="text-xs text-gray-400 block mb-1">Link YouTube</label><input id="link-yt" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-sm text-white mb-4 focus:outline-none focus:border-blue-500">
-        <button id="btn-save-contacts" onclick="saveContactSettings()" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 rounded-lg transition-colors">Simpan Kontak</button>
-    </div>`
+<div class="glass-card p-6 rounded-xl">
+    
+    <!-- WhatsApp -->
+    <label class="text-xs text-gray-400 flex items-center gap-2 mb-1">
+        <i class="fa-brands fa-whatsapp text-green-400 text-sm"></i>
+        Nomor WhatsApp (tanpa +)
+    </label>
+    <input id="contact-wa" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-sm text-white mb-3 focus:outline-none focus:border-blue-500" placeholder="6281234567890">
+
+    <!-- Pesan Default WhatsApp -->
+    <label class="text-xs text-gray-400 flex items-center gap-2 mb-1">
+        <i class="fa-brands fa-whatsapp text-green-400 text-sm"></i>
+        Pesan Default WhatsApp
+    </label>
+    <input id="contact-wa-msg" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-sm text-white mb-3 focus:outline-none focus:border-blue-500" placeholder="Halo, saya tertarik dengan...">
+
+    <!-- Facebook -->
+    <label class="text-xs text-gray-400 flex items-center gap-2 mb-1">
+        <i class="fa-brands fa-facebook text-blue-400 text-sm"></i>
+        Link Facebook
+    </label>
+    <input id="link-fb" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-sm text-white mb-3 focus:outline-none focus:border-blue-500" placeholder="https://facebook.com/username">
+
+    <!-- Instagram -->
+    <label class="text-xs text-gray-400 flex items-center gap-2 mb-1">
+        <i class="fa-brands fa-instagram text-pink-400 text-sm"></i>
+        Link Instagram
+    </label>
+    <input id="link-ig" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-sm text-white mb-3 focus:outline-none focus:border-blue-500" placeholder="https://instagram.com/username">
+
+    <!-- YouTube -->
+    <label class="text-xs text-gray-400 flex items-center gap-2 mb-1">
+        <i class="fa-brands fa-youtube text-red-400 text-sm"></i>
+        Link YouTube
+    </label>
+    <input id="link-yt" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-sm text-white mb-4 focus:outline-none focus:border-blue-500" placeholder="https://youtube.com/@channel">
+
+    <button id="btn-save-contacts" onclick="saveContactSettings()" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 rounded-lg transition-colors">
+        <i class="fa-solid fa-floppy-disk mr-2"></i>Simpan Kontak
+    </button>
+</div>`
 };
 
 // ═════════════ NAVIGATION ═════════════
