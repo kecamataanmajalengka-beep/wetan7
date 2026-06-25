@@ -72,8 +72,6 @@
         @media(max-width:768px){.hero-title{font-size:2.5rem!important;line-height:1.2!important}}
         @media(max-width:1024px){.nav-desktop{display:none!important}.nav-mobile-trigger{display:flex!important}}
         @media(min-width:1025px){.nav-mobile-trigger{display:none!important}}
-        <!-- Tambahkan ini di <head> jika belum ada -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     </style>
 </head>
 <body>
@@ -109,14 +107,14 @@
     </div>
 </div>
 
-<!-- Top Marquee (Akan diisi/dihapus oleh Firebase) -->
+<!-- Top Marquee -->
 <div id="marquee-wrapper" class="bg-blue-900/20 border-b border-blue-500/10 py-2 relative z-30 backdrop-blur-sm hidden" style="margin-top: 90px;">
     <div class="overflow-hidden whitespace-nowrap relative">
         <div id="marquee-content" class="inline-block text-sm font-medium text-blue-200"></div>
     </div>
 </div>
 
-<!-- Berita Berjalan (Akan diisi/dihapus oleh Firebase) -->
+<!-- Berita Berjalan -->
 <div id="news-ticker-wrapper" class="bg-slate-900/80 border-b border-slate-800 py-3 relative z-20 backdrop-blur-sm hidden">
     <div class="overflow-hidden relative w-full">
         <div id="news-ticker" class="flex gap-4 w-max hover:[animation-play-state:paused]"></div>
@@ -277,7 +275,7 @@
         </div>
     </section>
 
-    <!-- SAMBUTAN KEPSEK (Hilang jika data kosong) -->
+    <!-- SAMBUTAN KEPSEK -->
     <section id="home-kepsek-section" class="py-24 relative overflow-hidden bg-slate-900/20 hidden">
         <div class="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-blue-500/30 to-transparent"></div>
         <div class="max-w-7xl mx-auto px-6">
@@ -304,7 +302,7 @@
         </div>
     </section>
 
-    <!-- BERITA (Hilang jika data kosong) -->
+    <!-- BERITA -->
     <section id="home-news-section" class="py-24 bg-slate-900/30 hidden">
         <div class="max-w-7xl mx-auto px-6">
             <div class="flex flex-col md:flex-row justify-between items-end mb-12 animate-on-scroll">
@@ -314,7 +312,7 @@
         </div>
     </section>
 
-    <!-- GALERI SLIDER (Hilang jika data kosong) -->
+    <!-- GALERI SLIDER -->
     <section id="home-slider-section" class="py-10 bg-slate-900/50 border-y border-blue-500/10 relative overflow-hidden hidden">
         <div class="max-w-7xl mx-auto px-6 mb-6 flex justify-between items-center">
             <h3 class="text-xl font-bold text-white flex items-center gap-2"><i data-lucide="activity" class="text-yellow-400"></i> Galeri Kegiatan Sekolah</h3>
@@ -407,10 +405,21 @@
                     <div><div class="font-bold text-lg">SDN Majalengka Wetan VII</div><div class="text-xs text-zinc-500">Majalengka Langkung Sae</div></div>
                 </div>
                 <p class="text-sm text-zinc-400 leading-relaxed max-w-md mb-6">Sekolah Dasar Negeri Majalengka Wetan VII berkomitmen mencetak generasi penerus bangsa yang beriman, cerdas, dan berkarakter.</p>
+                
+                <!-- PERBAIKAN: IKON SOSIAL MEDIA MENGGUNAKAN SVG LANGSUNG -->
                 <div class="flex gap-4">
-                    <a id="link-fb-disp" href="#" class="w-10 h-10 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center text-zinc-400 hover:text-white hover:border-blue-500 hover:bg-blue-500/10 transition-all"><i data-lucide="facebook" class="w-5 h-5"></i></a>
-                    <a id="link-ig-disp" href="#" class="w-10 h-10 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center text-zinc-400 hover:text-white hover:border-pink-500 hover:bg-pink-500/10 transition-all"><i data-lucide="instagram" class="w-5 h-5"></i></a>
-                    <a id="link-yt-disp" href="#" class="w-10 h-10 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center text-zinc-400 hover:text-white hover:border-red-500 hover:bg-red-500/10 transition-all"><i data-lucide="youtube" class="w-5 h-5"></i></a>
+                    <a id="link-fb-disp" href="#" class="w-10 h-10 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center text-zinc-400 hover:text-white hover:border-blue-500 hover:bg-blue-500/10 transition-all">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+                    </a>
+                    <a id="link-ig-disp" href="#" class="w-10 h-10 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center text-zinc-400 hover:text-white hover:border-pink-500 hover:bg-pink-500/10 transition-all">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/></svg>
+                    </a>
+                    <a id="link-yt-disp" href="#" class="w-10 h-10 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center text-zinc-400 hover:text-white hover:border-red-500 hover:bg-red-500/10 transition-all">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 17a24.12 24.12 0 0 1 0-10 2 2 0 0 1 1.4-1.4 49.56 49.56 0 0 1 16.2 0A2 2 0 0 1 21.5 7a24.12 24.12 0 0 1 0 10 2 2 0 0 1-1.4 1.4 49.55 49.55 0 0 1-16.2 0A2 2 0 0 1 2.5 17"/><path d="m10 15 5-3-5-3z"/></svg>
+                    </a>
+                    <a id="link-tt-disp" href="#" class="w-10 h-10 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center text-zinc-400 hover:text-white hover:border-cyan-400 hover:bg-cyan-500/10 transition-all">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5"/></svg>
+                    </a>
                 </div>
             </div>
             <div>
@@ -634,7 +643,7 @@ portal:`
         <input type="hidden" id="app-id">
         <input id="app-name" placeholder="Nama Aplikasi" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-sm text-white mb-3 focus:outline-none focus:border-blue-500">
         <input id="app-link" placeholder="URL Link" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-sm text-white mb-3 focus:outline-none focus:border-blue-500">
-        <select id="app-icon" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-sm text-white mb-3 focus:outline-none focus:border-blue-500"><option value="chromebook">Chromebook</option><option value="user-check">User Check</option><option value="calendar">Calendar</option><option value="mail">Mail</option><option value="book">Book</option><option value="smartphone">Smartphone</option><option value="youtube">YouTube</option><option value="image">Custom Image</option></select>
+        <select id="app-icon" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-sm text-white mb-3 focus:outline-none focus:border-blue-500"><option value="chromebook">Chromebook</option><option value="user-check">User Check</option><option value="calendar">Calendar</option><option value="mail">Mail</option><option value="book">Book</option><option value="smartphone">Smartphone</option><option value="image">Custom Image</option></select>
         <input id="app-img-url" placeholder="URL Custom Icon (jika pilih Custom Image)" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-sm text-white mb-4 focus:outline-none focus:border-blue-500">
         <button id="btn-save-app" onclick="saveApp()" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 rounded-lg mb-2 transition-colors">Simpan Aplikasi</button>
         <button onclick="resetForm('app')" class="w-full bg-slate-700 hover:bg-slate-600 text-white font-bold py-3 rounded-lg transition-colors">Batal / Reset</button>
@@ -643,47 +652,15 @@ portal:`
 inbox:`<h2 class="text-2xl font-bold mb-6 text-white">Inbox Chat Pengunjung</h2><div id="chat-admin-container" class="space-y-4"></div>`,
 contacts:`
     <h2 class="text-2xl font-bold mb-6 text-white">Kontak & Sosial Media</h2>
-<div class="glass-card p-6 rounded-xl">
-    
-    <!-- WhatsApp -->
-    <label class="text-xs text-gray-400 flex items-center gap-2 mb-1">
-        <i class="fa-brands fa-whatsapp text-green-400 text-sm"></i>
-        Nomor WhatsApp (tanpa +)
-    </label>
-    <input id="contact-wa" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-sm text-white mb-3 focus:outline-none focus:border-blue-500" placeholder="6281234567890">
-
-    <!-- Pesan Default WhatsApp -->
-    <label class="text-xs text-gray-400 flex items-center gap-2 mb-1">
-        <i class="fa-brands fa-whatsapp text-green-400 text-sm"></i>
-        Pesan Default WhatsApp
-    </label>
-    <input id="contact-wa-msg" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-sm text-white mb-3 focus:outline-none focus:border-blue-500" placeholder="Halo, saya tertarik dengan...">
-
-    <!-- Facebook -->
-    <label class="text-xs text-gray-400 flex items-center gap-2 mb-1">
-        <i class="fa-brands fa-facebook text-blue-400 text-sm"></i>
-        Link Facebook
-    </label>
-    <input id="link-fb" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-sm text-white mb-3 focus:outline-none focus:border-blue-500" placeholder="https://facebook.com/username">
-
-    <!-- Instagram -->
-    <label class="text-xs text-gray-400 flex items-center gap-2 mb-1">
-        <i class="fa-brands fa-instagram text-pink-400 text-sm"></i>
-        Link Instagram
-    </label>
-    <input id="link-ig" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-sm text-white mb-3 focus:outline-none focus:border-blue-500" placeholder="https://instagram.com/username">
-
-    <!-- YouTube -->
-    <label class="text-xs text-gray-400 flex items-center gap-2 mb-1">
-        <i class="fa-brands fa-youtube text-red-400 text-sm"></i>
-        Link YouTube
-    </label>
-    <input id="link-yt" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-sm text-white mb-4 focus:outline-none focus:border-blue-500" placeholder="https://youtube.com/@channel">
-
-    <button id="btn-save-contacts" onclick="saveContactSettings()" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 rounded-lg transition-colors">
-        <i class="fa-solid fa-floppy-disk mr-2"></i>Simpan Kontak
-    </button>
-</div>`
+    <div class="glass-card p-6 rounded-xl">
+        <label class="text-xs text-gray-400 block mb-1">Nomor WhatsApp (tanpa +)</label><input id="contact-wa" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-sm text-white mb-3 focus:outline-none focus:border-blue-500">
+        <label class="text-xs text-gray-400 block mb-1">Pesan Default WhatsApp</label><input id="contact-wa-msg" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-sm text-white mb-3 focus:outline-none focus:border-blue-500">
+        <label class="text-xs text-gray-400 block mb-1">Link Facebook</label><input id="link-fb" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-sm text-white mb-3 focus:outline-none focus:border-blue-500">
+        <label class="text-xs text-gray-400 block mb-1">Link Instagram</label><input id="link-ig" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-sm text-white mb-3 focus:outline-none focus:border-blue-500">
+        <label class="text-xs text-gray-400 block mb-1">Link YouTube</label><input id="link-yt" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-sm text-white mb-3 focus:outline-none focus:border-blue-500">
+        <label class="text-xs text-gray-400 block mb-1">Link TikTok</label><input id="link-tt" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-sm text-white mb-4 focus:outline-none focus:border-blue-500">
+        <button id="btn-save-contacts" onclick="saveContactSettings()" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 rounded-lg transition-colors">Simpan Kontak</button>
+    </div>`
 };
 
 // ═════════════ NAVIGATION ═════════════
@@ -700,17 +677,13 @@ function toggleMob(){const m=document.getElementById('mob-menu');m.classList.tog
 // ═════════════ LOGIN & ADMIN ═════════════
 function toggleLoginModal(){const m=document.getElementById('modal-login');m.classList.toggle('show');const c=m.querySelector('.modal-content');if(m.classList.contains('show')){setTimeout(()=>{c.style.transform='scale(1)';c.style.opacity='1';},50);}else{c.style.transform='scale(0.95)';c.style.opacity='0';}}
 function handleLogin(e){e.preventDefault();const b=document.getElementById('login-submit-btn'),err=document.getElementById('login-error');err.classList.add('hidden');setBtnLoading(b,true);auth.signInWithEmailAndPassword(document.getElementById('email').value,document.getElementById('password').value).then(()=>{setBtnLoading(b,false);toggleLoginModal();openAdminPanel();}).catch(er=>{setBtnLoading(b,false);err.textContent=er.message;err.classList.remove('hidden');showToast('Login Gagal',er.message,'error');});}
-function openAdminPanel(){document.getElementById('admin-panel').classList.add('active');document.getElementById('login-text').innerText='Dashboard';switchAdminTab('home');['teachers','guru','portalApps','app','services','pelayanan','sabudigiEvents','sabudigi','kkgEvents','kkg','ekstraEvents','ekstra','kokuEvents','koku','news','news'].reduce((a,v,i)=>{if(i%2===0)a.push([v,arguments[0]]);return a;},[]);setupAdminList('teachers','guru');setupAdminList('portalApps','app');setupAdminList('services','pelayanan');setupAdminList('sabudigiEvents','sabudigi');setupAdminList('kkgEvents','kkg');setupAdminList('ekstraEvents','ekstra');setupAdminList('kokuEvents','koku');renderAdminInbox();loadSettingsToAdminForms();}
+function openAdminPanel(){document.getElementById('admin-panel').classList.add('active');document.getElementById('login-text').innerText='Dashboard';switchAdminTab('home');setupAdminList('teachers','guru');setupAdminList('portalApps','app');setupAdminList('services','pelayanan');setupAdminList('sabudigiEvents','sabudigi');setupAdminList('kkgEvents','kkg');setupAdminList('ekstraEvents','ekstra');setupAdminList('kokuEvents','koku');renderAdminInbox();loadSettingsToAdminForms();}
 function closeAdminPanel(){document.getElementById('admin-panel').classList.remove('active');document.getElementById('login-text').innerText='Login';}
 function switchAdminTab(tab){
-    document.querySelectorAll('.admin-tab-link').forEach(l=>{
-        l.classList.remove('active','bg-slate-700','text-white');
-        if(l.onclick && l.onclick.toString().includes(`'${tab}'`)) l.classList.add('active','bg-slate-700','text-white');
-    });
+    document.querySelectorAll('.admin-tab-link').forEach(l=>{l.classList.remove('active','bg-slate-700','text-white');if(l.onclick && l.onclick.toString().includes(`'${tab}'`)) l.classList.add('active','bg-slate-700','text-white');});
     const w = document.getElementById('admin-content-wrapper');
     if(adminTemplates[tab]) w.innerHTML = adminTemplates[tab];
     
-    // TAMBAHAN LOGIKA KHUSUS BERITA ADMIN (Langsung ambil dari Firebase)
     if(tab === 'news') {
         const adminList = document.getElementById('admin-news-list');
         if(adminList) {
@@ -721,18 +694,7 @@ function switchAdminTab(tab){
                     const d = ch.val();
                     const div = document.createElement('div');
                     div.className = "bg-slate-800 p-3 rounded-lg flex justify-between items-center border border-slate-700 hover:border-slate-500 transition-colors";
-                    div.innerHTML = `
-                        <div class="flex items-center gap-3 min-w-0 mr-2">
-                            <img src="${d.image||'https://picsum.photos/seed/newsfb/100/100'}" class="w-10 h-10 rounded-lg object-cover shrink-0 border border-slate-700" onerror="this.src='https://picsum.photos/seed/newsfb/100/100'">
-                            <div class="min-w-0">
-                                <span class="text-sm text-white font-medium block truncate">${d.title}</span>
-                                <span class="text-[10px] text-zinc-500 block truncate">${d.link || 'Tanpa link'}</span>
-                            </div>
-                        </div>
-                        <div class="flex gap-2 shrink-0">
-                            <button onclick="editItem('news','${ch.key}','news')" class="p-2 bg-blue-600/20 hover:bg-blue-600 rounded text-blue-400 hover:text-white transition-all" title="Edit"><i data-lucide="edit-2" class="w-3.5 h-3.5"></i></button>
-                            <button onclick="confirmDeleteItem('news','${ch.key}','${(d.title||'Berita').replace(/'/g,"\\'")}')" class="p-2 bg-red-600/20 hover:bg-red-600 rounded text-red-400 hover:text-white transition-all" title="Hapus"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button>
-                        </div>`;
+                    div.innerHTML = `<div class="flex items-center gap-3 min-w-0 mr-2"><img src="${d.image||'https://picsum.photos/seed/newsfb/100/100'}" class="w-10 h-10 rounded-lg object-cover shrink-0 border border-slate-700" onerror="this.src='https://picsum.photos/seed/newsfb/100/100'"><div class="min-w-0"><span class="text-sm text-white font-medium block truncate">${d.title}</span><span class="text-[10px] text-zinc-500 block truncate">${d.link || 'Tanpa link'}</span></div></div><div class="flex gap-2 shrink-0"><button onclick="editItem('news','${ch.key}','news')" class="p-2 bg-blue-600/20 hover:bg-blue-600 rounded text-blue-400 hover:text-white transition-all" title="Edit"><i data-lucide="edit-2" class="w-3.5 h-3.5"></i></button><button onclick="confirmDeleteItem('news','${ch.key}','${(d.title||'Berita').replace(/'/g,"\\'")}')" class="p-2 bg-red-600/20 hover:bg-red-600 rounded text-red-400 hover:text-white transition-all" title="Hapus"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button></div>`;
                     adminList.appendChild(div);
                 });
                 lucide.createIcons();
@@ -741,8 +703,6 @@ function switchAdminTab(tab){
     }
 
     if(tab==='inbox') renderAdminInbox();
-    
-    // Paksa ambil ulang data untuk tab lainnya
     if(tab==='guru') setupAdminList('teachers','guru');
     if(tab==='pelayanan') setupAdminList('services','pelayanan');
     if(tab==='sabudigi') setupAdminList('sabudigiEvents','sabudigi');
@@ -757,7 +717,7 @@ function switchAdminTab(tab){
 function loadSettingsToAdminForms(){
     db.ref('settings/home').once('value').then(s=>{const d=s.val();if(!d)return;const f=(i,v)=>{const e=document.getElementById(i);if(e&&v)e.value=v;};f('hero-title1',d.title1);f('hero-title2',d.title2);f('hero-desc',d.desc);f('hero-logo',d.logo);f('marquee-text',d.marquee);f('marquee-duration',d.marqueeDuration);f('bg-music-url',d.musicUrl);}).catch(()=>{});
     db.ref('settings/profil').once('value').then(s=>{const d=s.val();if(!d)return;const f=(i,v)=>{const e=document.getElementById(i);if(e&&v)e.value=v;};f('visi-text',d.visi);f('misi-text',d.misi);f('kepsek-nama',d.kepsekNama);f('kepsek-nip',d.kepsekNIP);f('kepsek-foto',d.kepsekFoto);f('kepsek-sambutan',d.kepsekSambutan);}).catch(()=>{});
-    db.ref('settings/contacts').once('value').then(s=>{const d=s.val();if(!d)return;const f=(i,v)=>{const e=document.getElementById(i);if(e&&v)e.value=v;};f('contact-wa',d.wa);f('contact-wa-msg',d.waMsg);f('link-fb',d.fb);f('link-ig',d.ig);f('link-yt',d.yt);}).catch(()=>{});
+    db.ref('settings/contacts').once('value').then(s=>{const d=s.val();if(!d)return;const f=(i,v)=>{const e=document.getElementById(i);if(e&&v)e.value=v;};f('contact-wa',d.wa);f('contact-wa-msg',d.waMsg);f('link-fb',d.fb);f('link-ig',d.ig);f('link-yt',d.yt);f('link-tt',d.tt);}).catch(()=>{});
 }
 
 // ═════════════ SCROLL ANIMATIONS ═════════════
@@ -769,7 +729,8 @@ let chatWindowOpen=false;
 function toggleChat(){chatWindowOpen=!chatWindowOpen;const w=document.getElementById('chat-window');w.classList.toggle('hidden');if(chatWindowOpen){loadUserChat();document.getElementById('chat-badge').classList.add('hidden');}}
 function sendChatMessage(){const i=document.getElementById('chat-input'),m=i.value.trim();if(!m)return;i.value='';db.ref('chats/'+userChatId).push({sender:'user',text:m,timestamp:firebase.database.ServerValue.TIMESTAMP}).catch(()=>showToast('Gagal Kirim','Pesan tidak terkirim','error'));}
 function loadUserChat(){const c=document.getElementById('chat-messages');db.ref('chats/'+userChatId).limitToLast(30).on('value',s=>{c.innerHTML='';if(!s.val()){c.innerHTML='<div class="text-center text-xs text-zinc-500 mt-10">Mulai percakapan...</div>';return;}s.forEach(ch=>{const d=ch.val(),isU=d.sender==='user',div=document.createElement('div');div.className=`flex ${isU?'justify-end':'justify-start'}`;div.innerHTML=`<div class="${isU?'bg-blue-600 text-white':'bg-slate-700 text-gray-200'} rounded-lg px-3 py-2 max-w-[80%] text-xs">${d.text}<div class="text-[9px] opacity-50 text-right mt-1">${new Date(d.timestamp).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}</div></div>`;c.appendChild(div);});c.scrollTop=c.scrollHeight;});}
-function renderAdminInbox(){const c=document.getElementById('chat-admin-container');if(!c)return;c.innerHTML='<div class="text-zinc-500 text-sm">Memuat pesan...</div>';db.ref('chats').on('value',s=>{c.innerHTML='';if(!s.val()){c.innerHTML='<div class="text-center py-12 text-zinc-500">Belum ada pesan masuk</div>';lucide.createIcons();return;}let n=0;s.forEach(uk=>{n++;const uc=uk.val(),ks=Object.keys(uc),lm=uc[ks[ks.length-1]],div=document.createElement('div');div.className="glass-card p-4 rounded-xl border border-slate-700 mb-4";div.innerHTML=`<div class="flex justify-between items-start mb-3"><div class="flex items-center gap-2"><div class="w-8 h-8 rounded-full bg-blue-500/20 flex items-center justify-center text-blue-400 text-xs font-bold">${n}</div><div><span class="font-bold text-blue-400 text-xs block">Pengunjung #${uk.key.slice(-6)}</span><span class="text-[10px] text-zinc-500">${ks.length} pesan</span></div></div><span class="text-[10px] text-zinc-500">${new Date(lm.timestamp).toLocaleString('id-ID')}</span></div><p class="text-sm text-white mb-3 bg-slate-800 p-3 rounded-lg border-l-4 ${lm.sender==='user'?'border-l-blue-500':'border-l-green-500'}">${lm.text}</p>${lm.sender==='user'?`<div class="flex gap-2"><input id="reply-${uk.key}" class="flex-1 bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-blue-500" placeholder="Ketik balasan..." onkeydown="if(event.key==='Enter')replyToUser('${uk.key}')"><button onclick="replyToUser('${uk.key}')" class="bg-green-600 hover:bg-green-500 text-white px-4 py-2 rounded-lg text-xs font-bold transition-colors">Kirim</button></div>`:`<div class="text-xs text-green-400 font-medium flex items-center gap-1"><i data-lucide="check-check" class="w-3 h-3"></i> Dibalas: ${lm.text}</div>`}`;c.appendChild(div);});lucide.createIcons();});}
+function renderAdminInbox(){const c=document.getElementById('chat-admin-container');if(!c)return;c.innerHTML='<div class="text-zinc-500 text-sm">Memuat pesan...</div>';db.ref('chats').on('value',s=>{c.innerHTML='';if(!s.val()){c.innerHTML='<div class="text-center py-12 text-zinc-500">Belum ada pesan masuk</div>';lucide.createIcons();return;}let n=0;s.forEach(uk=>{n++;const uc=uk.val(),ks=Object.keys(uc),lm=uc[ks[ks.length-1]],div=document.createElement('div');div.className="glass-card p-4 rounded-xl border border-slate-700 mb-4";
+div.innerHTML=`<div class="flex justify-between items-start mb-3"><div class="flex items-center gap-2"><div class="w-8 h-8 rounded-full bg-blue-500/20 flex items-center justify-center text-blue-400 text-xs font-bold">${n}</div><div><span class="font-bold text-blue-400 text-xs block">Pengunjung #${uk.key.slice(-6)}</span><span class="text-[10px] text-zinc-500">${ks.length} pesan</span></div></div><span class="text-[10px] text-zinc-500">${new Date(lm.timestamp).toLocaleString('id-ID')}</span></div><p class="text-sm text-white mb-3 bg-slate-800 p-3 rounded-lg border-l-4 ${lm.sender==='user'?'border-l-blue-500':'border-l-green-500'}">${lm.text}</p>${lm.sender==='user'?`<div class="flex gap-2"><input id="reply-${uk.key}" class="flex-1 bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-blue-500" placeholder="Ketik balasan..." onkeydown="if(event.key==='Enter')replyToUser('${uk.key}')"><button onclick="replyToUser('${uk.key}')" class="bg-green-600 hover:bg-green-500 text-white px-4 py-2 rounded-lg text-xs font-bold transition-colors">Kirim</button></div>`:`<div class="text-xs text-green-400 font-medium flex items-center gap-1"><i data-lucide="check-check" class="w-3 h-3"></i> Dibalas: ${lm.text}</div>`}`;c.appendChild(div);});lucide.createIcons();});}
 function replyToUser(id){const i=document.getElementById(`reply-${id}`),m=i.value.trim();if(!m){showToast('Peringatan','Balasan kosong','warning');return;}i.value='';db.ref('chats/'+id).push({sender:'admin',text:m,timestamp:firebase.database.ServerValue.TIMESTAMP}).then(()=>showToast('Sukses','Balasan terkirim','success')).catch(()=>showToast('Gagal','Tidak terkirim','error'));}
 function clearChat(){showConfirm('Hapus Chat','Hapus semua riwayat percakapan?',()=>{db.ref('chats/'+userChatId).remove().then(()=>{document.getElementById('chat-messages').innerHTML='<div class="text-center text-xs text-zinc-500 mt-10">Mulai percakapan...</div>';document.getElementById('chat-badge').classList.add('hidden');showToast('Berhasil','Chat dihapus','success');}).catch(()=>showToast('Gagal','Tidak dapat menghapus','error'));});}
 function downloadChat(){db.ref('chats/'+userChatId).once('value').then(s=>{if(!s.val()){showToast('Info','Tidak ada chat','warning');return;}let t='CHAT - SDN MWT VII\n'+new Date().toLocaleString('id-ID')+'\n'+'='.repeat(40)+'\n\n';s.forEach(c=>{const d=c.val();t+=`[${new Date(d.timestamp).toLocaleString('id-ID')}]\n${d.sender==='user'?'Anda':'Admin'}: ${d.text}\n\n`;});const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([t],{type:'text/plain'}));a.download='chat-sdn-mwt7.txt';a.click();}).catch(()=>showToast('Gagal','Tidak dapat mengunduh','error'));}
@@ -797,7 +758,7 @@ function saveHomeSettings(){const b=document.getElementById('btn-save-home');if(
 function saveMarqueeSettings(){const b=document.getElementById('btn-save-marquee');if(b)setBtnLoading(b,true);db.ref('settings/home').update({marquee:document.getElementById('marquee-text').value,marqueeDuration:parseInt(document.getElementById('marquee-duration').value)||30}).then(()=>{showToast("Berhasil","Marquee diperbarui",'success');if(b)setBtnLoading(b,false);}).catch(e=>{showToast("Gagal",e.message,'error');if(b)setBtnLoading(b,false);});}
 function saveMusicSettings(){const u=document.getElementById('bg-music-url').value;if(!u){showToast('Peringatan','URL musik wajib diisi','warning');return;}const b=document.getElementById('btn-save-music');if(b)setBtnLoading(b,true);db.ref('settings/home').update({musicUrl:u}).then(()=>{showToast("Berhasil","Musik diperbarui",'success');document.getElementById('bgMusicSource').src=u;document.getElementById('bgMusic').load();if(b)setBtnLoading(b,false);}).catch(e=>{showToast("Gagal",e.message,'error');if(b)setBtnLoading(b,false);});}
 function saveProfilSettings(){const b=document.getElementById('btn-save-profil');if(b)setBtnLoading(b,true);db.ref('settings/profil').set({visi:document.getElementById('visi-text').value,misi:document.getElementById('misi-text').value,kepsekNama:document.getElementById('kepsek-nama').value,kepsekNIP:document.getElementById('kepsek-nip').value,kepsekFoto:document.getElementById('kepsek-foto').value,kepsekSambutan:document.getElementById('kepsek-sambutan').value}).then(()=>{showToast("Berhasil","Profil disimpan",'success');if(b)setBtnLoading(b,false);}).catch(e=>{showToast("Gagal",e.message,'error');if(b)setBtnLoading(b,false);});}
-function saveContactSettings(){const b=document.getElementById('btn-save-contacts');if(b)setBtnLoading(b,true);db.ref('settings/contacts').set({wa:document.getElementById('contact-wa').value,waMsg:document.getElementById('contact-wa-msg').value,fb:document.getElementById('link-fb').value,ig:document.getElementById('link-ig').value,yt:document.getElementById('link-yt').value}).then(()=>{showToast("Berhasil","Kontak disimpan",'success');if(b)setBtnLoading(b,false);}).catch(e=>{showToast("Gagal",e.message,'error');if(b)setBtnLoading(b,false);});}
+function saveContactSettings(){const b=document.getElementById('btn-save-contacts');if(b)setBtnLoading(b,true);db.ref('settings/contacts').set({wa:document.getElementById('contact-wa').value,waMsg:document.getElementById('contact-wa-msg').value,fb:document.getElementById('link-fb').value,ig:document.getElementById('link-ig').value,yt:document.getElementById('link-yt').value,tt:document.getElementById('link-tt').value}).then(()=>{showToast("Berhasil","Kontak disimpan",'success');if(b)setBtnLoading(b,false);}).catch(e=>{showToast("Gagal",e.message,'error');if(b)setBtnLoading(b,false);});}
 
 // ═════════════ REALTIME LISTENERS (LAYAR UTAMA) ═════════════
 // --- HOME ---
@@ -808,7 +769,6 @@ db.ref('settings/home').on('value', s => {
     txt('hero-title1-display', d.title1); txt('hero-title2-display', d.title2); txt('hero-desc-display', d.desc);
     img('hero-logo-display', d.logo); img('nav-logo', d.logo); img('mob-logo', d.logo); img('footer-logo', d.logo);
     
-    // Marquee Logic (Hilangkan jika kosong)
     const mWrap = document.getElementById('marquee-wrapper');
     const mCont = document.getElementById('marquee-content');
     if(d.marquee && d.marquee.trim()) {
@@ -818,7 +778,6 @@ db.ref('settings/home').on('value', s => {
         mWrap.classList.remove('hidden');
     } else { mWrap.classList.add('hidden'); }
 
-    // Musik Logic
     if(d.musicUrl) {
         document.getElementById('bgMusicSource').src = d.musicUrl;
         document.getElementById('bgMusic').load();
@@ -834,7 +793,6 @@ db.ref('settings/profil').on('value', s => {
     const emptySec = document.getElementById('profil-empty-section');
     const kepsekSec = document.getElementById('home-kepsek-section');
 
-    // Sambutan Kepsek (Hilang jika kosong)
     if(d && d.kepsekNama && d.kepsekSambutan) {
         document.getElementById('kepsek-name-display').innerText = d.kepsekNama;
         document.getElementById('kepsek-nip-display').innerText = "NIP: " + (d.kepsekNIP || "...");
@@ -843,7 +801,6 @@ db.ref('settings/profil').on('value', s => {
         kepsekSec.classList.remove('hidden');
     } else { kepsekSec.classList.add('hidden'); }
 
-    // Visi Misi (Hilang jika kosong)
     if(d && (d.visi || d.misi)) {
         document.getElementById('visi-display').innerText = d.visi || '';
         document.getElementById('misi-display').innerHTML = d.misi ? d.misi.split(';').filter(m=>m.trim()).map(m=>`<li>${m.trim()}</li>`).join('') : '';
@@ -851,7 +808,7 @@ db.ref('settings/profil').on('value', s => {
     } else { vmSec.classList.add('hidden'); }
 });
 
-// --- GURU (Halaman & Koneksi ke Profil) ---
+// --- GURU ---
 db.ref('teachers').on('value', s => {
     const c = document.getElementById('guru-container');
     const guruSec = document.getElementById('profil-guru-section');
@@ -867,7 +824,7 @@ db.ref('teachers').on('value', s => {
     });
 });
 
-// --- BERITA (Frontend: Hanya Judul, Link, Gambar) ---
+// --- BERITA ---
 db.ref('news').on('value', s => {
     const container = document.getElementById('news-container');
     const section = document.getElementById('home-news-section');
@@ -881,7 +838,6 @@ db.ref('news').on('value', s => {
     let newsArr = [];
     s.forEach(ch => { newsArr.push(ch.val()); });
     
-    // Render Grid Beranda
     newsArr.forEach(d => {
         hasData = true;
         const card = document.createElement('div');
@@ -899,7 +855,6 @@ db.ref('news').on('value', s => {
         container.appendChild(card);
     });
 
-        // 2. RENDER TICKER (Dikosongkan dulu agar tidak dobel saat Firebase update)
     ticker.innerHTML = "";
     const doubledNews = [...newsArr, ...newsArr];
     doubledNews.forEach(d => {
@@ -946,7 +901,7 @@ db.ref('services').on('value', s => {
     lucide.createIcons();
 });
 
-// --- EVENT PAGES (SABUDIGI, KKG, EKSTRA, KOKU) ---
+// --- EVENT PAGES ---
 function renderEventPage(path, containerId, emptyId, colorClass) {
     const c = document.getElementById(containerId), emp = document.getElementById(emptyId);
     c.innerHTML = "";
@@ -962,7 +917,6 @@ function renderEventPage(path, containerId, emptyId, colorClass) {
         lucide.createIcons();
     });
 }
-// Trigger saat halaman dibuka
 const origNav = navigateTo;
 navigateTo = function(p) {
     origNav(p);
@@ -978,6 +932,7 @@ db.ref('settings/contacts').on('value', s => {
     document.getElementById('link-fb-disp').href = d.fb || "#";
     document.getElementById('link-ig-disp').href = d.ig || "#";
     document.getElementById('link-yt-disp').href = d.yt || "#";
+    document.getElementById('link-tt-disp').href = d.tt || "#";
     const waBtn = document.getElementById('wa-float-btn');
     if(d.wa) { waBtn.href = `https://wa.me/${d.wa}?text=${encodeURIComponent(d.waMsg||'Halo, saya ingin bertanya...')}`; waBtn.classList.remove('hidden'); }
     else { waBtn.classList.add('hidden'); }
@@ -993,7 +948,7 @@ db.ref('chats/' + userChatId).on('child_added', s => {
     }
 });
 
-// --- ACTIVITY SLIDER (Gabungan, hilang jika kosong) ---
+// --- ACTIVITY SLIDER ---
 const actPaths = ['sabudigiEvents','kkgEvents','ekstraEvents','kokuEvents'];
 const actCats = {sabudigiEvents:'SABUDIGI',kkgEvents:'KKG',ekstraEvents:'EKSTRAKURIKULER',kokuEvents:'KO-KURIKULER'};
 function updateCombinedSlider() {
